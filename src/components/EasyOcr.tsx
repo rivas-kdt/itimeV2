@@ -10,6 +10,16 @@ import React, {
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import Image from "next/image";
+import { Input } from "./ui/input";
+import { CustomComboBox } from "./customComboBox";
 
 export default function HomeClient() {
   const router = useRouter();
@@ -36,6 +46,47 @@ export default function HomeClient() {
   // UI effects
   const [flashGreen, setFlashGreen] = useState(false);
   const flashTimerRef = useRef<number | null>(null);
+
+  // Manual Input States
+  const [openModal, setOpenModal] = useState(false);
+  const [manualWorkOrder, setManualWorkOrder] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [consItemVal, setConsItemVal] = useState("");
+  const [workCodeVal, setWorkCodeVal] = useState("");
+  const [othersVal, setOthersVal] = useState("");
+
+  const itemList = [
+    "0A00",
+    "0A01",
+    "0A02",
+    "0A03",
+    "0A04",
+    "0A05",
+    "0100",
+    "YC00",
+    "0400",
+    "0600",
+    "PLNT",
+    "2681",
+  ] as const;
+
+  const workCodeList = [
+    "1",
+    "10",
+    "20",
+    "30",
+    "31",
+    "41",
+    "42",
+    "50",
+    "60",
+    "61",
+    "70",
+    "97",
+    "98",
+  ] as const;
+
+  const othersList = ["7", "7R", "8J", "9M", "1A", "2B", "3C", "4D"] as const;
 
   const stopCamera = useCallback(() => {
     setReady(false);
@@ -279,23 +330,50 @@ export default function HomeClient() {
     }
   }
 
-  //   async function onUploadSelected(e: React.ChangeEvent<HTMLInputElement>) {
-  //     const f = e.target.files?.[0] || null;
-  //     e.target.value = "";
-  //     if (!f) return;
+  const handleCancel = () => {
+    setConsItemVal("");
+    setWorkCodeVal("");
+    setOthersVal("");
+    setOpenModal(false);
+  };
 
-  //     setErr("");
-  //     setCapturing(true);
-  //     try {
-  //       const dataUrl = await fileToDataURL(f);
-  //       sessionStorage.setItem("itime:lastCapture", dataUrl);
-  //       goToModePage("upload");
-  //     } catch (err: any) {
-  //       setErr(err?.message || "Failed to load uploaded photo.");
-  //     } finally {
-  //       setCapturing(false);
-  //     }
-  //   }
+  const handleSubmitManualInput = async () => {
+    if (!manualWorkOrder.trim()) {
+      alert("Work Order is required");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/work-orders", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          workOrder: manualWorkOrder,
+          constructionItem: consItemVal,
+          workCode: workCodeVal,
+          others: othersVal,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.error || "Failed to save work order");
+      }
+
+      // Navigate to timer with the work_id
+      window.location.href = `/timer/${data.workId}`;
+    } catch (error: any) {
+      console.error("Error:", error);
+      alert("Error: " + (error?.message || "Failed to save work order"));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <main className="h-full flex flex-col overflow-hidden">
@@ -338,7 +416,7 @@ export default function HomeClient() {
           </Button>
           <Button
             className="flex-1 text-xl gradient-bg disabled:bg-transparent disabled:text-gray-100"
-            // onClick={handleManualInput}
+            onClick={() => setOpenModal(true)}
           >
             Manual Input
           </Button>
@@ -350,6 +428,80 @@ export default function HomeClient() {
           </p>
         </div>
       </div>
+
+      {/* Manual Input Dialog */}
+      <Dialog open={openModal} onOpenChange={setOpenModal}>
+        <DialogContent className="box-design text-black-text">
+          <DialogHeader className="border-b border-gray-300 pb-2">
+            <DialogTitle className="flex flex-row items-center gap-3 font-semibold">
+              <Image src="/manual_edit.png" width={35} height={35} alt="icon" />
+              Manual Input
+            </DialogTitle>
+          </DialogHeader>
+
+          {/* TODO save the information to db */}
+          <div className="flex flex-col w-full gap-1">
+            <label className="font-bold">Work Order</label>
+            <Input
+              className="border-gray-500 text-sm"
+              placeholder="Enter Work Order"
+              value={manualWorkOrder}
+              onChange={(e) => setManualWorkOrder(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            {/* <label className="font-bold">Construction Item</label> */}
+            <CustomComboBox
+              label="Construction Item"
+              value={consItemVal}
+              setValue={setConsItemVal}
+              items={itemList}
+              placeholder="Select Construction Item"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            {/* <label className="font-bold">Work Code</label> */}
+            <CustomComboBox
+              label="Work Code"
+              value={workCodeVal}
+              setValue={setWorkCodeVal}
+              items={workCodeList}
+              placeholder="Select Work Code"
+            />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            {/* <label className="font-bold">Others</label> */}
+            <CustomComboBox
+              label="Others"
+              value={othersVal}
+              setValue={setOthersVal}
+              items={othersList}
+              placeholder="Select Others"
+            />
+          </div>
+
+          <DialogFooter className="mt-3">
+            <Button
+              variant="outline"
+              className="cancel-btn text-lg"
+              onClick={() => {
+                setOpenModal(false);
+                handleCancel();
+              }}
+            >
+              Cancel
+            </Button>
+            {/* TODO link work order id on timer here */}
+            <Button
+              className="gradient-bg text-lg py-5"
+              onClick={handleSubmitManualInput}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saving..." : "Start Inspection"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
