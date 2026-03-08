@@ -35,18 +35,105 @@ export async function updateInspection(
 }
 
 export async function updateWorkOrder(
-  id: string,
   payload: any
 ): Promise<RecordsDTO> {
-  const res = await fetch(`/api/v2/work-orders/${id}`, {
+  const params = new URLSearchParams();
+  if (payload.workOrderId) params.append('wo', String(payload.workOrderId));
+  if (payload.constructionId) params.append('ci', String(payload.constructionId));
+  if (payload.workCodeId) params.append('wc', String(payload.workCodeId));
+  if (payload.othersId) params.append('o', String(payload.othersId));
+
+  const res = await fetch(`/api/v2/inspections?${params.toString()}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
   });
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data?.error || "Failed to update work order");
+    throw new Error(data?.error || "Failed to update inspection");
+  }
+  return data;
+}
+
+type DropdownOption = { id: string; value: string } | { id: string; [key: string]: any };
+
+export async function getConstructionItems(): Promise<DropdownOption[]> {
+  const res = await fetch('/api/v2/construction-item', {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const data = await res.json().catch(() => []);
+  if (!res.ok) {
+    throw new Error("Failed to fetch construction items");
+  }
+  return data;
+}
+
+export async function getWorkCodes(): Promise<DropdownOption[]> {
+  const res = await fetch('/api/v2/work-code', {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const data = await res.json().catch(() => []);
+  if (!res.ok) {
+    throw new Error("Failed to fetch work codes");
+  }
+  return data;
+}
+
+export async function getOthers(): Promise<DropdownOption[]> {
+  const res = await fetch('/api/v2/others', {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const data = await res.json().catch(() => []);
+  if (!res.ok) {
+    throw new Error("Failed to fetch others");
+  }
+  return data;
+}
+
+export async function createConstructionItem(value: string): Promise<DropdownOption> {
+  const res = await fetch('/api/v2/construction-item', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ construction_item: value })
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data?.error || "Failed to create construction item");
+  }
+  return data;
+}
+
+export async function createWorkCode(value: string): Promise<DropdownOption> {
+  const res = await fetch('/api/v2/work-code', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ work_code: value })
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data?.error || "Failed to create work code");
+  }
+  return data;
+}
+
+export async function createOther(value: string): Promise<DropdownOption> {
+  const res = await fetch('/api/v2/others', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ others: value })
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data?.error || "Failed to create other");
   }
   return data;
 }

@@ -73,6 +73,25 @@ export async function updateInspection(payload: {
     return data;
 }
 
+export async function updateInspectionWorkOrder(payload: {
+    workOrderId?: string,
+    constructionItemId?: string,
+    workCodeId?: string,
+    othersId?: string
+}, inspectionId: string) {
+    const res = await fetch(`/api/v2/inspections?id=${inspectionId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+        throw new Error(data?.error || "Failed to update inspection work order");
+    }
+    return data;
+}
+
 export async function createInspectionRecord(payload: {
     workOrderId: string,
     workCodeId: string,

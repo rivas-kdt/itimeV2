@@ -198,3 +198,90 @@ export async function POST(req: NextRequest) {
     return NextResponse.json("Interval server error", { status: 500 });
   }
 }
+
+export async function PATCH(req: NextRequest){
+  const client = await pool.connect();
+  try {
+    const { searchParams } = new URL(req.url);
+    const inspectionId = searchParams.get("id");
+
+    if (!inspectionId) {
+      return NextResponse.json({ error: "Inspection ID is required" }, { status: 400 });
+    }
+
+    const token = await readSession();
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const decoded = await decrypt(token);
+    if (!decoded?.user?.empId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { workOrderId, constructionItemId, workCodeId, othersId, startTime, endTime, status } = body;
+
+    const fields: string[] = [];
+    const values: any[] = [];
+
+    if (workOrderId !== undefined) {
+      values.push(workOrderId);
+      fields.push(`work_order_id = $${values.length}`);
+    }
+
+    if (constructionItemId !== undefined) {
+      values.push(constructionItemId);
+      fields.push(`construction_item_id = $${values.length}`);
+    }
+
+    if (workCodeId !== undefined) {
+      values.push(workCodeId);
+      fields.push(`work_code_id = $${values.length}`);
+    }
+
+    if (othersId !== undefined) {
+      values.push(othersId);
+      fields.push(`others_id = $${values.length}`);
+    }
+
+    if (startTime !== undefined) {
+      values.push(startTime);
+      fields.push(`start_time = $${values.length}`);
+    }
+
+    if (endTime !== undefined) {
+      values.push(endTime);
+      fields.push(`end_time = $${values.length}`);
+    }
+
+    if (status !== undefined) {
+      values.push(status);
+      fields.push(`status = $${values.length}`);
+    }
+
+    if (fields.length === 0) {
+      return NextResponse.json({ error: "No fields to update" }, { status: 400 });
+    }
+
+    values.push(inspectionId);
+    const updateQuery = `
+      UPDATE inspection_v2
+      SET ${fields.join(", ")}
+      WHERE inspection_id::text = $${values.length}
+      RETURNING inspection_id`;
+
+    const result = await client.query(updateQuery, values);
+
+    if (result.rows.length === 0) {
+      return NextResponse.json({ error: "Inspection not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Inspection updated successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("PATCH /api/v2/inspections error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  } finally {
+    client.release();
+  }
+}

@@ -52,8 +52,8 @@ export default function MobileDashboard() {
 
   return (
     <>
-      <div className="text-black flex flex-col ">
-        <div className=" p-4 w-full shadow-lg bg-white">
+      <div className="text-black flex flex-col">
+        <div className=" p-4 w-full shadow-lg bg-white fixed z-10">
           <p className=" text-2xl font-medium">
             {getGreeting()},{" "}
             <span className=" text-primary font-bold">{userName}!</span>
@@ -62,7 +62,7 @@ export default function MobileDashboard() {
             Here&apos;s your progress today.
           </p>
         </div>
-        <div className=" h-full p-4 overflow-y-auto space-y-4 no-scrollbar">
+        <div className=" h-full p-4 overflow-y-auto translate-y-22 space-y-4 no-scrollbar">
           {/* START SUMMARY CARD */}
           <div className=" p-4 rounded-md bg-white shadow-md">
             <h3 className=" font-bold text-primary">Today&apos;s Summary</h3>
