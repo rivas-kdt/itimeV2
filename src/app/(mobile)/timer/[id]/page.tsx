@@ -1,6 +1,9 @@
 "use client";
 
-import { TimeStepper, TimeValue } from "@/features/records/components/timeSelector"
+import {
+  TimeStepper,
+  TimeValue,
+} from "@/features/records/components/timeSelector";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -57,6 +60,32 @@ export default function TimerPage() {
   const dateToday = `${month} ${day}, ${year}`;
 
   const { recordsInfo, recordsInfoLoading } = useTimerHooks(id);
+  const [elapsedMs, setElapsedMs] = useState(0);
+
+  const [startTimeMs, setStartTimeMs] = useState<number | null>(null); // timestamp when timer started
+  const [accumulatedMs, setAccumulatedMs] = useState(0); // time accumulated from previous sessions
+
+  useEffect(() => {
+    if (!startInspection || startTimeMs === null) return;
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      setElapsedMs(accumulatedMs + (now - startTimeMs)); // total elapsed
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [startInspection, startTimeMs, accumulatedMs]);
+
+  // // Update elapsedMs every second while timer is running
+  // useEffect(() => {
+  //   if (!startInspection) return;
+
+  //   const interval = setInterval(() => {
+  //     setElapsedMs((prev) => prev + 1000); // increment by 1 second
+  //   }, 1000);
+
+  //   return () => clearInterval(interval); // cleanup when stop/reset
+  // }, [startInspection]);
 
   useEffect(() => {
     if (isMobile === undefined) return;
@@ -65,66 +94,147 @@ export default function TimerPage() {
     console.log("isMobile routing: ", isMobile);
   }, [isMobile, router]);
 
+  // useEffect(() => {
+  //   if (recordsInfo?.status === "active") {
+  //     setStartInspection(true);
+  //   }
+  // }, [recordsInfo]);
+
   useEffect(() => {
-    if (recordsInfo?.status === "active") {
+    if (!recordsInfo) return;
+
+    if (recordsInfo.status === "active") {
       setStartInspection(true);
+    } else if (
+      recordsInfo.status === "ended" &&
+      recordsInfo.start_time &&
+      recordsInfo.end_time
+    ) {
+      const start = new Date(recordsInfo.start_time).getTime();
+      const end = new Date(recordsInfo.end_time).getTime();
+      setElapsedMs(end - start); // retain elapsed time even after stopping
+      setStartInspection(false); // ensure timer is stopped
     }
   }, [recordsInfo]);
 
-  const timer = useElapsedTimer(
-    recordsInfo?.start_time,
-    recordsInfo?.status === "active"
-  );
+  // const timer = useElapsedTimer(
+  //   recordsInfo?.start_time,
+  //   // recordsInfo?.status === "active",
+  //   startInspection,
+  //   // setElapsedMs,
+  // );
 
   const handleInspection = async () => {
+    // try {
+    //   const now = new Date();
+    //   const startTime = now.toISOString();
+
+    //   await updateInspection(
+    //     {
+    //       startTime,
+    //       status: "active",
+    //     },
+    //     id as String,
+    //   );
+
+    //   setStartTimeMs(Date.now());
+    //   setStartInspection(true);
+    //   setIsFinished(false);
+    // } catch (error) {
+    //   console.error("Failed to start inspection:", error);
+    //   // Handle error
+    // }
     try {
       const now = new Date();
-      const startTime = now.toISOString();
+      await updateInspection(
+        { startTime: now.toISOString(), status: "active" },
+        id,
+      );
 
-      await updateInspection({
-        startTime,
-        status: "active"
-      }, id as String);
-
+      setStartTimeMs(Date.now());
       setStartInspection(true);
       setIsFinished(false);
     } catch (error) {
-      console.error("Failed to start inspection:", error);
-      // Handle error
+      console.error(error);
     }
   };
 
   const handleStopInspection = async () => {
+    // try {
+    //   const now = new Date();
+    //   const endTime = now.toISOString();
+
+    //   await updateInspection(
+    //     {
+    //       endTime,
+    //     },
+    //     id as String,
+    //   );
+
+    //   setStartInspection(false);
+    //   setElapsedMs(0);
+    // } catch (error) {
+    //   console.error("Failed to stop inspection:", error);
+    //   // Handle error
+    // }
     try {
       const now = new Date();
-      const endTime = now.toISOString();
+      await updateInspection({ endTime: now.toISOString() }, id);
 
-      await updateInspection({
-        endTime
-      }, id as String);
+      if (startTimeMs !== null) {
+        setAccumulatedMs((prev) => prev + (Date.now() - startTimeMs)); // add current session
+      }
 
       setStartInspection(false);
+      setStartTimeMs(null); // stop timer
     } catch (error) {
-      console.error("Failed to stop inspection:", error);
-      // Handle error
+      console.error(error);
     }
   };
 
+  const handleResetTimer = () => {
+    setStartInspection(false);
+    setStartTimeMs(null);
+    setAccumulatedMs(0);
+    setElapsedMs(0);
+  };
+
   const handleSaveInspection = async () => {
+    // try {
+    //   const now = new Date();
+    //   const endTime = now.toISOString();
+
+    //   await updateInspection(
+    //     {
+    //       endTime,
+    //       status: "ended",
+    //     },
+    //     id as String,
+    //   );
+
+    //   setIsFinished(true);
+    //   setStartInspection(false);
+    //   setStartTimeMs(null);
+    // } catch (error) {
+    //   console.error("Failed to save inspection:", error);
+    //   // Handle error
+    // }
     try {
       const now = new Date();
-      const endTime = now.toISOString();
+      await updateInspection(
+        { endTime: now.toISOString(), status: "ended" },
+        id,
+      );
 
-      await updateInspection({
-        endTime,
-        status: "ended"
-      }, id as String);
+      if (startTimeMs !== null) {
+        setAccumulatedMs((prev) => prev + (Date.now() - startTimeMs));
+      }
 
-      setIsFinished(true);
       setStartInspection(false);
+      setStartTimeMs(null);
+      setIsFinished(true);
     } catch (error) {
-      console.error("Failed to save inspection:", error);
-      // Handle error
+      console.error(error);
     }
   };
   const handleIsOpen = () => {
@@ -163,6 +273,15 @@ export default function TimerPage() {
     minute: 0,
   });
 
+  const hours = String(Math.floor(elapsedMs / (1000 * 60 * 60))).padStart(
+    2,
+    "0",
+  );
+  const minutes = String(Math.floor((elapsedMs / (1000 * 60)) % 60)).padStart(
+    2,
+    "0",
+  );
+  const seconds = String(Math.floor((elapsedMs / 1000) % 60)).padStart(2, "0");
   // Function to calculate recorded time in hours and minutes
   const calculateRecordedTime = (start: TimeValue, end: TimeValue) => {
     const startMinutes = start.hour * 60 + start.minute;
@@ -178,11 +297,11 @@ export default function TimerPage() {
   };
 
   const formattedDate = (date: any) => {
-    console.log(date)
+    console.log(date);
     const formatted = new Date(date).toISOString().split("T")[0];
-    console.log(formatted)
-    return formatted
-  }
+    console.log(formatted);
+    return formatted;
+  };
 
   const recordedTime = calculateRecordedTime(startTime, endTime);
 
@@ -249,7 +368,8 @@ export default function TimerPage() {
                   Date
                 </p>
                 <p className="flex justify-center w-full border border-gray-500 text-primary">
-                  {recordsInfo?.inspection_date && formattedDate(recordsInfo.inspection_date)}
+                  {recordsInfo?.inspection_date &&
+                    formattedDate(recordsInfo.inspection_date)}
                 </p>
               </div>
 
@@ -279,16 +399,16 @@ export default function TimerPage() {
         </div>
 
         <div className="flex flex-col bg-white p-4 rounded-md full-shadow">
-          {recordsInfo?.status === "active" ? (
+          {startInspection ? (
             /* RUNNING TIMER */
             <div>
               <div className="flex flex-col justify-center items-center h-50">
                 <div className="flex justify-between text-center text-6xl font-bold text-black-text w-full px-8">
-                  <span>{timer.hours}</span>
+                  <span>{hours}</span>
                   <span>:</span>
-                  <span>{timer.minutes}</span>
+                  <span>{minutes}</span>
                   <span>:</span>
-                  <span>{timer.seconds}</span>
+                  <span>{seconds}</span>
                 </div>
               </div>
 
@@ -302,7 +422,7 @@ export default function TimerPage() {
 
                 <Button
                   className="text-white text-lg py-6 red-gradient"
-                  onClick={handleStopInspection}
+                  onClick={handleSaveInspection}
                 >
                   Stop Inspection
                 </Button>
@@ -315,17 +435,16 @@ export default function TimerPage() {
                 </Button>
               </div>
             </div>
-
           ) : recordsInfo?.status === "ended" ? (
             /* FINISHED TIMER */
             <div>
               <div className="flex flex-col justify-center items-center h-50">
                 <div className="flex justify-between text-center text-6xl font-bold text-black-text w-full px-8">
-                  <span>{timer.hours}</span>
+                  <span>{hours}</span>
                   <span>:</span>
-                  <span>{timer.minutes}</span>
+                  <span>{minutes}</span>
                   <span>:</span>
-                  <span>{timer.seconds}</span>
+                  <span>{seconds}</span>
                 </div>
               </div>
 
@@ -346,13 +465,12 @@ export default function TimerPage() {
 
                 <Button
                   className="text-white text-lg h-12 red-gradient"
-                  onClick={handleStopInspection}
+                  onClick={handleResetTimer}
                 >
                   Reset Time
                 </Button>
               </div>
             </div>
-
           ) : (
             /* NOT STARTED */
             <div>
@@ -509,7 +627,7 @@ export default function TimerPage() {
                     className="border-gray-300 text-sm"
                     // value={`${time.hour}:${time.minute}`}
                     value={`${startTime.hour}:${String(
-                      startTime.minute
+                      startTime.minute,
                     ).padStart(2, "0")}
                     `}
                     onClick={() => setOpenStartTime(true)}
@@ -530,7 +648,7 @@ export default function TimerPage() {
                     // value={`${time.hour}:${time.minute}`}
                     value={`${endTime.hour}:${String(endTime.minute).padStart(
                       2,
-                      "0"
+                      "0",
                     )}`}
                     onClick={() => setOpenEndTime(true)}
                     readOnly

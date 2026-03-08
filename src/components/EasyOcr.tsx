@@ -354,9 +354,7 @@ export default function HomeClient() {
       }
 
       if (!consItemVal.trim() || !workCodeVal.trim() || !othersVal.trim()) {
-        alert(
-          "Please select Construction Item, Work Code, and Others"
-        );
+        alert("Please select Construction Item, Work Code, and Others");
         return;
       }
 
@@ -364,7 +362,7 @@ export default function HomeClient() {
       const ensureItemExists = async (
         value: string,
         list: string[],
-        endpoint: string
+        endpoint: string,
       ) => {
         const fieldName = endpoint.split("/").pop(); // construction-item, work-code, or others
         const body = {
@@ -411,15 +409,13 @@ export default function HomeClient() {
       const findOrCreateId = async (
         value: string,
         list: any[],
-        endpoint: string
+        endpoint: string,
       ) => {
-        const existing = list.find(
-          (item) => {
-            if (!item) return false;
-            const itemValue = String(item.value || item || '');
-            return itemValue.toLowerCase() === value.toLowerCase();
-          }
-        );
+        const existing = list.find((item) => {
+          if (!item) return false;
+          const itemValue = String(item.value || item || "");
+          return itemValue.toLowerCase() === value.toLowerCase();
+        });
         if (existing) return existing.id;
 
         // Create new
@@ -477,9 +473,7 @@ export default function HomeClient() {
 
       const inspectionData = await inspectionRes.json();
       if (!inspectionRes.ok) {
-        throw new Error(
-          inspectionData?.error || "Failed to create inspection"
-        );
+        throw new Error(inspectionData?.error || "Failed to create inspection");
       }
 
       const inspectionId = inspectionData.data || inspectionData.inspection_id;
@@ -524,7 +518,7 @@ export default function HomeClient() {
           </div>
         )}
 
-        <div className="absolute bottom-25 w-full flex flex-col gap-2 px-6">
+        <div className="absolute bottom-35 w-full flex flex-col gap-2 px-6">
           <Button
             onClick={captureAndGo}
             disabled={!ready || capturing}
