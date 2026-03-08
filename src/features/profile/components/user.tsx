@@ -3,11 +3,11 @@ import { useAuth } from "@/features/auth/hooks/auth-context";
 import { ChevronLeft, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUserProfile } from "../hooks/useUserProfileHooks";
 
 const UserProfile = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
-  const { session } = useAuth();
-  console.log(session)
+  const { profile } = useUserProfile();
 
   return (
     <>
@@ -34,9 +34,9 @@ const UserProfile = ({ children }: { children: React.ReactNode }) => {
               </div>
               <div className="flex flex-col justify-center items-center">
                 <h2 className="w-full font-bold">
-                  {session?.user.firstName} {session?.user.lastName}
+                  {profile?.first_name} {profile?.last_name}
                 </h2>
-                <p className="text-sm">{session?.user?.email}</p>
+                <p className="text-sm">{profile?.email}</p>
               </div>
             </div>
           </div>

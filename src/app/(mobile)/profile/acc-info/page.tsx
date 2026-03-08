@@ -16,13 +16,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { useUserProfile } from "@/features/profile/hooks/useProfile";
 import { useAuth } from "@/features/auth/hooks/auth-context";
 import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getGroup } from "@/features/user-management/services/user-management.service";
 import Image from "next/image";
+import { useUserProfile } from "@/features/profile/hooks/useUserProfileHooks";
+import { getGroup } from "@/features/user-management/services/management.service";
 
 const groupOptions = [
   {
