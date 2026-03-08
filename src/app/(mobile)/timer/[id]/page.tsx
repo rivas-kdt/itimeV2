@@ -23,6 +23,7 @@ import { useRecordTrackerHooks } from "@/features/timer/hooks/useRecordTracker";
 import { updateInspection } from "@/features/timer/services/timer.service";
 import { useTimerHooks } from "@/features/timer/hooks/useTimerHooks";
 import { useElapsedTimer } from "@/features/timer/hooks/useElapsedTimer";
+import { formatDateWithTimezone } from "@/lib/timezone";
 
 export default function TimerPage() {
   // const { workOrderID } = useRouter().query;
@@ -71,6 +72,16 @@ export default function TimerPage() {
     }
   }, [recordsInfo]);
 
+  // Update start and end time from recordsInfo when it loads
+  useEffect(() => {
+    if (recordsInfo?.start_time && recordsInfo?.end_time) {
+      const startTimeValue = parseTimeFromISO(recordsInfo.start_time);
+      const endTimeValue = parseTimeFromISO(recordsInfo.end_time);
+      setStartTime(startTimeValue);
+      setEndTime(endTimeValue);
+    }
+  }, [recordsInfo?.start_time, recordsInfo?.end_time]);
+
   const timer = useElapsedTimer(
     recordsInfo?.start_time,
     recordsInfo?.status === "active"
@@ -91,22 +102,25 @@ export default function TimerPage() {
     } catch (error) {
       console.error("Failed to start inspection:", error);
       // Handle error
+    } finally {
+      window.location.reload();
     }
   };
 
   const handleStopInspection = async () => {
     try {
-      const now = new Date();
-      const endTime = now.toISOString();
-
       await updateInspection({
-        endTime
+        startTime: null,
+        endTime: null,
+        status: null
       }, id as String);
 
       setStartInspection(false);
     } catch (error) {
       console.error("Failed to stop inspection:", error);
       // Handle error
+    } finally {
+      window.location.reload();
     }
   };
 
@@ -125,6 +139,8 @@ export default function TimerPage() {
     } catch (error) {
       console.error("Failed to save inspection:", error);
       // Handle error
+    } finally {
+      window.location.reload();
     }
   };
   const handleIsOpen = () => {
@@ -148,6 +164,15 @@ export default function TimerPage() {
   };
   const handleUpdateInspectTime = () => {
     setIsEditTime(false);
+  };
+
+  // Helper function to parse ISO string to TimeValue
+  const parseTimeFromISO = (isoString: string): TimeValue => {
+    const date = new Date(isoString);
+    return {
+      hour: date.getHours(),
+      minute: date.getMinutes(),
+    };
   };
 
   const [openStartTime, setOpenStartTime] = useState(false);
@@ -178,13 +203,36 @@ export default function TimerPage() {
   };
 
   const formattedDate = (date: any) => {
-    console.log(date)
-    const formatted = new Date(date).toISOString().split("T")[0];
-    console.log(formatted)
-    return formatted
+    return formatDateWithTimezone(date);
   }
 
   const recordedTime = calculateRecordedTime(startTime, endTime);
+
+  const getDuration = (start?: string, end?: string) => {
+    if (!start || !end) return { hours: "00", minutes: "00", seconds: "00" };
+
+    const startDate = new Date(start).getTime();
+    const endDate = new Date(end).getTime();
+
+    const diff = endDate - startDate;
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    return {
+      hours: String(hours).padStart(2, "0"),
+      minutes: String(minutes).padStart(2, "0"),
+      seconds: String(seconds).padStart(2, "0"),
+    };
+  };
+
+  const finishedDuration = getDuration(
+    recordsInfo?.start_time,
+    recordsInfo?.end_time
+  );
+
+  console.log("recordsInfo: ", recordsInfo);
 
   return (
     <div className="bg-background h-full text-black flex flex-col">
@@ -299,14 +347,6 @@ export default function TimerPage() {
                 >
                   Save Inspection
                 </Button>
-
-                <Button
-                  className="text-white text-lg py-6 red-gradient"
-                  onClick={handleStopInspection}
-                >
-                  Stop Inspection
-                </Button>
-
                 <Button
                   className="cancel-btn text-lg h-12"
                   onClick={handleStopInspection}
@@ -321,34 +361,20 @@ export default function TimerPage() {
             <div>
               <div className="flex flex-col justify-center items-center h-50">
                 <div className="flex justify-between text-center text-6xl font-bold text-black-text w-full px-8">
-                  <span>{timer.hours}</span>
+                  <span>{finishedDuration.hours}</span>
                   <span>:</span>
-                  <span>{timer.minutes}</span>
+                  <span>{finishedDuration.minutes}</span>
                   <span>:</span>
-                  <span>{timer.seconds}</span>
+                  <span>{finishedDuration.seconds}</span>
                 </div>
               </div>
 
               <div className="flex flex-col gap-2">
                 <Button
-                  className="text-white text-lg py-6 green-gradient"
-                  onClick={handleSaveInspection}
-                >
-                  Save Recorded Time
-                </Button>
-
-                <Button
                   className="cancel-btn text-lg h-12"
                   onClick={handleOpenEdit}
                 >
                   Edit
-                </Button>
-
-                <Button
-                  className="text-white text-lg h-12 red-gradient"
-                  onClick={handleStopInspection}
-                >
-                  Reset Time
                 </Button>
               </div>
             </div>

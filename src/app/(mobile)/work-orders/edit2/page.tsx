@@ -20,7 +20,8 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { toTimezoneISOString } from "@/lib/timezone";
 
 function Skeleton() {
     return (
@@ -39,6 +40,7 @@ function Skeleton() {
 
 export default function EditWorkOrdersPage() {
     const searchParams = useSearchParams();
+    const router = useRouter();
 
     const workOrderId = searchParams.get("workOrderId") || undefined;
     const workCodeId = searchParams.get("workCodeId") || undefined;
@@ -81,6 +83,7 @@ export default function EditWorkOrdersPage() {
         return recordsInfo[0];
     }, [recordsInfo]);
 
+    console.log(recordsInfo);
     const inspectedDates = useMemo(() => {
         if (!recordsInfo || recordsInfo.length === 0) return [];
         return recordsInfo
@@ -123,7 +126,6 @@ const getInspectionsForDate = (date?: Date) => {
         month: "long",
         day: "2-digit",
         year: "numeric",
-        timeZone: "UTC",
     });
 
     const handleSelectDate = (selectedDate: Date | undefined) => {
@@ -156,6 +158,49 @@ const getInspectionsForDate = (date?: Date) => {
         };
         return result
     }
+
+    const startInspection = async () => {
+        try {
+            if (!workOrder) {
+                console.error("Work order data not available");
+                return;
+            }
+
+            // Format selected date using timezone utility
+            const selectedDateISO = toTimezoneISOString(selectedDate);
+            console.log("Selected date (ISO):", selectedDateISO);
+            const inspectionRes = await fetch("/api/v2/inspections", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    workOrderId: workOrderId,
+                    workCodeId: workCodeId,
+                    constructionItemId: constructionItemId,
+                    othersId: othersId,
+                    type: "Inspection",
+                    locationId: 1,
+                    inspection_date: selectedDateISO,
+                    startTime: new Date().toISOString(),
+                    status: null,
+                }),
+            });
+
+            const inspectionData = await inspectionRes.json();
+            if (!inspectionRes.ok) {
+                throw new Error(
+                    inspectionData?.error || "Failed to create inspection"
+                );
+            }
+
+            const inspectionId = inspectionData.data || inspectionData.inspection_id;
+            router.push(`/timer/${inspectionId}`);
+        } catch (error) {
+            console.error("Error starting inspection:", error);
+        }
+    };
 
     return (
         <div className="bg-background h-full overflow-y-scroll text-black">
@@ -446,10 +491,7 @@ const getInspectionsForDate = (date?: Date) => {
                             {recordedTime.hours === 0 && recordedTime.minutes === 0 ? (
                                 <div className="flex items-center justify-center px-3 py-2 bg-primary-op-2 rounded-md">
                                     <Button
-                                        onClick={() => {
-                                            // Handle starting inspection
-                                            console.log('Start inspection for date:', selectedDate);
-                                        }}
+                                        onClick={startInspection}
                                         className="bg-primary text-white hover:bg-primary-400"
                                     >
                                         Start Inspection
