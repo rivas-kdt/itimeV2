@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 // import { ProtectedRoute } from "@/components/ProtectedRoute";
 
-const CameraOcr = dynamic(() => import("@/components/ocrCard"), {
+const CameraOcr = dynamic(() => import("@/features/scanner/components/ocrCard"), {
   ssr: false,
 });
 
