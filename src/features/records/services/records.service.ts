@@ -61,10 +61,19 @@ export async function updateInspection(
   id: string,
   payload: UpdateInspectionPayload
 ): Promise<InspectionsDTO> {
+  // Convert snake_case to camelCase for API
+  const apiPayload = {
+    startTime: payload.start_time,
+    endTime: payload.end_time,
+    date: payload.date,
+    type: payload.type,
+    location: payload.location,
+  };
+
   const res = await fetch(`/api/v2/inspections/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(apiPayload),
   });
 
   const data = await res.json().catch(() => ({}));

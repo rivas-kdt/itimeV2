@@ -45,6 +45,7 @@ export function useRecordsHooks() {
     }
 
     const onUpdate = async (id: string, patch: any) => {
+        console.log("Updating inspection with id:", id, "and patch:", patch);
         const updated = await updateInspection(id, patch);
         fetchInspections();
         return updated;
