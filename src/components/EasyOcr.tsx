@@ -23,7 +23,7 @@ export default function HomeClient() {
   const startingRef = useRef(false);
   const didInitRef = useRef(false);
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  //   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [ready, setReady] = useState(false);
   const [err, setErr] = useState("");
@@ -141,9 +141,6 @@ export default function HomeClient() {
         }
       }
 
-      const caps: any = track?.getCapabilities?.() ?? {};
-      //   setTorchSupported(!!caps?.torch);
-
       await applyZoom(1);
       setReady(true);
     } catch (e: any) {
@@ -188,13 +185,12 @@ export default function HomeClient() {
 
   function goToModePage(from: "capture" | "upload") {
     const fromValue = from === "upload" ? "capture_upload" : "capture";
-    // router.push(`/${mode}?from=${encodeURIComponent(fromValue)}`);
-    router.push(`/testing/digital?from=${fromValue}`);
+    router.push(`/scan-barcode/ocr-selector?from=${fromValue}`);
   }
 
   async function storeBlobAndGo(blob: Blob, from: "capture" | "upload") {
     const dataUrl = await blobToDataURL(blob);
-    sessionStorage.setItem("kiman:lastCapture", dataUrl);
+    sessionStorage.setItem("itime:lastCapture", dataUrl);
     goToModePage(from);
   }
 
@@ -204,13 +200,6 @@ export default function HomeClient() {
     flashTimerRef.current = window.setTimeout(() => setFlashGreen(false), 160);
   }
 
-  /**
-   * Capture EXACTLY what user sees in the camera viewport:
-   * - Uses cameraBoxRef dimensions (NOT the overlay, NOT a square guide)
-   * - Applies object-fit: cover crop
-   * - If zoomMode is CSS, applies an additional center crop to match the visual zoom
-   * - NO rotation (per your instruction)
-   */
   async function captureAndGo() {
     if (!videoRef.current || !cameraBoxRef.current || !ready || capturing)
       return;
@@ -290,23 +279,23 @@ export default function HomeClient() {
     }
   }
 
-  async function onUploadSelected(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0] || null;
-    e.target.value = "";
-    if (!f) return;
+  //   async function onUploadSelected(e: React.ChangeEvent<HTMLInputElement>) {
+  //     const f = e.target.files?.[0] || null;
+  //     e.target.value = "";
+  //     if (!f) return;
 
-    setErr("");
-    setCapturing(true);
-    try {
-      const dataUrl = await fileToDataURL(f);
-      sessionStorage.setItem("kiman:lastCapture", dataUrl);
-      goToModePage("upload");
-    } catch (err: any) {
-      setErr(err?.message || "Failed to load uploaded photo.");
-    } finally {
-      setCapturing(false);
-    }
-  }
+  //     setErr("");
+  //     setCapturing(true);
+  //     try {
+  //       const dataUrl = await fileToDataURL(f);
+  //       sessionStorage.setItem("itime:lastCapture", dataUrl);
+  //       goToModePage("upload");
+  //     } catch (err: any) {
+  //       setErr(err?.message || "Failed to load uploaded photo.");
+  //     } finally {
+  //       setCapturing(false);
+  //     }
+  //   }
 
   return (
     <main className="h-full flex flex-col overflow-hidden">
@@ -374,11 +363,11 @@ function blobToDataURL(blob: Blob): Promise<string> {
   });
 }
 
-function fileToDataURL(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(String(r.result || ""));
-    r.onerror = () => reject(new Error("Failed to read uploaded image."));
-    r.readAsDataURL(file);
-  });
-}
+// function fileToDataURL(file: File): Promise<string> {
+//   return new Promise((resolve, reject) => {
+//     const r = new FileReader();
+//     r.onload = () => resolve(String(r.result || ""));
+//     r.onerror = () => reject(new Error("Failed to read uploaded image."));
+//     r.readAsDataURL(file);
+//   });
+// }

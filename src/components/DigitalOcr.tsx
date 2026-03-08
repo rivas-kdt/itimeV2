@@ -33,18 +33,10 @@ type DigitToken = { kind: "digit"; value: string; isDecimal?: boolean };
 const BASE_API = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 const API_URL = `${BASE_API.replace(/\/$/, "")}/read/digital`;
 
-const MAX_IMG_VH = 40; // fit image/canvas into 50vh WITHOUT CSS squish
-
-const DIGIT_W = 54;
-const DIGIT_H = 78;
-const DIGIT_FONT = 42;
-const DIGIT_RADIUS = 12;
-
 function clamp(v: number, a: number, b: number) {
   return Math.max(a, Math.min(b, v));
 }
 
-// Parse OCR string into fixed 8 digits with fixed 2 decimals (truncate, no rounding).
 function tokenizeFlexible(raw: string): DigitToken[] {
   const s = String(raw ?? "").trim();
 
@@ -187,7 +179,7 @@ export default function DigitalClient() {
     const fromCapture = String(params?.get("from") || "").includes("capture");
     if (!fromCapture) return;
 
-    const dataUrl = sessionStorage.getItem("kiman:lastCapture") || "";
+    const dataUrl = sessionStorage.getItem("itime:lastCapture") || "";
     if (!dataUrl) return;
 
     (async () => {
@@ -228,12 +220,10 @@ export default function DigitalClient() {
       const maxH = window.innerHeight * 0.75;
 
       // const scale = Math.min(1, maxW / natW, maxH / natH);
-
       // const w = Math.max(1, Math.round(natW * scale));
       // const h = Math.max(1, Math.round(natH * scale));
 
       const scale = Math.min(maxW / natW, maxH / natH);
-
       const w = Math.round(natW * scale);
       const h = Math.round(natH * scale);
 
@@ -372,34 +362,6 @@ export default function DigitalClient() {
     startRef.current = null;
   }
 
-  // function onDigitWheel(tokenIndex: number, deltaY: number) {
-  //   setTokens((prev) => bumpDigitToken(prev, tokenIndex, deltaY < 0 ? +1 : -1));
-  // }
-
-  // function startDigitDrag(tokenIndex: number, clientY: number) {
-  //   digitDragRef.current = { tokenIndex, lastY: clientY };
-  // }
-
-  // function moveDigitDrag(clientY: number) {
-  //   const st = digitDragRef.current;
-  //   if (st.tokenIndex == null || st.lastY == null) return;
-
-  //   const dy = clientY - st.lastY;
-  //   const threshold = 14;
-
-  //   if (Math.abs(dy) >= threshold) {
-  //     const steps = Math.trunc(dy / threshold);
-  //     if (steps !== 0) {
-  //       setTokens((prev) => bumpDigitToken(prev, st.tokenIndex!, -steps));
-  //       st.lastY = clientY;
-  //     }
-  //   }
-  // }
-
-  // function endDigitDrag() {
-  //   digitDragRef.current = { tokenIndex: null, lastY: null };
-  // }
-
   async function read() {
     if (!fileRef.current || !origW || !origH || !dispW || !dispH) {
       const msg =
@@ -431,7 +393,6 @@ export default function DigitalClient() {
       form.append("w", String(sent.w));
       form.append("h", String(sent.h));
       form.append("debug_images", "0");
-      // form.append("debug_images", "1");
 
       const res = await fetch(API_URL, { method: "POST", body: form });
       const data: Result = await res.json();
@@ -455,8 +416,6 @@ export default function DigitalClient() {
       setTokens(tokenizeFlexible(raw));
       setText(data.value ?? "");
       setNewWorkCode(data.value ?? "");
-      // setLoading(false);
-      // setProgress(0);
       handleScanResults();
     } catch (e: any) {
       const msg = e?.message || "Request failed";
@@ -489,13 +448,13 @@ export default function DigitalClient() {
 
   function onReplaceImage() {
     try {
-      localStorage.setItem("kiman:lastMode", "digital");
+      localStorage.setItem("itime:lastMode", "digital");
     } catch {}
     router.push("/scan-barcode");
   }
 
   return (
-    <main className="h-[100dvh] bg-background flex flex-col overflow-hidden">
+    <main className="h-dvh bg-background flex flex-col overflow-hidden">
       {toast && (
         <div className="fixed p-6 z-50">
           <div
@@ -671,7 +630,6 @@ export default function DigitalClient() {
               <Button
                 type="button"
                 onClick={onReplaceImage}
-                // className="rounded-2xl border border-white/20 bg-white/10 text-white px-3 py-4 text-sm font-extrabold"
                 className="bg-gray-300 text-white text-lg py-6"
               >
                 Change Image
@@ -681,7 +639,6 @@ export default function DigitalClient() {
                 type="button"
                 onClick={read}
                 disabled={busy}
-                // className="rounded-2xl bg-blue-600 text-white px-3 py-4 text-sm font-extrabold disabled:opacity-40"
                 className="gradient-bg text-white text-lg py-6"
               >
                 {busy ? "Scanning..." : "Scan"}
@@ -694,7 +651,7 @@ export default function DigitalClient() {
       {/* Scanning Dialog */}
       <Dialog open={openModal} onOpenChange={setOpenModal}>
         <DialogContent className="box-design text-black-text">
-          <DialogHeader className="border-b-1 border-gray-300 pb-2">
+          <DialogHeader className="border-b border-gray-300 pb-2">
             <DialogTitle className="flex flex-row items-center gap-3 font-semibold">
               <NextImage
                 src="/scan_result.png"
