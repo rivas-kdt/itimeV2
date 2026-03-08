@@ -421,10 +421,10 @@ export default function HomeClient() {
             Manual Input
           </Button>
           <p className="text-center text-sm text-white ">
-            Cannot scan the Work Order? Add it here manually.{" "}
-            <span>
+            Cannot scan the Work Order? Add it here manually.
+            {/* <span>
               <Link href={"/scan-barcode/ocr"}>Go to EasyOCR</Link>
-            </span>
+            </span> */}
           </p>
         </div>
       </div>
