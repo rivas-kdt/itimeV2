@@ -59,7 +59,7 @@ export function CustomComboBox({
           />
         </DialogTrigger>
 
-        <DialogContent className="box-design text-black-text">
+        <DialogContent className="box-design text-black-text h-2/4">
           <DialogHeader className="border-b-1 border-gray-300 pb-2">
             <DialogTitle className="flex">Search or Input Value</DialogTitle>
           </DialogHeader>
@@ -72,8 +72,8 @@ export function CustomComboBox({
               className="text-black-text"
             />
 
-            <CommandGroup className="text-black-text flex flex-col w-full">
-              {filteredItems.slice(0, 5).map((item) => (
+            <CommandGroup className="text-black-text flex flex-col w-full overflow-y-auto">
+              {filteredItems.map((item) => (
                 <CommandItem
                   key={item}
                   value={item}

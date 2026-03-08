@@ -67,7 +67,6 @@ export default function CameraOcr() {
 
   const scanBox = useResponsiveScanBox();
 
-  // Start camera
   useEffect(() => {
     const videoElement = videoRef.current;
 
@@ -79,17 +78,11 @@ export default function CameraOcr() {
       });
 
       videoElement.srcObject = stream;
-      // if (videoRef.current) {
-      //   videoRef.current.srcObject = stream;
-      // }
     };
 
     startCamera();
 
     return () => {
-      // const tracks = (videoRef.current?.srcObject as MediaStream)?.getTracks();
-      // tracks?.forEach((track) => track.stop());
-      // workerRef.current?.terminate();
       if (videoElement) {
         const tracks = (videoElement.srcObject as MediaStream)?.getTracks();
         tracks?.forEach((track) => track.stop());
@@ -99,14 +92,11 @@ export default function CameraOcr() {
   }, []);
 
   const SCAN_BOX = {
-    width: 0.9, // 80%
-    height: 0.5, // 30%
+    width: 0.9,
+    height: 0.5,
     x: 0.05,
     y: 0.15,
   };
-  // width: 0.9, height: 0.5, x: 0.05, y: 0.1
-
-  // Combobox Selection
   const itemList = [
     "0A00",
     "0A01",

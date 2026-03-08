@@ -55,38 +55,10 @@ export default function HomeClient() {
   const [workCodeVal, setWorkCodeVal] = useState("");
   const [othersVal, setOthersVal] = useState("");
 
-  const itemList = [
-    "0A00",
-    "0A01",
-    "0A02",
-    "0A03",
-    "0A04",
-    "0A05",
-    "0100",
-    "YC00",
-    "0400",
-    "0600",
-    "PLNT",
-    "2681",
-  ] as const;
-
-  const workCodeList = [
-    "1",
-    "10",
-    "20",
-    "30",
-    "31",
-    "41",
-    "42",
-    "50",
-    "60",
-    "61",
-    "70",
-    "97",
-    "98",
-  ] as const;
-
-  const othersList = ["7", "7R", "8J", "9M", "1A", "2B", "3C", "4D"] as const;
+  // Fetched Lists
+  const [itemList, setItemList] = useState<string[]>([]);
+  const [workCodeList, setWorkCodeList] = useState<string[]>([]);
+  const [othersList, setOthersList] = useState<string[]>([]);
 
   const stopCamera = useCallback(() => {
     setReady(false);
@@ -219,6 +191,43 @@ export default function HomeClient() {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchLists = async () => {
+      try {
+        const [itemsRes, codesRes, othersRes] = await Promise.all([
+          fetch("/api/v2/construction-item"),
+          fetch("/api/v2/work-code"),
+          fetch("/api/v2/others"),
+        ]);
+
+        const items = await itemsRes.json();
+        const codes = await codesRes.json();
+        const others = await othersRes.json();
+
+        // Extract values, ensuring we get strings only
+        const getValues = (data: any) => {
+          if (!Array.isArray(data)) return [];
+          return data
+            .map((item: any) => {
+              if (typeof item === "string") return item;
+              if (item && typeof item === "object" && item.value)
+                return String(item.value);
+              return null;
+            })
+            .filter(Boolean);
+        };
+
+        setItemList(getValues(items));
+        setWorkCodeList(getValues(codes));
+        setOthersList(getValues(others));
+      } catch (error) {
+        console.error("Failed to fetch dropdown lists:", error);
+      }
+    };
+
+    fetchLists();
+  }, []);
+
   const videoStyle = useMemo(() => {
     // Match your Figma: fill camera window, crop edges
     const base: React.CSSProperties = {
@@ -338,14 +347,95 @@ export default function HomeClient() {
   };
 
   const handleSubmitManualInput = async () => {
-    if (!manualWorkOrder.trim()) {
-      alert("Work Order is required");
-      return;
-    }
-
-    setIsSubmitting(true);
     try {
-      const response = await fetch("/api/work-orders", {
+      if (!manualWorkOrder.trim()) {
+        alert("Work Order is required");
+        return;
+      }
+
+      if (!consItemVal.trim() || !workCodeVal.trim() || !othersVal.trim()) {
+        alert(
+          "Please select Construction Item, Work Code, and Others"
+        );
+        return;
+      }
+
+      // Helper function to insert new item if needed and return its ID
+      const ensureItemExists = async (
+        value: string,
+        list: string[],
+        endpoint: string
+      ) => {
+        const fieldName = endpoint.split("/").pop(); // construction-item, work-code, or others
+        const body = {
+          [fieldName === "construction-item"
+            ? "construction_item"
+            : fieldName === "work-code"
+              ? "work_code"
+              : fieldName]: value,
+        };
+
+        const res = await fetch(`/api/v2${endpoint}`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error?.error || `Failed to create ${fieldName}`);
+        }
+
+        const data = await res.json();
+        return data.id;
+      };
+
+      // Get or create IDs for construction_item, work_code, others
+      let constructionItemId, workCodeId, othersId;
+
+      // Fetch existing IDs or create new ones
+      const [itemsRes, codesRes, othersRes] = await Promise.all([
+        fetch("/api/v2/construction-item"),
+        fetch("/api/v2/work-code"),
+        fetch("/api/v2/others"),
+      ]);
+
+      const items = await itemsRes.json();
+      const codes = await codesRes.json();
+      const others = await othersRes.json();
+
+      // Find IDs from existing data or create new
+      const findOrCreateId = async (
+        value: string,
+        list: any[],
+        endpoint: string
+      ) => {
+        const existing = list.find(
+          (item) => {
+            if (!item) return false;
+            const itemValue = String(item.value || item || '');
+            return itemValue.toLowerCase() === value.toLowerCase();
+          }
+        );
+        if (existing) return existing.id;
+
+        // Create new
+        return ensureItemExists(value, [], endpoint);
+      };
+
+      [constructionItemId, workCodeId, othersId] = await Promise.all([
+        findOrCreateId(consItemVal, items, "/construction-item"),
+        findOrCreateId(workCodeVal, codes, "/work-code"),
+        findOrCreateId(othersVal, others, "/others"),
+      ]);
+
+      setIsSubmitting(true);
+
+      // Create or get work order
+      const woRes = await fetch("/api/work-orders", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -359,14 +449,43 @@ export default function HomeClient() {
         }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data?.error || "Failed to save work order");
+      const woData = await woRes.json();
+      if (!woRes.ok) {
+        throw new Error(woData?.error || "Failed to create work order");
       }
 
-      // Navigate to timer with the work_id
-      window.location.href = `/timer/${data.workId}`;
+      const workOrderId = woData.workOrderId || woData.workId || woData.id;
+
+      // Create inspection record
+      const inspectionRes = await fetch("/api/v2/inspections", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          workOrderId,
+          workCodeId,
+          constructionItemId,
+          othersId,
+          type: "inspection",
+          locationId: 1, // Default location, can be parameterized
+          startTime: new Date().toISOString(),
+          status: null,
+        }),
+      });
+
+      const inspectionData = await inspectionRes.json();
+      if (!inspectionRes.ok) {
+        throw new Error(
+          inspectionData?.error || "Failed to create inspection"
+        );
+      }
+
+      const inspectionId = inspectionData.data || inspectionData.inspection_id;
+
+      // Navigate to timer with the inspection_id
+      window.location.href = `/timer/${inspectionId}`;
     } catch (error: any) {
       console.error("Error:", error);
       alert("Error: " + (error?.message || "Failed to save work order"));

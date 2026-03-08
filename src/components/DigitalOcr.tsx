@@ -15,7 +15,6 @@ import {
 import NextImage from "next/image";
 import { Input } from "./ui/input";
 import { CustomComboBox } from "./customComboBox";
-import Link from "next/link";
 
 type Sel = { x: number; y: number; w: number; h: number };
 
@@ -128,38 +127,10 @@ export default function DigitalClient() {
   const [workCodeVal, setWorkCodeVal] = useState("");
   const [othersVal, setOthersVal] = useState("");
 
-  const itemList = [
-    "0A00",
-    "0A01",
-    "0A02",
-    "0A03",
-    "0A04",
-    "0A05",
-    "0100",
-    "YC00",
-    "0400",
-    "0600",
-    "PLNT",
-    "2681",
-  ] as const;
-
-  const workCodeList = [
-    "1",
-    "10",
-    "20",
-    "30",
-    "31",
-    "41",
-    "42",
-    "50",
-    "60",
-    "61",
-    "70",
-    "97",
-    "98",
-  ] as const;
-
-  const othersList = ["7", "7R", "8J", "9M", "1A", "2B", "3C", "4D"] as const;
+  // Fetched Lists
+  const [itemList, setItemList] = useState<string[]>([]);
+  const [workCodeList, setWorkCodeList] = useState<string[]>([]);
+  const [othersList, setOthersList] = useState<string[]>([]);
 
   function showToast(msg: string, kind: "success" | "error" = "success") {
     if (!msg) return;
@@ -172,6 +143,43 @@ export default function DigitalClient() {
     return () => {
       if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchLists = async () => {
+      try {
+        const [itemsRes, codesRes, othersRes] = await Promise.all([
+          fetch("/api/v2/construction-item"),
+          fetch("/api/v2/work-code"),
+          fetch("/api/v2/others"),
+        ]);
+
+        const items = await itemsRes.json();
+        const codes = await codesRes.json();
+        const others = await othersRes.json();
+
+        // Extract values, ensuring we get strings only
+        const getValues = (data: any) => {
+          if (!Array.isArray(data)) return [];
+          return data
+            .map((item: any) => {
+              if (typeof item === "string") return item;
+              if (item && typeof item === "object" && item.value)
+                return String(item.value);
+              return null;
+            })
+            .filter(Boolean);
+        };
+
+        setItemList(getValues(items));
+        setWorkCodeList(getValues(codes));
+        setOthersList(getValues(others));
+      } catch (error) {
+        console.error("Failed to fetch dropdown lists:", error);
+      }
+    };
+
+    fetchLists();
   }, []);
 
   // === Load capture from Home page (sessionStorage) ===
@@ -438,6 +446,157 @@ export default function DigitalClient() {
     setOthersVal("");
     setOpenModal(false);
     // setManualWorkOrder("");
+  };
+
+  const handleStartInspection = async () => {
+    try {
+      if (!newWorkCode.trim()) {
+        console.log("Work Order is required");
+        return;
+      }
+
+      if (!consItemVal.trim() || !workCodeVal.trim() || !othersVal.trim()) {
+        console.log(
+          "Please select Construction Item, Work Code, and Others"
+        );
+        return;
+      }
+
+      // Helper function to check if value exists in list
+      const valueExists = (value: string, list: string[]) => {
+        return list.some(
+          (item) => item.toLowerCase() === value.toLowerCase()
+        );
+      };
+
+      // Helper function to insert new item if needed and return its ID
+      const ensureItemExists = async (
+        value: string,
+        list: string[],
+        endpoint: string
+      ) => {
+        const fieldName = endpoint.split("/").pop(); // construction-item, work-code, or others
+        const body = {
+          [fieldName === "construction-item"
+            ? "construction_item"
+            : fieldName === "work-code"
+              ? "work_code"
+              : fieldName]: value,
+        };
+
+        const res = await fetch(`/api/v2${endpoint}`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error?.error || `Failed to create ${fieldName}`);
+        }
+
+        const data = await res.json();
+        return data.id;
+      };
+
+      // Get or create IDs for construction_item, work_code, others
+      let constructionItemId, workCodeId, othersId;
+
+      // Fetch existing IDs or create new ones
+      const [itemsRes, codesRes, othersRes] = await Promise.all([
+        fetch("/api/v2/construction-item"),
+        fetch("/api/v2/work-code"),
+        fetch("/api/v2/others"),
+      ]);
+
+      const items = await itemsRes.json();
+      const codes = await codesRes.json();
+      const others = await othersRes.json();
+
+      // Find IDs from existing data or create new
+      const findOrCreateId = async (
+        value: string,
+        list: any[],
+        endpoint: string
+      ) => {
+        const existing = list.find(
+          (item) => {
+            if (!item) return false;
+            const itemValue = String(item.value || item || '');
+            return itemValue.toLowerCase() === value.toLowerCase();
+          }
+        );
+        if (existing) return existing.id;
+
+        // Create new
+        return ensureItemExists(value, [], endpoint);
+      };
+
+      [constructionItemId, workCodeId, othersId] = await Promise.all([
+        findOrCreateId(consItemVal, items, "/construction-item"),
+        findOrCreateId(workCodeVal, codes, "/work-code"),
+        findOrCreateId(othersVal, others, "/others"),
+      ]);
+
+      // Create or get work order
+      const woRes = await fetch("/api/work-orders", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          workOrder: newWorkCode,
+          constructionItem: consItemVal,
+          workCode: workCodeVal,
+          others: othersVal,
+        }),
+      });
+
+      const woData = await woRes.json();
+      if (!woRes.ok) {
+        throw new Error(woData?.error || "Failed to create work order");
+      }
+
+      const workOrderId = woData.workOrderId || woData.workId || woData.id;
+
+      // Create inspection record
+      const inspectionRes = await fetch("/api/v2/inspections", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          workOrderId,
+          workCodeId,
+          constructionItemId,
+          othersId,
+          type: "Inspection",
+          locationId: 1, // Default location, can be parameterized
+          startTime: new Date().toISOString(),
+          status: null,
+        }),
+      });
+
+      const inspectionData = await inspectionRes.json();
+      if (!inspectionRes.ok) {
+        throw new Error(
+          inspectionData?.error || "Failed to create inspection"
+        );
+      }
+
+      const inspectionId = inspectionData.data || inspectionData.inspection_id;
+
+      // Redirect to timer with the inspection_id
+      window.location.href = `/timer/${inspectionId}`;
+    } catch (error: any) {
+      console.error("Error:", error);
+      console.log("Error: " + (error?.message || "Failed to start inspection"));
+    }
   };
 
   const displayValue = useMemo(() => tokensToString(tokens), [tokens]);
@@ -722,9 +881,11 @@ export default function DigitalClient() {
             >
               Cancel
             </Button>
-            {/* TODO link work order id on timer here */}
-            <Button className="gradient-bg text-lg py-5">
-              <Link href={`/timer/`}>Start Inspection</Link>
+            <Button 
+              className="gradient-bg text-lg py-5"
+              onClick={handleStartInspection}
+            >
+              Start Inspection
             </Button>
           </DialogFooter>
         </DialogContent>

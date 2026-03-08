@@ -29,7 +29,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className=" flex flex-col min-h-screen h-screen">
-      <main className=" h-[calc(100vh-80px)]">{children}</main>
+      <main className=" h-[calc(100vh-80px)] overflow-y-scroll">{children}</main>
       <div className=" bg-white shadow-top-2xl flex justify-between items-center px-4 text-black h-20 relative">
         {/*relative*/}
         <div className=" w-1/2 flex pr-16 justify-between">

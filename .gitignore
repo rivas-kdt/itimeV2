@@ -36,46 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
-# =========================
-# Python
-# =========================
-__pycache__/
-*.py[cod]
-*.pyd
-*.pyo
-*.pkl
-*.log
-
-# =========================
-# Virtualenv
-# =========================
 .venv/
-venv/
-env/
-ENV/
-
-# =========================
-# Build / tooling
-# =========================
-dist/
-build/
-*.egg-info/
-pip-wheel-metadata/
-
-# =========================
-# Pytest / coverage
-# =========================
-.pytest_cache/
-.coverage
-htmlcov/
-.coverage.*
-
-# =========================
-# MyPy / Ruff / etc
-# =========================
-.mypy_cache/
-.ruff_cache/

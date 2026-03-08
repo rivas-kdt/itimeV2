@@ -60,7 +60,6 @@ export async function POST(req: Request) {
     }
 
     const row = res.rows[0];
-
     const passwordValid = await bcrypt.compare(password, row.password_hash);
 
     if (!passwordValid) {
