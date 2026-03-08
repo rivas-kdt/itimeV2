@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict 92n7AistNLC4NuECzEQLerc71TvaWARu1E19SozQplz93qRV7SorjHsn5NbuhHu
+\restrict iGSkUba6FlH6gr8PlUS5gmERi7LMHNHVPyZsysF61MDQA72nPl6tk43K9SdDqKY
 
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
 
--- Started on 2026-03-08 18:00:52
+-- Started on 2026-03-08 18:40:47
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -66,52 +66,6 @@ DROP TABLE IF EXISTS public."group";
 DROP TABLE IF EXISTS public.employee;
 DROP TABLE IF EXISTS public.department;
 DROP TABLE IF EXISTS public.construction_item;
-DROP TYPE IF EXISTS public.type_enum_v2;
-DROP TYPE IF EXISTS public.type_enum;
-DROP EXTENSION IF EXISTS pgcrypto;
---
--- TOC entry 2 (class 3079 OID 32781)
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
-
-
---
--- TOC entry 5184 (class 0 OID 0)
--- Dependencies: 2
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
-
---
--- TOC entry 907 (class 1247 OID 32820)
--- Name: type_enum; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public.type_enum AS ENUM (
-    'Inspection',
-    'Receiving'
-);
-
-
-ALTER TYPE public.type_enum OWNER TO postgres;
-
---
--- TOC entry 910 (class 1247 OID 32826)
--- Name: type_enum_v2; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public.type_enum_v2 AS ENUM (
-    'Inspection',
-    'Receiving'
-);
-
-
-ALTER TYPE public.type_enum_v2 OWNER TO postgres;
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -395,12 +349,12 @@ ALTER TABLE public.work_order_v2 ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTIT
 
 
 --
--- TOC entry 5161 (class 0 OID 32831)
+-- TOC entry 5147 (class 0 OID 32831)
 -- Dependencies: 220
 -- Data for Name: construction_item; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.construction_item (id, construction_item) OVERRIDING SYSTEM VALUE VALUES
+INSERT INTO public.construction_item OVERRIDING SYSTEM VALUE VALUES
 	(1, 'Piping'),
 	(2, 'Welding'),
 	(3, 'Cable Pull'),
@@ -416,43 +370,43 @@ INSERT INTO public.construction_item (id, construction_item) OVERRIDING SYSTEM V
 
 
 --
--- TOC entry 5163 (class 0 OID 32838)
+-- TOC entry 5149 (class 0 OID 32838)
 -- Dependencies: 222
 -- Data for Name: department; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.department (dept_id, dept_name, created_at) VALUES
+INSERT INTO public.department VALUES
 	('43092d98-1d7d-44ca-84bb-23aa50bde2ee', 'Operations', '2026-01-16 06:40:25.358004+08'),
 	('34d67940-8808-483c-8d5e-c4ed1a5d435e', 'Quality Assurance', '2026-01-16 06:40:25.358004+08');
 
 
 --
--- TOC entry 5164 (class 0 OID 32848)
+-- TOC entry 5150 (class 0 OID 32848)
 -- Dependencies: 223
 -- Data for Name: employee; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.employee (emp_id, first_name, last_name, email, password_hash, group_id, created_at, role) VALUES
+INSERT INTO public.employee VALUES
 	(6, 'Sean', 'Pactol', 'seanpactol@company.com', '$2b$10$bTfdzgwNuhSx4msj0HacXeY6ghYKxvbGztx52HdD7rhpnKw4gnrt2', '3ce97097-0037-4020-b5ec-5f684f010eb9', '2026-01-20 08:40:32.195066+08', NULL),
 	(10, 'Sample', 'Test', 'sample.test@company.com', '$2b$10$OwDaLZJ2z4EmooHHuT6IG.PQPdlIf2VOLEVZfzABbM54FDiAhsJYK', '3400e634-ea2f-440b-be93-4db41effe2c8', '2026-01-20 13:32:14.932502+08', 'User'),
 	(1, 'Paolo', 'Limbaga', 'paolo.lim@company.com', '$2b$10$jJx738FpseZtU1hyKG8cLOs0JsQrC1sjtcqUSt6gLAkIjKjP9BJkC', '3ce97097-0037-4020-b5ec-5f684f010eb9', '2026-01-16 06:40:25.358004+08', 'Admin'),
-	(12, 'Edric', 'Rivas', 'edric.rivas@company.com', '$2b$10$p9pnjVL681Klw.LVt3witenpkwLAla2R9YfNVhteiP8coeZZLhfq2', '3ce97097-0037-4020-b5ec-5f684f010eb9', '2026-01-30 08:59:29.151387+08', 'Admin'),
 	(542, 'Edric Jay', 'Rivas', 'rivas-cmpy@company.com', '$2b$10$pGNlChnwOjqd/YdD0NY1cO3neo9VCiEcSm4i4x7e1EjRIox7tS0dK', '3ce97097-0037-4020-b5ec-5f684f010eb9', '2026-02-17 06:46:19.747754+08', 'Admin'),
 	(543, '543', 'Test', 'paolo.lim2@company.com', '$2b$10$b7Ty/sUQs8SYdtDVQF4EkOmTSn/d5yrE6HrhCgLZHd2Kczspw.1yC', '9c284123-aeee-42b1-af6c-7955e1472c8a', '2026-02-20 08:26:01.509007+08', 'Admin'),
 	(2, 'Lea', 'Garcia', 'lea.garcia@company.com', '$2b$10$jJx738FpseZtU1hyKG8cLOs0JsQrC1sjtcqUSt6gLAkIjKjP9BJkC', '9c284123-aeee-42b1-af6c-7955e1472c8a', '2026-01-16 06:40:25.358004+08', 'User'),
 	(3, 'Jin', 'Dela Cruz', 'jin.dc@company.com', '$2b$10$jJx738FpseZtU1hyKG8cLOs0JsQrC1sjtcqUSt6gLAkIjKjP9BJkC', '3400e634-ea2f-440b-be93-4db41effe2c8', '2026-01-16 06:40:25.358004+08', 'Admin'),
 	(4, 'Mark', 'Santos', 'mark.santos@company.com', '$2b$10$jJx738FpseZtU1hyKG8cLOs0JsQrC1sjtcqUSt6gLAkIjKjP9BJkC', 'c28b6a58-b21b-40e1-8358-60f4fe25bbf1', '2026-01-16 06:40:25.358004+08', 'User'),
 	(5, 'Ana Liza', 'Reyes', 'analiza.reyes@company.com', '$2b$10$jJx738FpseZtU1hyKG8cLOs0JsQrC1sjtcqUSt6gLAkIjKjP9BJkC', 'c28b6a58-b21b-40e1-8358-60f4fe25bbf1', '2026-01-16 06:40:25.358004+08', 'Admin'),
-	(123123, '123', '123', 'edricjayrivas123@gmail.com', '$2b$10$QAMV/7iodJ6mEgascbY9aOHYQ5u6BPEeqcJzTD8RWo7sGuAwUhBIS', '3ce97097-0037-4020-b5ec-5f684f010eb9', '2026-03-07 15:58:55.613293+08', 'Admin');
+	(123123, '123', '123', 'edricjayrivas123@gmail.com', '$2b$10$QAMV/7iodJ6mEgascbY9aOHYQ5u6BPEeqcJzTD8RWo7sGuAwUhBIS', '3ce97097-0037-4020-b5ec-5f684f010eb9', '2026-03-07 15:58:55.613293+08', 'Admin'),
+	(12, 'Edric', 'Rivas', 'edric.rivas@company.com', '$2b$10$pYHgp3JPMY6VDim9B6eySO43q6U8OO3OhtDfqA8WNDNZ5BX9zQ9dK', '3ce97097-0037-4020-b5ec-5f684f010eb9', '2026-01-30 08:59:29.151387+08', 'Admin');
 
 
 --
--- TOC entry 5165 (class 0 OID 32861)
+-- TOC entry 5151 (class 0 OID 32861)
 -- Dependencies: 224
 -- Data for Name: group; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public."group" (group_id, group_name, dept_id, created_at) VALUES
+INSERT INTO public."group" VALUES
 	('3ce97097-0037-4020-b5ec-5f684f010eb9', 'Ops - Central', '43092d98-1d7d-44ca-84bb-23aa50bde2ee', '2026-01-16 06:40:25.358004+08'),
 	('9c284123-aeee-42b1-af6c-7955e1472c8a', 'Ops - South', '43092d98-1d7d-44ca-84bb-23aa50bde2ee', '2026-01-16 06:40:25.358004+08'),
 	('3400e634-ea2f-440b-be93-4db41effe2c8', 'Ops - North', '43092d98-1d7d-44ca-84bb-23aa50bde2ee', '2026-01-16 06:40:25.358004+08'),
@@ -461,12 +415,12 @@ INSERT INTO public."group" (group_id, group_name, dept_id, created_at) VALUES
 
 
 --
--- TOC entry 5166 (class 0 OID 32872)
+-- TOC entry 5152 (class 0 OID 32872)
 -- Dependencies: 225
 -- Data for Name: inspection; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.inspection (inspection_id, inspector_id, inspection_date, duration, type, work_id, location_id, created_at) VALUES
+INSERT INTO public.inspection VALUES
 	('b759bf18-e435-4e8e-b83d-0c9d1bf4cff4', 5, '2026-01-06 06:40:25.358004+08', 45, 'Inspection', 'f135b15e-659e-40ec-a31a-a590b1c76524', '87536321-188c-4589-bac3-db8979e6ed00', '2026-01-16 06:40:25.358004+08'),
 	('61c28209-870c-431b-aa58-8058242fbf52', 4, '2026-01-07 06:40:25.358004+08', 30, 'Receiving', 'f135b15e-659e-40ec-a31a-a590b1c76524', '87536321-188c-4589-bac3-db8979e6ed00', '2026-01-16 06:40:25.358004+08'),
 	('185ef1d6-ddcd-42a7-9c62-3a9d14ffe868', 3, '2026-01-09 06:40:25.358004+08', 40, 'Inspection', '029ac3ae-d7f0-40f0-a2cb-4721e8b57b51', '4cff1070-a0d9-4b72-9ac6-d96e29d4a976', '2026-01-16 06:40:25.358004+08'),
@@ -480,16 +434,16 @@ INSERT INTO public.inspection (inspection_id, inspector_id, inspection_date, dur
 
 
 --
--- TOC entry 5167 (class 0 OID 32886)
+-- TOC entry 5153 (class 0 OID 32886)
 -- Dependencies: 226
 -- Data for Name: inspection_v2; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.inspection_v2 (inspection_id, inspector_id, work_order_id, work_code_id, construction_item_id, others_id, created_at, location_id, inspection_date, type, start_time, end_time, status) OVERRIDING SYSTEM VALUE VALUES
-	(440, 12, 1, 2, 4, 8, '2026-03-08 17:06:50.426+08', 1, '2026-03-08', 'Inspection', '2026-03-08 17:10:38.363+08', NULL, 'active'),
+INSERT INTO public.inspection_v2 OVERRIDING SYSTEM VALUE VALUES
 	(354, 12, 11, 18, 5, 1, '2026-02-10 08:17:26.194111+08', 2, '2026-02-10', 'Inspection', '2026-02-10 12:00:00+08', '2026-02-10 15:00:00+08', 'ended'),
 	(356, 6, 28, 17, 3, 5, '2026-02-10 08:17:26.194111+08', 3, '2026-02-10', 'Receiving', '2026-02-10 06:00:00+08', '2026-02-10 15:00:00+08', 'ended'),
 	(358, 10, 16, 23, 3, 4, '2026-02-10 08:17:26.194111+08', 2, '2026-02-10', 'Receiving', '2026-02-10 06:00:00+08', '2026-02-10 15:00:00+08', 'ended'),
+	(440, 12, 1, 2, 4, 8, '2026-03-08 17:06:50.426+08', 1, '2026-03-08', 'Inspection', '2026-03-08 17:10:38.363+08', '2026-03-08 18:28:21.24+08', 'ended'),
 	(360, 4, 4, 15, 12, 3, '2026-02-10 08:17:26.194111+08', 3, '2026-02-10', 'Inspection', '2026-02-10 06:00:00+08', '2026-02-10 15:00:00+08', 'ended'),
 	(363, 5, 9, 17, 12, 9, '2026-02-10 08:17:26.194111+08', 2, '2026-02-10', 'Inspection', '2026-02-10 06:00:00+08', '2026-02-10 15:00:00+08', 'ended'),
 	(365, 2, 26, 12, 9, 4, '2026-02-10 08:17:26.194111+08', 3, '2026-02-10', 'Inspection', '2026-02-10 06:00:00+08', '2026-02-10 15:00:00+08', 'ended'),
@@ -555,36 +509,36 @@ INSERT INTO public.inspection_v2 (inspection_id, inspector_id, work_order_id, wo
 
 
 --
--- TOC entry 5169 (class 0 OID 32899)
+-- TOC entry 5155 (class 0 OID 32899)
 -- Dependencies: 228
 -- Data for Name: location; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.location (loc_id, location, created_at) VALUES
+INSERT INTO public.location VALUES
 	('87536321-188c-4589-bac3-db8979e6ed00', 'Warehouse A', '2026-01-16 06:40:25.358004+08'),
 	('4cff1070-a0d9-4b72-9ac6-d96e29d4a976', 'Site B', '2026-01-16 06:40:25.358004+08'),
 	('84fe9662-a1aa-489d-b216-49fa7f85bea1', 'Warehouse B', '2026-01-20 14:53:18.857443+08');
 
 
 --
--- TOC entry 5170 (class 0 OID 32909)
+-- TOC entry 5156 (class 0 OID 32909)
 -- Dependencies: 229
 -- Data for Name: location_v2; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.location_v2 (id, location) OVERRIDING SYSTEM VALUE VALUES
+INSERT INTO public.location_v2 OVERRIDING SYSTEM VALUE VALUES
 	(1, 'Warehouse A'),
 	(2, 'Warehouse B'),
 	(3, 'Site B');
 
 
 --
--- TOC entry 5172 (class 0 OID 32916)
+-- TOC entry 5158 (class 0 OID 32916)
 -- Dependencies: 231
 -- Data for Name: others; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.others (id, others) OVERRIDING SYSTEM VALUE VALUES
+INSERT INTO public.others OVERRIDING SYSTEM VALUE VALUES
 	(1, '0'),
 	(2, '1'),
 	(3, '2'),
@@ -598,12 +552,12 @@ INSERT INTO public.others (id, others) OVERRIDING SYSTEM VALUE VALUES
 
 
 --
--- TOC entry 5174 (class 0 OID 32921)
+-- TOC entry 5160 (class 0 OID 32921)
 -- Dependencies: 233
 -- Data for Name: work_code; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.work_code (id, work_code) OVERRIDING SYSTEM VALUE VALUES
+INSERT INTO public.work_code OVERRIDING SYSTEM VALUE VALUES
 	(8, 5),
 	(9, 6),
 	(10, 7),
@@ -630,12 +584,12 @@ INSERT INTO public.work_code (id, work_code) OVERRIDING SYSTEM VALUE VALUES
 
 
 --
--- TOC entry 5176 (class 0 OID 32926)
+-- TOC entry 5162 (class 0 OID 32926)
 -- Dependencies: 235
 -- Data for Name: work_order; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.work_order (work_id, work_order, work_code, construction_item, others, created_at) VALUES
+INSERT INTO public.work_order VALUES
 	('f135b15e-659e-40ec-a31a-a590b1c76524', 'WO-0001', 1001, 'Piping Install', 0, '2026-01-16 06:40:25.358004+08'),
 	('029ac3ae-d7f0-40f0-a2cb-4721e8b57b51', 'WO-0002', 1002, 'Electrical Cable Pull', 1, '2026-01-16 06:40:25.358004+08'),
 	('c0e27ff5-2795-4c95-978a-18dd99a16389', 'WO-0003', 1003, 'Concrete Pour', 0, '2026-01-16 06:40:25.358004+08'),
@@ -645,12 +599,12 @@ INSERT INTO public.work_order (work_id, work_order, work_code, construction_item
 
 
 --
--- TOC entry 5177 (class 0 OID 32940)
+-- TOC entry 5163 (class 0 OID 32940)
 -- Dependencies: 236
 -- Data for Name: work_order_v2; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.work_order_v2 (id, work_order) OVERRIDING SYSTEM VALUE VALUES
+INSERT INTO public.work_order_v2 OVERRIDING SYSTEM VALUE VALUES
 	(1, 'WO-A'),
 	(2, 'WO-B'),
 	(3, 'WO-C'),
@@ -682,7 +636,7 @@ INSERT INTO public.work_order_v2 (id, work_order) OVERRIDING SYSTEM VALUE VALUES
 
 
 --
--- TOC entry 5185 (class 0 OID 0)
+-- TOC entry 5170 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: construction_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -691,7 +645,7 @@ SELECT pg_catalog.setval('public.construction_item_id_seq', 12, true);
 
 
 --
--- TOC entry 5186 (class 0 OID 0)
+-- TOC entry 5171 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: inspection_v2_inspection_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -700,7 +654,7 @@ SELECT pg_catalog.setval('public.inspection_v2_inspection_id_seq', 440, true);
 
 
 --
--- TOC entry 5187 (class 0 OID 0)
+-- TOC entry 5172 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: location_v2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -709,7 +663,7 @@ SELECT pg_catalog.setval('public.location_v2_id_seq', 3, true);
 
 
 --
--- TOC entry 5188 (class 0 OID 0)
+-- TOC entry 5173 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: others_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -718,7 +672,7 @@ SELECT pg_catalog.setval('public.others_id_seq', 13, true);
 
 
 --
--- TOC entry 5189 (class 0 OID 0)
+-- TOC entry 5174 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: work_code_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -727,7 +681,7 @@ SELECT pg_catalog.setval('public.work_code_id_seq', 23, true);
 
 
 --
--- TOC entry 5190 (class 0 OID 0)
+-- TOC entry 5175 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: work_order_v2_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -736,7 +690,7 @@ SELECT pg_catalog.setval('public.work_order_v2_id_seq', 28, true);
 
 
 --
--- TOC entry 4965 (class 2606 OID 32948)
+-- TOC entry 4951 (class 2606 OID 32948)
 -- Name: construction_item construction_item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -745,7 +699,7 @@ ALTER TABLE ONLY public.construction_item
 
 
 --
--- TOC entry 4967 (class 2606 OID 32950)
+-- TOC entry 4953 (class 2606 OID 32950)
 -- Name: department department_dept_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -754,7 +708,7 @@ ALTER TABLE ONLY public.department
 
 
 --
--- TOC entry 4969 (class 2606 OID 32952)
+-- TOC entry 4955 (class 2606 OID 32952)
 -- Name: department department_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -763,7 +717,7 @@ ALTER TABLE ONLY public.department
 
 
 --
--- TOC entry 4971 (class 2606 OID 32954)
+-- TOC entry 4957 (class 2606 OID 32954)
 -- Name: employee employee_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -772,7 +726,7 @@ ALTER TABLE ONLY public.employee
 
 
 --
--- TOC entry 4973 (class 2606 OID 32956)
+-- TOC entry 4959 (class 2606 OID 32956)
 -- Name: employee employee_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -781,7 +735,7 @@ ALTER TABLE ONLY public.employee
 
 
 --
--- TOC entry 4976 (class 2606 OID 32958)
+-- TOC entry 4962 (class 2606 OID 32958)
 -- Name: group group_group_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -790,7 +744,7 @@ ALTER TABLE ONLY public."group"
 
 
 --
--- TOC entry 4978 (class 2606 OID 32960)
+-- TOC entry 4964 (class 2606 OID 32960)
 -- Name: group group_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -799,7 +753,7 @@ ALTER TABLE ONLY public."group"
 
 
 --
--- TOC entry 4984 (class 2606 OID 32962)
+-- TOC entry 4970 (class 2606 OID 32962)
 -- Name: inspection inspection_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -808,7 +762,7 @@ ALTER TABLE ONLY public.inspection
 
 
 --
--- TOC entry 4986 (class 2606 OID 32964)
+-- TOC entry 4972 (class 2606 OID 32964)
 -- Name: inspection_v2 inspection_v2_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -817,7 +771,7 @@ ALTER TABLE ONLY public.inspection_v2
 
 
 --
--- TOC entry 4988 (class 2606 OID 32966)
+-- TOC entry 4974 (class 2606 OID 32966)
 -- Name: location location_location_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -826,7 +780,7 @@ ALTER TABLE ONLY public.location
 
 
 --
--- TOC entry 4990 (class 2606 OID 32968)
+-- TOC entry 4976 (class 2606 OID 32968)
 -- Name: location location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -835,7 +789,7 @@ ALTER TABLE ONLY public.location
 
 
 --
--- TOC entry 4992 (class 2606 OID 32970)
+-- TOC entry 4978 (class 2606 OID 32970)
 -- Name: location_v2 location_v2_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -844,7 +798,7 @@ ALTER TABLE ONLY public.location_v2
 
 
 --
--- TOC entry 4994 (class 2606 OID 32972)
+-- TOC entry 4980 (class 2606 OID 32972)
 -- Name: others others_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -853,7 +807,7 @@ ALTER TABLE ONLY public.others
 
 
 --
--- TOC entry 4996 (class 2606 OID 32974)
+-- TOC entry 4982 (class 2606 OID 32974)
 -- Name: work_code work_code_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -862,7 +816,7 @@ ALTER TABLE ONLY public.work_code
 
 
 --
--- TOC entry 4998 (class 2606 OID 32976)
+-- TOC entry 4984 (class 2606 OID 32976)
 -- Name: work_order work_order_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -871,7 +825,7 @@ ALTER TABLE ONLY public.work_order
 
 
 --
--- TOC entry 5002 (class 2606 OID 32978)
+-- TOC entry 4988 (class 2606 OID 32978)
 -- Name: work_order_v2 work_order_v2_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -880,7 +834,7 @@ ALTER TABLE ONLY public.work_order_v2
 
 
 --
--- TOC entry 5000 (class 2606 OID 32980)
+-- TOC entry 4986 (class 2606 OID 32980)
 -- Name: work_order work_order_work_order_work_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -889,7 +843,7 @@ ALTER TABLE ONLY public.work_order
 
 
 --
--- TOC entry 4974 (class 1259 OID 32981)
+-- TOC entry 4960 (class 1259 OID 32981)
 -- Name: idx_employee_group_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -897,7 +851,7 @@ CREATE INDEX idx_employee_group_id ON public.employee USING btree (group_id);
 
 
 --
--- TOC entry 4979 (class 1259 OID 32982)
+-- TOC entry 4965 (class 1259 OID 32982)
 -- Name: idx_group_dept_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -905,7 +859,7 @@ CREATE INDEX idx_group_dept_id ON public."group" USING btree (dept_id);
 
 
 --
--- TOC entry 4980 (class 1259 OID 32983)
+-- TOC entry 4966 (class 1259 OID 32983)
 -- Name: idx_inspection_inspector_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -913,7 +867,7 @@ CREATE INDEX idx_inspection_inspector_id ON public.inspection USING btree (inspe
 
 
 --
--- TOC entry 4981 (class 1259 OID 32984)
+-- TOC entry 4967 (class 1259 OID 32984)
 -- Name: idx_inspection_location_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -921,7 +875,7 @@ CREATE INDEX idx_inspection_location_id ON public.inspection USING btree (locati
 
 
 --
--- TOC entry 4982 (class 1259 OID 32985)
+-- TOC entry 4968 (class 1259 OID 32985)
 -- Name: idx_inspection_work_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -929,7 +883,7 @@ CREATE INDEX idx_inspection_work_id ON public.inspection USING btree (work_id);
 
 
 --
--- TOC entry 5003 (class 2606 OID 32986)
+-- TOC entry 4989 (class 2606 OID 32986)
 -- Name: employee employee_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -938,7 +892,7 @@ ALTER TABLE ONLY public.employee
 
 
 --
--- TOC entry 5008 (class 2606 OID 32991)
+-- TOC entry 4994 (class 2606 OID 32991)
 -- Name: inspection_v2 fk_construction_item_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -947,7 +901,7 @@ ALTER TABLE ONLY public.inspection_v2
 
 
 --
--- TOC entry 5009 (class 2606 OID 32996)
+-- TOC entry 4995 (class 2606 OID 32996)
 -- Name: inspection_v2 fk_inspector_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -956,7 +910,7 @@ ALTER TABLE ONLY public.inspection_v2
 
 
 --
--- TOC entry 5010 (class 2606 OID 33001)
+-- TOC entry 4996 (class 2606 OID 33001)
 -- Name: inspection_v2 fk_location_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -965,7 +919,7 @@ ALTER TABLE ONLY public.inspection_v2
 
 
 --
--- TOC entry 5011 (class 2606 OID 33006)
+-- TOC entry 4997 (class 2606 OID 33006)
 -- Name: inspection_v2 fk_others_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -974,7 +928,7 @@ ALTER TABLE ONLY public.inspection_v2
 
 
 --
--- TOC entry 5012 (class 2606 OID 33011)
+-- TOC entry 4998 (class 2606 OID 33011)
 -- Name: inspection_v2 fk_work_code_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -983,7 +937,7 @@ ALTER TABLE ONLY public.inspection_v2
 
 
 --
--- TOC entry 5013 (class 2606 OID 33016)
+-- TOC entry 4999 (class 2606 OID 33016)
 -- Name: inspection_v2 fk_work_order_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -992,7 +946,7 @@ ALTER TABLE ONLY public.inspection_v2
 
 
 --
--- TOC entry 5004 (class 2606 OID 33021)
+-- TOC entry 4990 (class 2606 OID 33021)
 -- Name: group group_dept_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1001,7 +955,7 @@ ALTER TABLE ONLY public."group"
 
 
 --
--- TOC entry 5005 (class 2606 OID 33026)
+-- TOC entry 4991 (class 2606 OID 33026)
 -- Name: inspection inspection_inspector_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1010,7 +964,7 @@ ALTER TABLE ONLY public.inspection
 
 
 --
--- TOC entry 5006 (class 2606 OID 33031)
+-- TOC entry 4992 (class 2606 OID 33031)
 -- Name: inspection inspection_location_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1019,7 +973,7 @@ ALTER TABLE ONLY public.inspection
 
 
 --
--- TOC entry 5007 (class 2606 OID 33036)
+-- TOC entry 4993 (class 2606 OID 33036)
 -- Name: inspection inspection_work_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1027,11 +981,11 @@ ALTER TABLE ONLY public.inspection
     ADD CONSTRAINT inspection_work_id_fkey FOREIGN KEY (work_id) REFERENCES public.work_order(work_id) ON DELETE RESTRICT;
 
 
--- Completed on 2026-03-08 18:00:52
+-- Completed on 2026-03-08 18:40:47
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 92n7AistNLC4NuECzEQLerc71TvaWARu1E19SozQplz93qRV7SorjHsn5NbuhHu
+\unrestrict iGSkUba6FlH6gr8PlUS5gmERi7LMHNHVPyZsysF61MDQA72nPl6tk43K9SdDqKY
 
