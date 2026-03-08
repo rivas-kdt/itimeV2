@@ -50,20 +50,19 @@ export function EditDialog({
   setEndTime,
   onSave,
 }: Props) {
-  
   const [loc, setLoc] = useState<Location[]>([]);
-    useEffect(() => {
-      const fetchLocations = async () => {
-        const res = await getLocation();
-        setLoc(res.locations);
-      };
-      fetchLocations();
-    }, []);
+  useEffect(() => {
+    const fetchLocations = async () => {
+      const res = await getLocation();
+      setLoc(res.locations);
+    };
+    fetchLocations();
+  }, []);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="box-design max-w-md w-fit text-black-text">
-        <DialogHeader className="border-b-1 border-primary pb-2">
+      <DialogContent className="box-design max-w-lg w-fit text-black-text">
+        <DialogHeader className="border-b border-primary pb-2">
           <DialogTitle>Update Record Information</DialogTitle>
         </DialogHeader>
 
@@ -92,37 +91,9 @@ export function EditDialog({
                 value={selectedUser?.date ?? ""}
                 onChange={(e) =>
                   setSelectedUser((prev: any) =>
-                    prev ? { ...prev, date: e.target.value } : prev
+                    prev ? { ...prev, date: e.target.value } : prev,
                   )
                 }
-              />
-            </div>
-
-            <div className="flex flex-col w-full gap-1">
-              <label htmlFor="startTime" className="font-bold">
-                Start Time
-              </label>
-              <Input
-                id="startTime"
-                type="datetime-local"
-                className="border-gray-300 text-sm"
-                value={startTime ?? ""}
-                onChange={(e) => setStartTime(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-row gap-3">
-            <div className="flex flex-col w-full gap-1">
-              <label htmlFor="endTime" className="font-bold">
-                End Time
-              </label>
-              <Input
-                id="endTime"
-                type="datetime-local"
-                className="border-gray-300 text-sm"
-                value={endTime ?? ""}
-                onChange={(e) => setEndTime(e.target.value)}
               />
             </div>
 
@@ -134,7 +105,7 @@ export function EditDialog({
                 value={selectedUser?.type ?? ""}
                 onValueChange={(value: "Inspection" | "Receiving") =>
                   setSelectedUser((prev: any) =>
-                    prev ? { ...prev, type: value } : prev
+                    prev ? { ...prev, type: value } : prev,
                   )
                 }
               >
@@ -153,6 +124,34 @@ export function EditDialog({
             </div>
           </div>
 
+          <div className="flex flex-row gap-3">
+            <div className="flex flex-col w-full gap-1">
+              <label htmlFor="startTime" className="font-bold">
+                Start Time
+              </label>
+              <Input
+                id="startTime"
+                type="datetime-local"
+                className="border-gray-300 text-sm"
+                value={startTime ?? ""}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col w-full gap-1">
+              <label htmlFor="endTime" className="font-bold">
+                End Time
+              </label>
+              <Input
+                id="endTime"
+                type="datetime-local"
+                className="border-gray-300 text-sm"
+                value={endTime ?? ""}
+                onChange={(e) => setEndTime(e.target.value)}
+              />
+            </div>
+          </div>
+
           <div className="flex flex-col w-full gap-1">
             <label htmlFor="location" className="font-bold">
               Location
@@ -161,7 +160,7 @@ export function EditDialog({
               value={selectedUser?.location ?? ""}
               onValueChange={(value: "Warehouse A" | "Warehouse B") =>
                 setSelectedUser((prev: any) =>
-                  prev ? { ...prev, location: value } : prev
+                  prev ? { ...prev, location: value } : prev,
                 )
               }
             >
@@ -169,11 +168,15 @@ export function EditDialog({
                 <SelectValue placeholder="Select Location" />
               </SelectTrigger>
               <SelectContent className="bg-white text-black-text border-gray-300">
-              {loc.map((location: Location) => (
-                <SelectItem key={location.id} value={location.location} className="selection-hover">
-                  {location.location}
-                </SelectItem>
-              ))}
+                {loc.map((location: Location) => (
+                  <SelectItem
+                    key={location.id}
+                    value={location.location}
+                    className="selection-hover"
+                  >
+                    {location.location}
+                  </SelectItem>
+                ))}
               </SelectContent>
               {/* <SelectContent className="bg-white text-black-text border-gray-300">
                 <SelectItem value="Warehouse A" className="selection-hover">
@@ -190,7 +193,8 @@ export function EditDialog({
         {/* show duration calculation if both start and end are set */}
         {startTime && endTime && (
           <div className="mt-4 text-sm">
-            <strong>Duration:</strong> {(() => {
+            <strong>Duration:</strong>{" "}
+            {(() => {
               const s = new Date(startTime).getTime();
               const e = new Date(endTime).getTime();
               if (!isNaN(s) && !isNaN(e) && e >= s) {

@@ -104,7 +104,7 @@ export default function MobileDashboard() {
                   Loading inspections...
                 </div>
               ) : recentInspections.length > 0 ? (
-                recentInspections.slice(0, 5).map((inspection, index) => (
+                recentInspections.slice(0, 8).map((inspection, index) => (
                   <div key={inspection.id}>
                     <div className="my-5">
                       <div className="flex justify-between mb-2">

@@ -21,7 +21,8 @@ export default function WorkOrdersPage() {
 }
 
 function WorkOrdersContent() {
-  const { records, searchWorkOrder, setSearchWorkOrder, loading, error } = useWorkOrderHooks();
+  const { records, searchWorkOrder, setSearchWorkOrder, loading, error } =
+    useWorkOrderHooks();
 
   return (
     <div className=" bg-white-gray h-full text-black flex flex-col">
@@ -73,12 +74,15 @@ function WorkOrdersContent() {
                         className="bg-white w-full text-black border-none full-shadow rounded-lg p-2"
                       >
                         {/* <Link href={`/work-orders/${orders.work_id}`}> */}
-                        <Link href={`/work-orders/edit2?workOrderId=${orders.workOrderId}&workCodeId=${orders.workCodeId}&constructionItemId=${orders.constructionItemId}&othersId=${orders.othersId}`}>
-                          <div className="active:bg-primary-op-2 active:text-primary px-2 py-1 rounded-md">
+                        <Link
+                          href={`/work-orders/edit2?workOrderId=${orders.workOrderId}&workCodeId=${orders.workCodeId}&constructionItemId=${orders.constructionItemId}&othersId=${orders.othersId}`}
+                        >
+                          {/* <div className="active:bg-primary-op-2 active:text-primary px-2 py-1 rounded-md"> */}
+                          <div className="active:bg-primary-op-2 active:text-primary px-5 rounded-md">
                             Edit
                           </div>
                         </Link>
-                        <Separator className="my-2 border border-gray-300" />
+                        {/* <Separator className="my-2 border border-gray-300" /> */}
                         {/* <Link href={`/timer/${orders.work_id}`}>
                           <div className="active:bg-primary-op-2 active:text-primary pl-2 pr-5 py-1 rounded-md">
                             Start Inspection
