@@ -3,15 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { useChangePassword } from "@/features/profile/hooks/useProfile";
 import { useAuth } from "@/features/auth/hooks/auth-context";
 import { toast } from "sonner";
+import { changePassword } from "@/features/auth/services/auth.service";
 
 export default function ChangePasswordPage() {
   const router = useRouter();
-  const { handleChangePassword, loading, error } = useChangePassword();
   const { session } = useAuth();
-  console.log("Session in ChangePasswordPage:", session);
+  const [error, setError] = useState()
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -41,6 +41,7 @@ export default function ChangePasswordPage() {
 
   const handleSubmit = async () => {
     // Validation
+    setLoading(true)
     if (
       !formData.currentPassword ||
       !formData.newPassword ||
@@ -61,7 +62,7 @@ export default function ChangePasswordPage() {
     }
 
     try {
-      await handleChangePassword({
+      await changePassword({
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword,
         confirmPassword: formData.confirmPassword,
@@ -80,6 +81,8 @@ export default function ChangePasswordPage() {
       toastError(
         err instanceof Error ? err.message : "Failed to change password",
       );
+    } finally {
+      setLoading(false)
     }
   };
 

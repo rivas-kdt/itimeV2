@@ -76,7 +76,7 @@ export async function signup(
 export async function changePassword(
   payload: ChangePasswordRequest
 ): Promise<{ message: string }> {
-  const res = await fetch("/api/profile/change-password", {
+  const res = await fetch("/api/v2/profile/change-password", {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -95,7 +95,7 @@ export async function changePassword(
 export async function updateUserProfile(
   updates: UpdateProfileRequest
 ): Promise<UserProfile> {
-  const res = await fetch("/api/profile", {
+  const res = await fetch("/api/v2/profile", {
     method: "PUT",
     credentials: "include",
     headers: { "Content-Type": "application/json" },

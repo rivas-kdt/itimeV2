@@ -24,11 +24,13 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Toggle } from "@/components/ui/toggle";
 import { Switch } from "@/components/ui/switch";
 import { useUserProfile } from "@/features/profile/hooks/useUserProfileHooks";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const { profile, loading } = useUserProfile();
   const { logout } = useAuth();
   const [isSwitchLang, setIsSwitchLang] = useState(false);
+  const router = useRouter()
 
   const toastStyle = (bg: string, border: string, text: string) => ({
     width: "50%",
@@ -51,6 +53,7 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     try {
       await logout();
+      router.push('/')
       toastSuccess("Logged out successfully");
     } catch (error) {
       toastError("Failed to logout");

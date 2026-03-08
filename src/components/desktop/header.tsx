@@ -12,6 +12,7 @@ import { ChangePassDialog } from "@/features/auth/components/changePassDialog";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/auth-context";
 import { toast } from "sonner";
+import { changePassword } from "@/features/auth/services/auth.service";
 
 export default function Header() {
   const isMobile = useIsMobile();
@@ -53,7 +54,7 @@ export default function Header() {
       description: <span className="text-white">{desc}</span>,
       style: toastStyle("--lightred", "--red", "--darkred"),
     });
-
+    
   return (
     <div>
       <div className="flex justify-between items-center bg-white shadow-lg shadow-primary/40 px-10 py-1 gap-5 btm-box-shadow">
