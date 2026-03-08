@@ -73,59 +73,56 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     const workOrder = (body?.workOrder || "").trim();
-    const constructionItemId = body?.constructionItemId;
-    const workCodeId = body?.workCodeId;
-    const othersId = body?.othersId;
 
     const token = await readSession();
     if (!token) {
-      return NextResponse.json("Unauthorized", { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const decoded = await decrypt(token);
     if (!decoded?.user?.empId) {
-      return NextResponse.json("Invalid session", { status: 401 });
+      return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }
-
-    const empId = decoded.user.empId;
 
     if (!workOrder) {
-      return NextResponse.json("Work order name is required", { status: 400 });
+      return NextResponse.json({ error: "Work order name is required" }, { status: 400 });
     }
 
+    // Check if work order already exists
     const existingRes = await client.query(
       `SELECT id FROM work_order_v2 WHERE work_order = $1`,
       [workOrder]
     );
+
     let workOrderId: number;
     if (existingRes.rows.length > 0) {
       workOrderId = existingRes.rows[0].id;
     } else {
-      // Create new work order
+      // Create new work order (only with work_order field)
       const createRes = await client.query(
         `
-          INSERT INTO work_order_v2 (inspector_id, work_order, work_code_id, construction_item_id, others_id)
-          VALUES ($1, $2, $3, $4, $5)
+          INSERT INTO work_order_v2 (work_order)
+          VALUES ($1)
           RETURNING id
           `,
-        [
-          empId,
-          workOrder,
-          workCodeId || null,
-          constructionItemId || null,
-          othersId || null,
-        ]
+        [workOrder]
       );
       workOrderId = createRes.rows[0].id;
     }
-    return NextResponse.json(
-      { workOrderId, message: "Work order processed successfully" },
-      { status: 200 }
-    );
+
+    return NextResponse.json({
+      workOrderId,
+      workId: workOrderId,
+      id: workOrderId,
+      message: "Work order processed successfully",
+    });
   } catch (error) {
-    console.error("POST /api/v2/work-orders error:", error);
+    console.error("POST /api/work-orders error:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ error: errorMessage || "Failed to POST inspections" }, { status: 500 })
+    return NextResponse.json(
+      { error: errorMessage || "Internal server error" },
+      { status: 500 }
+    );
   } finally {
     client.release();
   }
