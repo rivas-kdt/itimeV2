@@ -93,21 +93,23 @@ export async function PATCH(req: Request, ctx: any) {
       values.push(date);
       fields.push(`inspection_date = $${values.length}`);
     }
-    if (startTime) {
+    if (startTime !== undefined) {
       values.push(startTime);
       fields.push(`start_time = $${values.length}`);
     }
-    if (endTime) {
+
+    if (endTime !== undefined) {
       values.push(endTime);
       fields.push(`end_time = $${values.length}`);
+    }
+
+    if (status !== undefined) {
+      values.push(status);
+      fields.push(`status = $${values.length}`);
     }
     if (type) {
       values.push(type);
       fields.push(`type = $${values.length}`);
-    }
-    if (status) {
-      values.push(status)
-      fields.push(`status = $${values.length}`)
     }
 
     let locationId;

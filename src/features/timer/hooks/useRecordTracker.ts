@@ -87,6 +87,22 @@ export const useRecordTrackerHooks = (id: any) => {
     }
   }
 
+  const checkAndRedirectActiveInspection = useCallback(async () => {
+    try {
+      const data = await recordsService.getActiveInspection();
+      if (data.data && data.data.inspection_id) {
+        console.log("Active inspection found, redirecting to:", data.data.inspection_id);
+        router.push(`/timer/${data.data.inspection_id}`);
+      }
+    } catch (error) {
+      console.error("Failed to check for active inspection: ", error);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    checkAndRedirectActiveInspection();
+  }, [checkAndRedirectActiveInspection]);
+
   useEffect(() => {
     fetchAllRecords();
     fetchRecordById(id); // Example: Fetch record with ID 1 on mount
@@ -98,5 +114,6 @@ export const useRecordTrackerHooks = (id: any) => {
     createRecord,
     fetchAllRecords,
     fetchRecordById,
+    checkAndRedirectActiveInspection,
   };
 };

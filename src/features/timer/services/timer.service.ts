@@ -56,9 +56,9 @@ export async function startInspection(payload: {
 }
 
 export async function updateInspection(payload: {
-    startTime?: string,
-    endTime?: string,
-    status?: "active" | "ended"
+    startTime?: string | null,
+    endTime?: string | null,
+    status?: "active" | "ended" | null
 }, inspectionId: any) {
     const res = await fetch(`/api/v2/inspections/${inspectionId}`, {
         method: "PATCH",

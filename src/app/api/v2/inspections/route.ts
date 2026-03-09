@@ -156,6 +156,7 @@ export async function POST(req: NextRequest) {
   const constructionItemId = body?.constructionItemId;
   const workCodeId = body?.workCodeId;
   const othersId = body?.othersId;
+  const inspectionDate = body?.inspection_date;
   const startTime = body?.startTime;
   const endTime = body?.endTime;
   const status = body?.status;
@@ -179,7 +180,7 @@ export async function POST(req: NextRequest) {
         constructionItemId,
         workCodeId,
         othersId,
-        currentDate,
+        inspectionDate || currentDate,
         startTime,
         endTime,
         status,

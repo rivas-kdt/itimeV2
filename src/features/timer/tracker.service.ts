@@ -24,4 +24,12 @@ export const recordsService = {
     });
     return res.json();
   },
+  getActiveInspection: async () => {
+    const res = await fetch(`/api/v2/inspections/active`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
+    return res.json();
+  },
 };
