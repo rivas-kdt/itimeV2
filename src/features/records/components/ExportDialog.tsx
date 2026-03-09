@@ -38,17 +38,18 @@ export function ExportDialog({
         <DialogHeader className="flex flex-col justify-between pb-2 border-b-1 border-primary">
           <DialogTitle className="flex items-center gap-2 text-black-text">
             <FileSpreadsheet className="w-7 h-7" />
-            Import & Export Data
+            {/* Import &  */}
+            Export Data
           </DialogTitle>
           <DialogDescription className="text-gray-500">
-            Select which type of Data to be exported or upload a file to be
-            imported to the table.
+            Select which type of Data to be exported
+            {/* or upload a file to be imported to the table. */}
           </DialogDescription>
         </DialogHeader>
-        <ImportSection
+        {/* <ImportSection
           showModal={open}
           onImportSuccess={() => onOpenChange(false)}
-        />
+        /> */}
 
         <div className="flex flex-row gap-5 justify-between max-h-[300px]">
           <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg">

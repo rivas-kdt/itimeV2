@@ -519,7 +519,8 @@ export default function TimerPage() {
                   Date
                 </p>
                 <p className="flex justify-center w-full border border-gray-500">
-                  {recordsInfo.date}
+                  {recordsInfo?.inspection_date &&
+                    formattedDate(recordsInfo.inspection_date)}
                 </p>
               </div>
             </div>

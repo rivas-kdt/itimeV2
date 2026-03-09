@@ -82,7 +82,7 @@ export function ExportPreviewDialog({
                   <TableRow className="text-sm text-black-text m-0" key={r.id}>
                     <TableCell className="text-center">{r.workOrder}</TableCell>
                     <TableCell className="text-center">{r.date}</TableCell>
-                    <TableCell className="text-center">{r.time}</TableCell>
+                    <TableCell className="text-center">{r.duration}</TableCell>
                     <TableCell className="flex justify-center items-center text-center">
                       <CircleMinus
                         className="text-black-text cursor-pointer"

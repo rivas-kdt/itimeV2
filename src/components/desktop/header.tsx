@@ -18,7 +18,7 @@ export default function Header() {
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const { session } = useAuth();
-  console.log(session)
+  console.log(session);
   const isActive = `gradient-bg text-white p-2 rounded-full transition-colors`;
   const [isChangePass, setIsShowChangePass] = useState(false);
 
@@ -54,7 +54,7 @@ export default function Header() {
       description: <span className="text-white">{desc}</span>,
       style: toastStyle("--lightred", "--red", "--darkred"),
     });
-    
+
   return (
     <div>
       <div className="flex justify-between items-center bg-white shadow-lg shadow-primary/40 px-10 py-1 gap-5 btm-box-shadow">
@@ -162,7 +162,7 @@ export default function Header() {
                 Switch Language
               </Link>
               <Separator className="border-1 border-primary-300" />
-              <Link href="/landing" className="popover-content transition-all">
+              <Link href="/" className="popover-content transition-all">
                 <LogOut className="text-primary" size={18} />
                 Logout
               </Link>
@@ -176,7 +176,7 @@ export default function Header() {
           onChangePass={() =>
             toastSuccess(
               "Password Updated Successfully",
-              "You have changed your password. Please Login again. Thank You."
+              "You have changed your password. Please Login again. Thank You.",
             )
           }
         />
