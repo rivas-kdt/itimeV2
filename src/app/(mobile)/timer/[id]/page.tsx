@@ -1,6 +1,9 @@
 "use client";
 
-import { TimeStepper, TimeValue } from "@/features/records/components/timeSelector"
+import {
+  TimeStepper,
+  TimeValue,
+} from "@/features/records/components/timeSelector";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -84,7 +87,7 @@ export default function TimerPage() {
 
   const timer = useElapsedTimer(
     recordsInfo?.start_time,
-    recordsInfo?.status === "active"
+    recordsInfo?.status === "active",
   );
 
   const handleInspection = async () => {
@@ -92,10 +95,13 @@ export default function TimerPage() {
       const now = new Date();
       const startTime = now.toISOString();
 
-      await updateInspection({
-        startTime,
-        status: "active"
-      }, id as String);
+      await updateInspection(
+        {
+          startTime,
+          status: "active",
+        },
+        id as String,
+      );
 
       setStartInspection(true);
       setIsFinished(false);
@@ -109,11 +115,14 @@ export default function TimerPage() {
 
   const handleStopInspection = async () => {
     try {
-      await updateInspection({
-        startTime: null,
-        endTime: null,
-        status: null
-      }, id as String);
+      await updateInspection(
+        {
+          startTime: null,
+          endTime: null,
+          status: null,
+        },
+        id as String,
+      );
 
       setStartInspection(false);
     } catch (error) {
@@ -129,10 +138,13 @@ export default function TimerPage() {
       const now = new Date();
       const endTime = now.toISOString();
 
-      await updateInspection({
-        endTime,
-        status: "ended"
-      }, id as String);
+      await updateInspection(
+        {
+          endTime,
+          status: "ended",
+        },
+        id as String,
+      );
 
       setIsFinished(true);
       setStartInspection(false);
@@ -204,7 +216,7 @@ export default function TimerPage() {
 
   const formattedDate = (date: any) => {
     return formatDateWithTimezone(date);
-  }
+  };
 
   const recordedTime = calculateRecordedTime(startTime, endTime);
 
@@ -229,7 +241,7 @@ export default function TimerPage() {
 
   const finishedDuration = getDuration(
     recordsInfo?.start_time,
-    recordsInfo?.end_time
+    recordsInfo?.end_time,
   );
 
   console.log("recordsInfo: ", recordsInfo);
@@ -297,7 +309,8 @@ export default function TimerPage() {
                   Date
                 </p>
                 <p className="flex justify-center w-full border border-gray-500 text-primary">
-                  {recordsInfo?.inspection_date && formattedDate(recordsInfo.inspection_date)}
+                  {recordsInfo?.inspection_date &&
+                    formattedDate(recordsInfo.inspection_date)}
                 </p>
               </div>
 
@@ -355,7 +368,6 @@ export default function TimerPage() {
                 </Button>
               </div>
             </div>
-
           ) : recordsInfo?.status === "ended" ? (
             /* FINISHED TIMER */
             <div>
@@ -378,7 +390,6 @@ export default function TimerPage() {
                 </Button>
               </div>
             </div>
-
           ) : (
             /* NOT STARTED */
             <div>
@@ -508,7 +519,8 @@ export default function TimerPage() {
                   Date
                 </p>
                 <p className="flex justify-center w-full border border-gray-500">
-                  {recordsInfo.date}
+                  {recordsInfo?.inspection_date &&
+                    formattedDate(recordsInfo.inspection_date)}
                 </p>
               </div>
             </div>
@@ -535,7 +547,7 @@ export default function TimerPage() {
                     className="border-gray-300 text-sm"
                     // value={`${time.hour}:${time.minute}`}
                     value={`${startTime.hour}:${String(
-                      startTime.minute
+                      startTime.minute,
                     ).padStart(2, "0")}
                     `}
                     onClick={() => setOpenStartTime(true)}
@@ -556,7 +568,7 @@ export default function TimerPage() {
                     // value={`${time.hour}:${time.minute}`}
                     value={`${endTime.hour}:${String(endTime.minute).padStart(
                       2,
-                      "0"
+                      "0",
                     )}`}
                     onClick={() => setOpenEndTime(true)}
                     readOnly
