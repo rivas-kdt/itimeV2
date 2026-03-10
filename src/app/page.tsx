@@ -13,20 +13,31 @@ import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/useMobile";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/features/auth/hooks/auth-context";
+import Loader from "@/components/Loader";
 
 export type FormView = "default" | "login" | "signUp" | "forgotPassword";
 
 export default function LandingPage() {
   const isMobile = useIsMobile();
   const [view, setView] = useState<FormView>("default");
-  const [mounted, setMounted] = useState(false);
+
+  const router = useRouter();
+  const { session } = useAuth();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (session.isAuthenticated && !session.isLoading) {
+      router.push("/dashboard");
+    }
+  });
 
-  if (!mounted || isMobile === undefined) {
-    return null;
+  if (session.isLoading) {
+    return (
+      <div className=" h-screen w-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
   }
 
   if (!isMobile) {

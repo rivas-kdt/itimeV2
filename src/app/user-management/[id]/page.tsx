@@ -1,7 +1,9 @@
 // src/app/user-management/[id]/page.tsx
 "use client";
 
-import SheetDaysLayout, { RowData } from "@/features/user-management/components/sheet"
+import SheetDaysLayout, {
+  RowData,
+} from "@/features/user-management/components/sheet";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { SheetDaysPdf } from "@/features/user-management/components/printableTracker";
 
@@ -117,7 +119,7 @@ export default function UserProfilePage({
   const empID = String(params.id);
 
   const router = useRouter();
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
 
   // gets the value from the passed month data
   const [currentSheet, setCurrentSheet] = useState<{
@@ -130,8 +132,8 @@ export default function UserProfilePage({
   //checking if mobileview
   useEffect(() => {
     if (isMobile === undefined) return;
-    if (isMobile) router.replace("/dashboard");
-  }, [isMobile, router]);
+    if (isMobile && !isLoading) router.replace("/dashboard");
+  }, [isMobile, router, isLoading]);
 
   const {
     user,
@@ -155,7 +157,7 @@ export default function UserProfilePage({
     updateUser,
   } = useUserHooks(empID);
 
-  console.log(monthlyData)
+  console.log(monthlyData);
 
   const [showExport, setShowExport] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -169,26 +171,29 @@ export default function UserProfilePage({
 
   const today = new Date();
 
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
+  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
+
   const columns = useMemo(
     () => getColumns(selectedIds, setSelectedIds),
-    [selectedIds],
+    [selectedIds]
   );
 
   const handleToast = (status: boolean, action: string) => {
     if (status && action === "exportAll") {
       return toastSuccess(
         "Exported the File Successfully",
-        "All of the data in the table has been exported.",
+        "All of the data in the table has been exported."
       );
     } else if (status && action === "exportMonth") {
       return toastSuccess(
         "Exported the File Successfully",
-        "Data for the Selected Month has been exported.",
+        "Data for the Selected Month has been exported."
       );
     } else if (status && action === "exportSelect") {
       return toastSuccess(
         "Exported the File Successfully",
-        "Selected Data has been exported.",
+        "Selected Data has been exported."
       );
     } else if (
       !status &&
@@ -198,27 +203,27 @@ export default function UserProfilePage({
     ) {
       return toastError(
         "Failed to Export the File",
-        "Process Failed. Please try again.",
+        "Process Failed. Please try again."
       );
     } else if (status && action === "exportTracker") {
       return toastSuccess(
         "Monthly Tracker Exported Successfully",
-        `The Monthly Tracker of the user can now be downloaded.`,
+        `The Monthly Tracker of the user can now be downloaded.`
       );
     } else if (status && action === "updateDetails") {
       return toastSuccess(
         "Information Updated Successfully",
-        "User Information was updated.",
+        "User Information was updated."
       );
     } else if (!status && action === "exportTracker") {
       return toastError(
         "Failed to Export Tracker",
-        "Process Failed. Please try again.",
+        "Process Failed. Please try again."
       );
     } else if (!status && action === "updateDetails") {
       return toastError(
         "Failed to Update Information",
-        "User Information was not updated. Please try again.",
+        "User Information was not updated. Please try again."
       );
     }
   };
@@ -248,7 +253,7 @@ export default function UserProfilePage({
   const currentRows = checkedRecords.slice(indexOfFirstRow, indexOfLastRow);
   const totalPages = Math.max(
     1,
-    Math.ceil(checkedRecords.length / rowsPerPage),
+    Math.ceil(checkedRecords.length / rowsPerPage)
   );
   const hasRecords = checkedRecords.length > 0;
 
@@ -268,7 +273,7 @@ export default function UserProfilePage({
       setSelectedMonth(data.month);
       setSelectedYear(data.year);
     },
-    [],
+    []
   );
 
   useEffect(() => {
@@ -345,10 +350,6 @@ export default function UserProfilePage({
     fetchLocations();
   }, []);
 
-  const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
-  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
-
-  console.log(loading);
   if (loading) return null;
 
   if (!user) {
@@ -424,7 +425,9 @@ export default function UserProfilePage({
                   <SheetDaysPdf rows={[]} month={0} year={0} />
                 )
               }
-              fileName={`Monthly_Tracker_${currentSheet?.monthKey || "N/A"}.pdf`}
+              fileName={`Monthly_Tracker_${
+                currentSheet?.monthKey || "N/A"
+              }.pdf`}
             >
               {({ loading }) => (
                 <Button
@@ -510,7 +513,7 @@ export default function UserProfilePage({
                       setTypeFilter((prev) =>
                         checked
                           ? [...prev, "Inspection"]
-                          : prev.filter((t) => t !== "Inspection"),
+                          : prev.filter((t) => t !== "Inspection")
                       );
                     }}
                     className="checkbox-css mr-2"
@@ -537,7 +540,7 @@ export default function UserProfilePage({
                       setTypeFilter((prev) =>
                         checked
                           ? [...prev, "Receiving"]
-                          : prev.filter((t) => t !== "Receiving"),
+                          : prev.filter((t) => t !== "Receiving")
                       );
                     }}
                     className="checkbox-css mr-2"
@@ -581,7 +584,7 @@ export default function UserProfilePage({
                             setLocationFilter((prev) =>
                               checked
                                 ? [...prev, l.location]
-                                : prev.filter((x) => x !== l.location),
+                                : prev.filter((x) => x !== l.location)
                             );
                           }}
                           className="checkbox-css mr-2"
@@ -745,7 +748,7 @@ export default function UserProfilePage({
                   value={editForm?.first_name || ""}
                   onChange={(e) =>
                     setEditForm((prev) =>
-                      prev ? { ...prev, first_name: e.target.value } : prev,
+                      prev ? { ...prev, first_name: e.target.value } : prev
                     )
                   }
                 />
@@ -758,7 +761,7 @@ export default function UserProfilePage({
                   value={editForm?.last_name || ""}
                   onChange={(e) =>
                     setEditForm((prev) =>
-                      prev ? { ...prev, last_name: e.target.value } : prev,
+                      prev ? { ...prev, last_name: e.target.value } : prev
                     )
                   }
                 />
@@ -773,7 +776,7 @@ export default function UserProfilePage({
                 value={editForm?.email || ""}
                 onChange={(e) =>
                   setEditForm((prev) =>
-                    prev ? { ...prev, email: e.target.value } : prev,
+                    prev ? { ...prev, email: e.target.value } : prev
                   )
                 }
               />
@@ -809,12 +812,12 @@ export default function UserProfilePage({
                   onValueChange={(value) => {
                     // map chosen group name to uuid for PATCH if you have them
                     const found = groupOptions.find(
-                      (g) => g.group_name === value,
+                      (g) => g.group_name === value
                     );
                     setEditForm((prev) =>
                       prev
                         ? { ...prev, group: value, group_id: found?.group_id }
-                        : prev,
+                        : prev
                     );
                   }}
                 >

@@ -15,14 +15,13 @@ import { toast } from "sonner";
 import { changePassword } from "@/features/auth/services/auth.service";
 
 export default function Header() {
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
   const pathname = usePathname();
   const { session } = useAuth();
-  console.log(session);
   const isActive = `gradient-bg text-white p-2 rounded-full transition-colors`;
   const [isChangePass, setIsShowChangePass] = useState(false);
 
-  if (isMobile) return null;
+  if (isMobile && !isLoading) return null;
 
   if (
     pathname.startsWith("/profile/") ||
@@ -176,7 +175,7 @@ export default function Header() {
           onChangePass={() =>
             toastSuccess(
               "Password Updated Successfully",
-              "You have changed your password. Please Login again. Thank You.",
+              "You have changed your password. Please Login again. Thank You."
             )
           }
         />

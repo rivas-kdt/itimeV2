@@ -34,7 +34,7 @@ interface RowActions {
 export const getColumns = (
   selectedIds: string[],
   setSelectedIds: Dispatch<SetStateAction<string[]>>,
-  actions: RowActions,
+  actions: RowActions
 ): ColumnDef<Inspections>[] => [
   {
     id: "exportBox",
@@ -48,7 +48,7 @@ export const getColumns = (
           checked={isChecked}
           onCheckedChange={(checked) => {
             setSelectedIds((prev) =>
-              checked ? [...prev, rowId] : prev.filter((id) => id !== rowId),
+              checked ? [...prev, rowId] : prev.filter((id) => id !== rowId)
             );
           }}
           className="w-5 h-5 data-[state=checked]:bg-primary data-[state=checked]:border-none data-[state=checked]:text-white"
@@ -85,8 +85,8 @@ export const getColumns = (
     meta: { className: "text-center" },
   },
   {
-    accessorKey: "type",
-    header: "Type",
+    accessorKey: "date",
+    header: "Date",
     meta: { className: "text-center" },
   },
   {

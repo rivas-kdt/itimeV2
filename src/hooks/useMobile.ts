@@ -3,20 +3,30 @@ import * as React from "react";
 
 const MOBILE_BREAKPOINT = 1024;
 
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
-    undefined
-  );
+interface UseIsMobileReturn {
+  isMobile: boolean;
+  isLoading: boolean;
+}
+
+export function useIsMobile(): UseIsMobileReturn {
+  const [isMobile, setIsMobile] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-    const onChange = () => {
+
+    const checkScreen = () => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+      setIsLoading(false);
     };
-    mql.addEventListener("change", onChange);
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    return () => mql.removeEventListener("change", onChange);
+
+    checkScreen();
+    mql.addEventListener("change", checkScreen);
+
+    return () => {
+      mql.removeEventListener("change", checkScreen);
+    };
   }, []);
 
-  return isMobile;
+  return { isMobile, isLoading };
 }

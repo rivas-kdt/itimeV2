@@ -2,9 +2,11 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   fetchInspectionSummary,
+  fetchMonthChart,
   fetchRecentInspections,
   fetchWeekChart,
   fetchWorkCodeChart,
+  MonthChartRow,
   type RecentRow,
   type WeekChartRow,
   type WorkCodeRow,
@@ -16,6 +18,7 @@ export function useDesktopDashboardHooks() {
   const [inspectionThisWeek, setInspectionThisWeek] = useState({ total: 0 });
   const [inspectionThisMonth, setInspectionThisMonth] = useState({ total: 0 });
   const [inspectionThisYear, setInspectionThisYear] = useState({ total: 0 });
+  const [monthChart, setMonthChart] = useState<MonthChartRow[]>([]);
   const [weekChart, setWeekChart] = useState<WeekChartRow[]>([]);
   const [workCodeChart, setWorkCodeChart] = useState<WorkCodeRow[]>([]);
   const [recentInspections, setRecentInspections] = useState<RecentRow[]>([]);
@@ -28,9 +31,10 @@ export function useDesktopDashboardHooks() {
       setLoading(true);
       setError(null);
       try {
-        const [summary, week, workcode, recent] = await Promise.all([
+        const [summary, week, month, workcode, recent] = await Promise.all([
           fetchInspectionSummary(false),
           fetchWeekChart(false),
+          fetchMonthChart(false),
           fetchWorkCodeChart("year", false),
           fetchRecentInspections(false),
         ]);
@@ -40,11 +44,13 @@ export function useDesktopDashboardHooks() {
         setInspectionThisWeek(summary.inspectionThisWeek);
         setInspectionThisMonth(summary.inspectionThisMonth);
         setInspectionThisYear(summary.inspectionThisYear);
+        setMonthChart(month);
         setWeekChart(week);
         setWorkCodeChart(workcode);
         setRecentInspections(recent);
       } catch (error: any) {
-        if (!cancelled) setError(error?.message || "Failed to load inspections");
+        if (!cancelled)
+          setError(error?.message || "Failed to load inspections");
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -62,6 +68,7 @@ export function useDesktopDashboardHooks() {
       inspectionThisWeek,
       inspectionThisMonth,
       inspectionThisYear,
+      monthChart,
       weekChart,
       workCodeChart,
       recentInspections,
@@ -74,6 +81,7 @@ export function useDesktopDashboardHooks() {
       inspectionThisWeek,
       inspectionThisMonth,
       inspectionThisYear,
+      monthChart,
       weekChart,
       workCodeChart,
       recentInspections,

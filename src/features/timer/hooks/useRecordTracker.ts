@@ -30,7 +30,7 @@ type Record = {
   inspection_date: string;
   type: string;
   location: string;
-}
+};
 
 export const useRecordTrackerHooks = (id: any) => {
   const [records, setRecords] = useState<RecordItem[]>([]);
@@ -48,17 +48,16 @@ export const useRecordTrackerHooks = (id: any) => {
     }
   }, []);
 
-  const fetchRecordById = useCallback(async (id: string) => {
-    try {
-      const data = await recordsService.getById(id);
-      console.log(`Fetched record with id ${id}: `, data.data);
-      setRecordInfo(data.data);
-      return data;
-    } catch (error) {
-      console.error(`Failed to fetch record with id ${id}: `, error);
-      return null;
-    }
-  }, []);
+  // const fetchRecordById = useCallback(async (id: string) => {
+  //   try {
+  //     const data = await recordsService.getById(id);
+  //     setRecordInfo(data.data);
+  //     return data;
+  //   } catch (error) {
+  //     console.error(`Failed to fetch record with id ${id}: `, error);
+  //     return null;
+  //   }
+  // }, []);
 
   // const createRecord = useCallback(
   //   async (payload: any) => {
@@ -85,13 +84,16 @@ export const useRecordTrackerHooks = (id: any) => {
     } catch (error) {
       console.error("Failed to create record: ", error);
     }
-  }
+  };
 
   const checkAndRedirectActiveInspection = useCallback(async () => {
     try {
       const data = await recordsService.getActiveInspection();
       if (data.data && data.data.inspection_id) {
-        console.log("Active inspection found, redirecting to:", data.data.inspection_id);
+        console.log(
+          "Active inspection found, redirecting to:",
+          data.data.inspection_id
+        );
         router.push(`/timer/${data.data.inspection_id}`);
       }
     } catch (error) {
@@ -105,15 +107,15 @@ export const useRecordTrackerHooks = (id: any) => {
 
   useEffect(() => {
     fetchAllRecords();
-    fetchRecordById(id); // Example: Fetch record with ID 1 on mount
-  }, [fetchAllRecords, fetchRecordById, id]);
+    // fetchRecordById(id); // Example: Fetch record with ID 1 on mount
+  }, [fetchAllRecords]);
 
   return {
     records,
     recordInfo,
     createRecord,
     fetchAllRecords,
-    fetchRecordById,
+    // fetchRecordById,
     checkAndRedirectActiveInspection,
   };
 };

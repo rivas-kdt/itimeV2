@@ -4,7 +4,7 @@ import { decrypt } from "@/lib/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  const client = await pool.connect()
+  const client = await pool.connect();
   try {
     const { searchParams } = new URL(req.url);
     const q = (searchParams.get("q") ?? "").toLowerCase();
@@ -13,10 +13,10 @@ export async function GET(req: Request) {
     const locations = searchParams.getAll("location") ?? [];
     const limit = Math.min(Number(searchParams.get("limit") ?? 20), 100);
     const offset = Number(searchParams.get("offset") ?? 0);
-    const workOrderId = searchParams.get("wo") ?? ""
-    const workCodeId = searchParams.get("wc") ?? ""
-    const constructionId = searchParams.get("ci") ?? ""
-    const othersId = searchParams.get("o") ?? ""
+    const workOrderId = searchParams.get("wo") ?? "";
+    const workCodeId = searchParams.get("wc") ?? "";
+    const constructionId = searchParams.get("ci") ?? "";
+    const othersId = searchParams.get("o") ?? "";
 
     const where: string[] = [];
     const values: any[] = [];
@@ -53,29 +53,29 @@ export async function GET(req: Request) {
     }
 
     if (workOrderId.length) {
-      values.push(workOrderId)
-      where.push(`wo.id = $${values.length}`)
+      values.push(workOrderId);
+      where.push(`wo.id = $${values.length}`);
     }
 
     if (workCodeId.length) {
-      values.push(workCodeId)
-      where.push(`wc.id = $${values.length}`)
+      values.push(workCodeId);
+      where.push(`wc.id = $${values.length}`);
     }
 
     if (constructionId.length) {
-      values.push(constructionId)
-      where.push(`ci.id = $${values.length}`)
+      values.push(constructionId);
+      where.push(`ci.id = $${values.length}`);
     }
 
     if (othersId.length) {
-      values.push(othersId)
-      where.push(`o.id = $${values.length}`)
+      values.push(othersId);
+      where.push(`o.id = $${values.length}`);
     }
-
 
     const whereSQL = where.length ? `WHERE ${where.join(" AND ")}` : "";
 
-    const totalRes = await client.query(`SELECT COUNT(*)::int AS total
+    const totalRes = await client.query(
+      `SELECT COUNT(*)::int AS total
       FROM inspection_v2 i
       JOIN work_order_v2 wo ON wo.id = i.work_order_id
       JOIN work_code wc ON wc.id = i.work_code_id
@@ -83,8 +83,8 @@ export async function GET(req: Request) {
       JOIN others o ON o.id = i.others_id
       JOIN location_v2 l ON l.id = i.location_id
       ${whereSQL}`,
-      values);
-
+      values
+    );
 
     values.push(limit, offset);
     const query = `SELECT
@@ -94,7 +94,7 @@ export async function GET(req: Request) {
         ci.construction_item AS "construction",
         o.others AS "others",
         to_char(i.inspection_date::date, 'YYYY-MM-DD') AS date,
-		    TO_CHAR((i.end_time - i.start_time),'HH24:MI') AS "duration",
+		    TO_CHAR((i.end_time - i.start_time),'HH24:MI:SS') AS "duration",
         TO_CHAR(i.end_time, 'HH24:MI') as end_time,
         TO_CHAR(i.start_time, 'HH24:MI') as start_time,
         i.type AS type,
@@ -107,9 +107,9 @@ export async function GET(req: Request) {
         JOIN location_v2 l ON l.id = i.location_id
         ${whereSQL}
         ORDER BY i.inspection_date DESC
-        LIMIT $${values.length - 1} OFFSET $${values.length};`
+        LIMIT $${values.length - 1} OFFSET $${values.length};`;
 
-        console.log(query, values)
+    console.log(query, values);
     const recordsRes = await client.query(query, values);
 
     const rows = recordsRes.rows.map((r: any) => ({
@@ -119,24 +119,27 @@ export async function GET(req: Request) {
       construction: r.construction,
       others: r.others,
       date: r.date,
-      startTime : r.start_time,
-      endTime : r.end_time,
+      startTime: r.start_time,
+      endTime: r.end_time,
       duration: r.duration,
       type: r.type,
-      location: r.location
+      location: r.location,
     }));
 
     return NextResponse.json({ total: totalRes.rows[0].total, rows });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ error: errorMessage || "Failed to fetch inspections" }, { status: 500 });
+    return NextResponse.json(
+      { error: errorMessage || "Failed to fetch inspections" },
+      { status: 500 }
+    );
   } finally {
     client.release();
   }
 }
 
 export async function POST(req: NextRequest) {
-  const client = await pool.connect()
+  const client = await pool.connect();
   const token = await readSession();
   if (!token) {
     return NextResponse.json("Unauthorized", { status: 401 });
@@ -164,8 +167,8 @@ export async function POST(req: NextRequest) {
   console.log("Received POST /api/v2/inspections with body:", body);
 
   try {
-    const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
-    
+    const currentDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
+
     const id = await client.query(
       `
         INSERT INTO inspection_v2 ( work_order_id, inspector_id, type, location_id, construction_item_id, work_code_id, others_id, inspection_date, start_time, end_time, status, created_at)
@@ -200,14 +203,17 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function PATCH(req: NextRequest){
+export async function PATCH(req: NextRequest) {
   const client = await pool.connect();
   try {
     const { searchParams } = new URL(req.url);
     const inspectionId = searchParams.get("id");
 
     if (!inspectionId) {
-      return NextResponse.json({ error: "Inspection ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Inspection ID is required" },
+        { status: 400 }
+      );
     }
 
     const token = await readSession();
@@ -221,7 +227,15 @@ export async function PATCH(req: NextRequest){
     }
 
     const body = await req.json();
-    const { workOrderId, constructionItemId, workCodeId, othersId, startTime, endTime, status } = body;
+    const {
+      workOrderId,
+      constructionItemId,
+      workCodeId,
+      othersId,
+      startTime,
+      endTime,
+      status,
+    } = body;
 
     const fields: string[] = [];
     const values: any[] = [];
@@ -262,7 +276,10 @@ export async function PATCH(req: NextRequest){
     }
 
     if (fields.length === 0) {
-      return NextResponse.json({ error: "No fields to update" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No fields to update" },
+        { status: 400 }
+      );
     }
 
     values.push(inspectionId);
@@ -275,13 +292,22 @@ export async function PATCH(req: NextRequest){
     const result = await client.query(updateQuery, values);
 
     if (result.rows.length === 0) {
-      return NextResponse.json({ error: "Inspection not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Inspection not found" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json({ message: "Inspection updated successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Inspection updated successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("PATCH /api/v2/inspections error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   } finally {
     client.release();
   }
