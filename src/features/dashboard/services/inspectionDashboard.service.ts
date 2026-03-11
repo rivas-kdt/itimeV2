@@ -8,6 +8,7 @@ export type Summary = {
 };
 
 export type WeekChartRow = { day: string; "Inspections: ": number };
+export type MonthChartRow = { day: string; "Inspections: ": number };
 export type WorkCodeRow = { workCode: string; "Inspections: ": number };
 
 export type RecentRow = {
@@ -19,21 +20,39 @@ export type RecentRow = {
   type: string;
 };
 
-export async function fetchInspectionSummary(self: boolean = false): Promise<Summary> {
+export async function fetchInspectionSummary(
+  self: boolean = false
+): Promise<Summary> {
   const params = new URLSearchParams();
   if (self) params.append("self", "true");
   const res = await fetch(`/api/v2/inspections/summary?${params.toString()}`);
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.error || "Failed to fetch inspection summary");
+  if (!res.ok)
+    throw new Error(data?.error || "Failed to fetch inspection summary");
   return data as Summary;
 }
 
-export async function fetchWeekChart(self: boolean = false): Promise<WeekChartRow[]> {
+export async function fetchWeekChart(
+  self: boolean = false
+): Promise<WeekChartRow[]> {
   const params = new URLSearchParams();
   if (self) params.append("self", "true");
   const res = await fetch(`/api/v2/inspections/week?${params.toString()}`);
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.error || "Failed to fetch week chart data");
+  if (!res.ok)
+    throw new Error(data?.error || "Failed to fetch week chart data");
+  return (data.data ?? []) as WeekChartRow[];
+}
+
+export async function fetchMonthChart(
+  self: boolean = false
+): Promise<WeekChartRow[]> {
+  const params = new URLSearchParams();
+  if (self) params.append("self", "true");
+  const res = await fetch(`/api/v2/inspections/month?${params.toString()}`);
+  const data = await res.json();
+  if (!res.ok)
+    throw new Error(data?.error || "Failed to fetch week chart data");
   return (data.data ?? []) as WeekChartRow[];
 }
 
@@ -46,7 +65,8 @@ export async function fetchWorkCodeChart(
   if (self) params.append("self", "true");
   const res = await fetch(`/api/v2/inspections/workCode?${params.toString()}`);
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.error || "Failed to fetch work code chart data");
+  if (!res.ok)
+    throw new Error(data?.error || "Failed to fetch work code chart data");
   return (data.data ?? []) as WorkCodeRow[];
 }
 
@@ -59,6 +79,7 @@ export async function fetchRecentInspections(
   if (self) params.append("self", "true");
   const res = await fetch(`/api/v2/inspections/recent?${params.toString()}`);
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.error || "Failed to fetch recent inspections");
+  if (!res.ok)
+    throw new Error(data?.error || "Failed to fetch recent inspections");
   return (data.data ?? []) as RecentRow[];
 }

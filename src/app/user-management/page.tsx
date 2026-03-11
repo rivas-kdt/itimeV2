@@ -113,12 +113,12 @@ export default function UserManagementPage() {
 
 function UserManagementContent() {
   const router = useRouter();
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
 
   useEffect(() => {
     if (isMobile === undefined) return;
-    if (isMobile) router.replace("/dashboard");
-  }, [isMobile, router]);
+    if (isMobile && !isLoading) router.replace("/dashboard");
+  }, [isMobile, router, isLoading]);
 
   const {
     refetch,
@@ -158,25 +158,25 @@ function UserManagementContent() {
     if (status && action === "deleteUser") {
       return toastSuccess(
         "User Deleted Successfully",
-        "The User was removed from the system.",
+        "The User was removed from the system."
       );
     }
     if (status && action === "addUser") {
       return toastSuccess(
         "User Added Successfully",
-        "New User was added to the system.",
+        "New User was added to the system."
       );
     }
     if (!status && action === "deleteUser") {
       return toastError(
         "Failed to Delete User",
-        extra ?? "Process Failed. Please try again.",
+        extra ?? "Process Failed. Please try again."
       );
     }
     if (!status && action === "addUser") {
       return toastError(
         "Failed to Add User",
-        extra ?? "Process Failed. Please try again.",
+        extra ?? "Process Failed. Please try again."
       );
     }
   };
@@ -222,7 +222,7 @@ function UserManagementContent() {
   //   { id: "00000000-0000-0000-0000-000000000002", name: "group_B" },
   // ];
 
-  console.log(form.password)
+  console.log(form.password);
 
   const onSubmitAdd = async () => {
     try {

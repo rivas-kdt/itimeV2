@@ -19,9 +19,6 @@ import { ExportPreviewDialog } from "@/features/records/components/ExportPreview
 import { getLocation } from "@/features/records/services/records.service";
 
 export default function UserRecords() {
-  const router = useRouter();
-  const isMobile = useIsMobile();
-
   return (
     <ProtectedRoute>
       <UserRecordsContent />
@@ -31,7 +28,7 @@ export default function UserRecords() {
 
 function UserRecordsContent() {
   const router = useRouter();
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
 
   const {
     records,
@@ -40,8 +37,8 @@ function UserRecordsContent() {
 
     searchRecord,
     setSearchRecord,
-    typeFilter,
-    setTypeFilter,
+    // typeFilter,
+    // setTypeFilter,
     locationFilter,
     setLocationFilter,
 
@@ -69,8 +66,8 @@ function UserRecordsContent() {
 
   useEffect(() => {
     if (isMobile === undefined) return;
-    if (isMobile) router.replace("/dashboard");
-  }, [isMobile, router]);
+    if (isMobile && !isLoading) router.replace("/dashboard");
+  }, [isMobile, router, isLoading]);
 
   const toastStyle = (bg: string, border: string, text: string) => ({
     width: "100%",

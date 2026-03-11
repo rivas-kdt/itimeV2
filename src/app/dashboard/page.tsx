@@ -6,10 +6,10 @@ import { useIsMobile } from "@/hooks/useMobile";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 export default function Dashboard() {
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
   return (
     <ProtectedRoute>
-      <>{isMobile ? <MobileDashboard /> : <DesktopDashboard />}</>
+      <>{isMobile && !isLoading ? <MobileDashboard /> : <DesktopDashboard />}</>
     </ProtectedRoute>
   );
 }

@@ -105,6 +105,7 @@ export function RecordsToolbar({
 
       <div className="flex flex-row justify-between gap-3 h-[30px]">
         {/* <Popover>
+        {/* <Popover>
           <PopoverTrigger className="btn-css gradient-bg">
             Filter by Type
             <ListFilter />

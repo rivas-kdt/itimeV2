@@ -124,7 +124,7 @@ export default function UserProfilePage({
   const empID = String(params.id);
 
   const router = useRouter();
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
 
   // gets the value from the passed month data
   const [currentSheet, setCurrentSheet] = useState<{
@@ -137,8 +137,8 @@ export default function UserProfilePage({
   //checking if mobileview
   useEffect(() => {
     if (isMobile === undefined) return;
-    if (isMobile) router.replace("/dashboard");
-  }, [isMobile, router]);
+    if (isMobile && !isLoading) router.replace("/dashboard");
+  }, [isMobile, router, isLoading]);
 
   const {
     user,
@@ -438,7 +438,9 @@ export default function UserProfilePage({
                   <SheetDaysPdf rows={[]} month={0} year={0} user={userInfo} />
                 )
               }
-              fileName={`Monthly_Tracker_${currentSheet?.monthKey || "N/A"}.pdf`}
+              fileName={`Monthly_Tracker_${
+                currentSheet?.monthKey || "N/A"
+              }.pdf`}
             >
               {({ loading }) => (
                 <Button
@@ -525,7 +527,7 @@ export default function UserProfilePage({
                       setTypeFilter((prev) =>
                         checked
                           ? [...prev, "Inspection"]
-                          : prev.filter((t) => t !== "Inspection"),
+                          : prev.filter((t) => t !== "Inspection")
                       );
                     }}
                     className="checkbox-css mr-2"
@@ -552,7 +554,7 @@ export default function UserProfilePage({
                       setTypeFilter((prev) =>
                         checked
                           ? [...prev, "Receiving"]
-                          : prev.filter((t) => t !== "Receiving"),
+                          : prev.filter((t) => t !== "Receiving")
                       );
                     }}
                     className="checkbox-css mr-2"
