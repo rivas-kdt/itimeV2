@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { getLocation } from "../services/records.service";
+import { useTranslations } from "next-intl";
 
 type Props = {
   open: boolean;
@@ -50,6 +51,7 @@ export function EditDialog({
   setEndTime,
   onSave,
 }: Props) {
+  const t = useTranslations("modals");
   const [loc, setLoc] = useState<Location[]>([]);
   useEffect(() => {
     const fetchLocations = async () => {
@@ -63,13 +65,13 @@ export function EditDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="box-design max-w-lg w-fit text-black-text">
         <DialogHeader className="border-b border-primary pb-2">
-          <DialogTitle>Update Record Information</DialogTitle>
+          <DialogTitle>{t("updateRecordInfo")}</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-3">
           <div className="flex flex-col w-full gap-1">
             <label htmlFor="workOrder" className="font-bold">
-              Work Order
+              {t("workOrder")}
             </label>
             <Input
               id="workOrder"
@@ -82,7 +84,7 @@ export function EditDialog({
           <div className="flex flex-row gap-3">
             <div className="flex flex-col w-full gap-1">
               <label htmlFor="date" className="font-bold">
-                Date
+                {t("date")}
               </label>
               <Input
                 id="date"
@@ -99,7 +101,7 @@ export function EditDialog({
 
             <div className="flex flex-col w-full gap-1">
               <label htmlFor="type" className="font-bold">
-                Type
+                {t("type")}
               </label>
               <Select
                 value={selectedUser?.type ?? ""}
@@ -110,14 +112,14 @@ export function EditDialog({
                 }
               >
                 <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                  <SelectValue placeholder="Select Type" />
+                  <SelectValue placeholder={t("selectType")} />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-black-text border-gray-300">
                   <SelectItem value="Inspection" className="selection-hover">
-                    Inspection
+                    {t("inspection")}
                   </SelectItem>
                   <SelectItem value="Receiving" className="selection-hover">
-                    Receiving
+                    {t("receiving")}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -127,7 +129,7 @@ export function EditDialog({
           <div className="flex flex-row gap-3">
             <div className="flex flex-col w-full gap-1">
               <label htmlFor="startTime" className="font-bold">
-                Start Time
+                {t("startTime")}
               </label>
               <Input
                 id="startTime"
@@ -140,7 +142,7 @@ export function EditDialog({
 
             <div className="flex flex-col w-full gap-1">
               <label htmlFor="endTime" className="font-bold">
-                End Time
+                {t("endTime")}
               </label>
               <Input
                 id="endTime"
@@ -154,7 +156,7 @@ export function EditDialog({
 
           <div className="flex flex-col w-full gap-1">
             <label htmlFor="location" className="font-bold">
-              Location
+              {t("location")}
             </label>
             <Select
               value={selectedUser?.location ?? ""}
@@ -165,7 +167,7 @@ export function EditDialog({
               }
             >
               <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                <SelectValue placeholder="Select Location" />
+                <SelectValue placeholder={t("selectLocation")} />
               </SelectTrigger>
               <SelectContent className="bg-white text-black-text border-gray-300">
                 {loc.map((location: Location) => (
@@ -193,7 +195,7 @@ export function EditDialog({
         {/* show duration calculation if both start and end are set */}
         {startTime && endTime && (
           <div className="mt-4 text-sm">
-            <strong>Duration:</strong>{" "}
+            <strong>{t("durationLabel")}</strong>{" "}
             {(() => {
               const s = new Date(startTime).getTime();
               const e = new Date(endTime).getTime();
@@ -210,10 +212,10 @@ export function EditDialog({
 
         <DialogFooter>
           <Button className="cancel-btn" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button className="gradient-bg text-white px-5 py-2" onClick={onSave}>
-            Update
+            {t("update")}
           </Button>
         </DialogFooter>
       </DialogContent>
