@@ -18,7 +18,7 @@ import {
 import { useDesktopDashboardHooks } from "../hooks/useDesktopDashboardHooks";
 
 const inspectionConfig = {
-  week_inspections: {
+  month_inspections: {
     label: "Inspections",
     color: "#ffb347",
   },
@@ -38,6 +38,7 @@ export default function DesktopDashboard() {
     inspectionThisWeek,
     inspectionThisMonth,
     inspectionThisYear,
+    monthChart,
     weekChart,
     workCodeChart,
     recentInspections,
@@ -45,7 +46,7 @@ export default function DesktopDashboard() {
     error,
   } = useDesktopDashboardHooks();
 
-  const inspectionData = weekChart;
+  const inspectionData = monthChart;
   const workCodeData = workCodeChart;
   const recentRows = recentInspections;
 
@@ -122,10 +123,10 @@ export default function DesktopDashboard() {
             </div>
             <div className="flex flex-col gap-3 px-1 pt-3 w-full">
               <p className="font-bold text-black-text text-md 2xl:text-xl">
-                Total Inspections this Year
+                Total Inspections this Month
               </p>
               <p className="flex justify-end text-lg 2xl:text-3xl font-bold">
-                {inspectionThisYear.total} Inspections
+                {inspectionThisMonth.total} Inspections
               </p>
             </div>
           </div>
@@ -176,15 +177,15 @@ export default function DesktopDashboard() {
               <Line
                 dataKey={`Inspections: `}
                 type="natural"
-                stroke="var(--color-week_inspections)"
+                stroke="var(--color-month_inspections)"
                 strokeWidth={2}
-                dot={{ fill: "var(--color-week_inspections)" }}
+                dot={{ fill: "var(--color-month_inspections)" }}
                 activeDot={{ r: 6 }}
               />
             </LineChart>
           </ChartContainer>
           <h3 className="w-full text-center text-black font-bold">
-            INSPECTIONS THIS WEEK
+            INSPECTIONS THIS MONTH
           </h3>
         </div>
 

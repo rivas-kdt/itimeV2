@@ -58,7 +58,7 @@ export function RecordsToolbar({
 }: Props) {
   // const loc = ["Warehouse A", "Site B", "Warehouse C"];
   const [loc, setLoc] = useState<Location[]>([]);
-  console.log(loc)
+  console.log(loc);
   useEffect(() => {
     const fetchLocations = async () => {
       const res = await getLocation();
@@ -93,7 +93,7 @@ export function RecordsToolbar({
       </div>
 
       <div className="flex flex-row justify-between gap-3 h-[30px]">
-        <Popover>
+        {/* <Popover>
           <PopoverTrigger className="btn-css gradient-bg">
             Filter by Type
             <ListFilter />
@@ -139,7 +139,7 @@ export function RecordsToolbar({
               />
             </label>
           </PopoverContent>
-        </Popover>
+        </Popover> */}
 
         <Popover>
           <PopoverTrigger className="btn-css gradient-bg">

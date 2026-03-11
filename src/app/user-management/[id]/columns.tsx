@@ -8,7 +8,7 @@ import type { InspectionRowDTO } from "@/features/user-management/types";
 
 export const getColumns = (
   selectedIds: string[],
-  setSelectedIds: Dispatch<SetStateAction<string[]>>
+  setSelectedIds: Dispatch<SetStateAction<string[]>>,
 ): ColumnDef<InspectionRowDTO>[] => [
   {
     id: "exportBox",
@@ -21,7 +21,7 @@ export const getColumns = (
           checked={isChecked}
           onCheckedChange={(checked) => {
             setSelectedIds((prev) =>
-              checked ? [...prev, rowId] : prev.filter((id) => id !== rowId)
+              checked ? [...prev, rowId] : prev.filter((id) => id !== rowId),
             );
           }}
           className="w-5 h-5 data-[state=checked]:bg-primary data-[state=checked]:border-none data-[state=checked]:text-white"
@@ -39,7 +39,7 @@ export const getColumns = (
   },
   {
     accessorKey: "construction",
-    header: "Construction",
+    header: "Construction Items",
     meta: { className: "text-center" },
   },
   {

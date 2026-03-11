@@ -66,7 +66,7 @@ export const getColumns = (
   },
   {
     accessorKey: "construction",
-    header: "Construction",
+    header: "Construction Items",
     meta: { className: "text-center" },
   },
   {
@@ -85,8 +85,8 @@ export const getColumns = (
     meta: { className: "text-center" },
   },
   {
-    accessorKey: "type",
-    header: "Type",
+    accessorKey: "date",
+    header: "Date",
     meta: { className: "text-center" },
   },
   {

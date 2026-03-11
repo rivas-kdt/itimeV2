@@ -2,7 +2,6 @@
 "use client";
 
 import React, { ReactNode } from "react";
-import { useAuth } from "@/features/auth/hooks/auth-context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -16,7 +15,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!session.isLoading && !session.isAuthenticated) {
-      router.push("/landing");
+      router.push("/");
     }
   }, [session.isAuthenticated, session.isLoading, router]);
 

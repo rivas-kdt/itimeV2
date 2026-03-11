@@ -41,10 +41,8 @@ function TrackerContent() {
   const [location, setLocation] = useState("");
   const router = useRouter();
 
-  console.log("RECORDS: ", records);
-
   const filterWorkOrders = records.filter((data) =>
-    data.workOrder.toLowerCase().includes(searchWorkOrder.toLowerCase()),
+    data.workOrder.toLowerCase().includes(searchWorkOrder.toLowerCase())
   );
 
   const handleClickWorkOrder = (id: string) => {
@@ -61,16 +59,6 @@ function TrackerContent() {
       type,
       location,
     });
-    console.log("PAYLOAD TO CREATE RECORD:", {
-      workOrderId: record.workOrderId,
-      constructionItemId: record.constructionItemId,
-      workCodeId: record.workCodeId,
-      othersId: record.othersId,
-      date,
-      type,
-      locationId: location,
-      status: null
-    });
     // Create record with status: null
     try {
       const result = await createInspectionRecord({
@@ -81,15 +69,13 @@ function TrackerContent() {
         date,
         type,
         locationId: location,
-        status: null
+        status: null,
       });
-      
       // Navigate to the inspection page with the inspection ID
       router.push(`/timer/${result.data}`);
       setOpenModal(false);
     } catch (error) {
       console.error("Failed to create inspection record:", error);
-      // Handle error - maybe show a toast or alert
     }
   };
 
@@ -105,89 +91,6 @@ function TrackerContent() {
   function handleLocChange(value: string) {
     setLocation(value);
   }
-
-  // const fetchTime = async () => {
-  //   const response = await fetch('api/getTime')
-  //   const data = await response.json();
-  //   return data.time;
-  // }
-
-  // const startTimer = async () => {
-  //   const onePM = await fetchTime();
-  //   const now = Date.now();
-  //   const initialElapsed = Math.max(0, now - onePM); // in ms
-
-  //   setStartTime(onePM);
-  //   accumulatedTimeRef.current = initialElapsed;
-  //   lastPerfTimeRef.current = performance.now();
-
-  //   intervalRef.current = setInterval(() => {
-  //     const nowPerf = performance.now();
-  //     const delta = nowPerf - (lastPerfTimeRef.current ?? nowPerf);
-  //     lastPerfTimeRef.current = nowPerf;
-
-  //     accumulatedTimeRef.current += delta;
-  //     setElapsed(Math.floor(accumulatedTimeRef.current / 1000));
-  //   }, 1000);
-
-  //   setRunning(true);
-  // };
-
-  // const pauseTimer = () => {
-  //   if (intervalRef.current) clearInterval(intervalRef.current);
-
-  //   const nowPerf = performance.now();
-  //   const delta = nowPerf - (lastPerfTimeRef.current ?? nowPerf);
-  //   accumulatedTimeRef.current += delta;
-
-  //   lastPerfTimeRef.current = null;
-  //   setRunning(false);
-  // };
-
-  // const resumeTimer = () => {
-  //   lastPerfTimeRef.current = performance.now();
-
-  //   intervalRef.current = setInterval(() => {
-  //     const nowPerf = performance.now();
-  //     const delta = nowPerf - (lastPerfTimeRef.current ?? nowPerf);
-  //     lastPerfTimeRef.current = nowPerf;
-
-  //     accumulatedTimeRef.current += delta;
-  //     setElapsed(Math.floor(accumulatedTimeRef.current / 1000));
-  //   }, 1000);
-
-  //   setRunning(true);
-  // };
-
-  // const resetTimer = () => {
-  //   if (intervalRef.current) clearInterval(intervalRef.current);
-
-  //   setElapsed(0);
-  //   setRunning(false);
-  //   setStartTime(null);
-  //   accumulatedTimeRef.current = 0;
-  //   lastPerfTimeRef.current = null;
-  // };
-
-  // useEffect(() => {
-  //   return () => {
-  //     if (intervalRef.current) clearInterval(intervalRef.current);
-  //   };
-  // }, []);
-
-  // const formatDuration = (seconds: number) => {
-  //   const hrs = Math.floor(seconds / 3600)
-  //     .toString()
-  //     .padStart(2, "0");
-  //   const mins = Math.floor((seconds % 3600) / 60)
-  //     .toString()
-  //     .padStart(2, "0");
-  //   const secs = Math.floor(seconds % 60)
-  //     .toString()
-  //     .padStart(2, "0");
-
-  //   return `${hrs}:${mins}:${secs}`;
-  // };
 
   return (
     <div className="bg-[#e4e4e4] h-full text-black flex flex-col">
@@ -250,7 +153,7 @@ function TrackerContent() {
 
       <Dialog open={openModal} onOpenChange={setOpenModal}>
         <DialogContent className="box-design text-black-text focus:outline-none">
-          <DialogHeader className="border-b-1 border-gray-300 pb-2">
+          <DialogHeader className="border-b border-gray-300 pb-2">
             <DialogTitle className="flex flex-row items-center gap-3 font-semibold">
               Inspection Details
             </DialogTitle>
