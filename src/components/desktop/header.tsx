@@ -13,11 +13,12 @@ import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/auth-context";
 import { toast } from "sonner";
 import { changePassword } from "@/features/auth/services/auth.service";
+import { Button } from "../ui/button";
 
 export default function Header() {
   const { isMobile, isLoading } = useIsMobile();
   const pathname = usePathname();
-  const { session } = useAuth();
+  const { session, logout } = useAuth();
   const isActive = `gradient-bg text-white p-2 rounded-full transition-colors`;
   const [isChangePass, setIsShowChangePass] = useState(false);
 
@@ -29,7 +30,7 @@ export default function Header() {
     pathname === "/timer" ||
     pathname.startsWith("/work-orders/") ||
     pathname === "/signup" ||
-    pathname === "/landing"
+    pathname === "/"
   ) {
     return null;
   }
@@ -146,7 +147,7 @@ export default function Header() {
             </PopoverTrigger>
             <PopoverContent
               align="end"
-              className="popover-design w-[220px] text-black"
+              className="popover-design w-55 text-black"
             >
               <div
                 className="popover-content transition-all"
@@ -155,16 +156,16 @@ export default function Header() {
                 <LockKeyhole className="text-primary" size={18} />
                 Change Password
               </div>
-              <Separator className="border-1 border-primary-300" />
+              <Separator className="border border-primary-300" />
               <Link href="/testing" className="popover-content transition-all">
                 <Languages className="text-primary" size={18} />
                 Switch Language
               </Link>
-              <Separator className="border-1 border-primary-300" />
-              <Link href="/" className="popover-content transition-all">
+              <Separator className="border border-primary-300" />
+              <Button onClick={logout} variant={"ghost"} className="popover-content transition-all">
                 <LogOut className="text-primary" size={18} />
                 Logout
-              </Link>
+              </Button>
             </PopoverContent>
           </Popover>
         </div>
