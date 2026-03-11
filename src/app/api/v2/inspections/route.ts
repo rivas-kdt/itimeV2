@@ -94,7 +94,7 @@ export async function GET(req: Request) {
         ci.construction_item AS "construction",
         o.others AS "others",
         to_char(i.inspection_date::date, 'YYYY-MM-DD') AS date,
-		    TO_CHAR((i.end_time - i.start_time),'HH24:MI') AS "duration",
+		    COALESCE(TO_CHAR((i.end_time - i.start_time),'HH24:MI:SS'), '00:00') AS "duration",
         TO_CHAR(i.end_time, 'HH24:MI') as end_time,
         TO_CHAR(i.start_time, 'HH24:MI') as start_time,
         i.type AS type,
@@ -109,7 +109,7 @@ export async function GET(req: Request) {
         ORDER BY i.inspection_date DESC
         LIMIT $${values.length - 1} OFFSET $${values.length};`
 
-        console.log(query, values)
+    console.log(query, values)
     const recordsRes = await client.query(query, values);
 
     const rows = recordsRes.rows.map((r: any) => ({
@@ -119,8 +119,8 @@ export async function GET(req: Request) {
       construction: r.construction,
       others: r.others,
       date: r.date,
-      startTime : r.start_time,
-      endTime : r.end_time,
+      startTime: r.start_time,
+      endTime: r.end_time,
       duration: r.duration,
       type: r.type,
       location: r.location
@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
-    
+
     const id = await client.query(
       `
         INSERT INTO inspection_v2 ( work_order_id, inspector_id, type, location_id, construction_item_id, work_code_id, others_id, inspection_date, start_time, end_time, status, created_at)
@@ -200,7 +200,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function PATCH(req: NextRequest){
+export async function PATCH(req: NextRequest) {
   const client = await pool.connect();
   try {
     const { searchParams } = new URL(req.url);
