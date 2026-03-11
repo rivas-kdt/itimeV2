@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useTranslations } from "next-intl";
 
 type Props = {
   open: boolean;
@@ -25,31 +26,32 @@ export function DeleteDialog({
   selectedUser,
   onConfirmDelete,
 }: Props) {
+  const t = useTranslations("modals");
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="box-design max-w-3xl w-fit text-black-text">
         <DialogHeader className="pb-2 border-b-1 border-primary">
-          <DialogTitle>Delete this record?</DialogTitle>
+          <DialogTitle>{t("deleteRecord")}</DialogTitle>
         </DialogHeader>
 
         <DialogDescription className="text-md">
-          Are you sure you want to delete{" "}
+          {t("deleteConfirm")}{" "}
           <span className="text-primary">{selectedUser?.workOrder}</span>?
         </DialogDescription>
 
         <div className="text-md">
-          <span className="text-primary">{selectedUser?.workOrder}</span> contains
-          the following details:
+          <span className="text-primary">{selectedUser?.workOrder}</span>{" "}
+          {t("containsDetails")}
           <Table className="mt-5">
             <TableBody>
               {[
-                ["Work Code", selectedUser?.workCode],
-                ["Construction", selectedUser?.construction],
-                ["Others", selectedUser?.others],
-                ["Date", selectedUser?.date],
-                ["Duration", selectedUser?.duration],
-                ["Type", selectedUser?.type],
-                ["Location", selectedUser?.location],
+                [t("workCode"), selectedUser?.workCode],
+                [t("construction"), selectedUser?.construction],
+                [t("others"), selectedUser?.others],
+                [t("date"), selectedUser?.date],
+                [t("duration"), selectedUser?.duration],
+                [t("type"), selectedUser?.type],
+                [t("location"), selectedUser?.location],
               ].map(([label, value]) => (
                 <TableRow key={String(label)}>
                   <TableCell className="border border-gray-300 bg-primary-white text-md text-primary-dark text-center">
@@ -66,13 +68,13 @@ export function DeleteDialog({
 
         <DialogFooter className="mt-5">
           <Button className="cancel-btn" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             className="bg-red rounded-md text-white px-5 py-2 cursor-pointer hover:bg-red-700"
             onClick={onConfirmDelete}
           >
-            Delete
+            {t("delete")}
           </Button>
         </DialogFooter>
       </DialogContent>
