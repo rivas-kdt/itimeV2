@@ -130,6 +130,7 @@ export default function DesktopDashboard() {
             </div>
           </div>
         </div>
+
         <div className="box-design w-full p-5">
           <ChartContainer
             config={inspectionConfig}

@@ -1,7 +1,9 @@
 // src/app/user-management/[id]/page.tsx
 "use client";
 
-import SheetDaysLayout, { RowData } from "@/features/user-management/components/sheet"
+import SheetDaysLayout, {
+  RowData,
+} from "@/features/user-management/components/sheet";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { SheetDaysPdf } from "@/features/user-management/components/printableTracker";
 
@@ -89,6 +91,11 @@ type EditForm = {
   group_id?: string; // if you have real UUIDs
 };
 
+export type UserInfo = {
+  name: string;
+  empID?: string;
+};
+
 const toastStyle = (bg: string, border: string, text: string) => ({
   width: "100%",
   background: `var(${bg})`,
@@ -155,7 +162,8 @@ export default function UserProfilePage({
     updateUser,
   } = useUserHooks(empID);
 
-  console.log(monthlyData)
+  console.log(monthlyData);
+  console.log("User data: ", user);
 
   const [showExport, setShowExport] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -167,7 +175,16 @@ export default function UserProfilePage({
   const [isEdit, setIsEdit] = useState(false);
   const [editForm, setEditForm] = useState<EditForm | null>(null);
 
+  const userName = `${user?.first_name ?? ""} ${user?.last_name ?? ""}`;
+  console.log("userName: ", userName);
+  const userInfo = {
+    name: userName,
+    empID: user?.empID,
+  };
   const today = new Date();
+
+  const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
+  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
 
   const columns = useMemo(
     () => getColumns(selectedIds, setSelectedIds),
@@ -232,15 +249,24 @@ export default function UserProfilePage({
   };
 
   const handleDelExpEntry = (id: string) => {
+    // const updated = checkedRecords.filter((r) => r.id !== id);
+    // setCheckedRecords(updated);
+
+    // const updatedSelected = selectedIds.filter((x) => x !== id);
+    // setSelectedIds(updatedSelected);
+
+    // const newTotalPages = Math.ceil(updated.length / rowsPerPage);
+    // if (currentPage > newTotalPages && newTotalPages > 0)
+    //   setCurrentPage(newTotalPages);
     const updated = checkedRecords.filter((r) => r.id !== id);
     setCheckedRecords(updated);
 
     const updatedSelected = selectedIds.filter((x) => x !== id);
     setSelectedIds(updatedSelected);
 
-    const newTotalPages = Math.ceil(updated.length / rowsPerPage);
-    if (currentPage > newTotalPages && newTotalPages > 0)
-      setCurrentPage(newTotalPages);
+    const newTotalPages = Math.max(1, Math.ceil(updated.length / rowsPerPage));
+
+    setCurrentPage((prev) => Math.min(prev, newTotalPages));
   };
 
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -251,11 +277,6 @@ export default function UserProfilePage({
     Math.ceil(checkedRecords.length / rowsPerPage),
   );
   const hasRecords = checkedRecords.length > 0;
-
-  const handlePDF = () => {
-    handleToast(true, "exportTracker");
-    window.print();
-  };
 
   const handleSheetChange = useCallback(
     (data: {
@@ -268,16 +289,16 @@ export default function UserProfilePage({
       setSelectedMonth(data.month);
       setSelectedYear(data.year);
     },
-    [],
+    [setCurrentSheet, setSelectedMonth, setSelectedYear],
   );
 
-  useEffect(() => {
-    if (!hasRecords) {
-      setCurrentPage(1);
-      return;
-    }
-    if (currentPage > totalPages) setCurrentPage(totalPages);
-  }, [checkedRecords, totalPages, currentPage, hasRecords]);
+  // useEffect(() => {
+  //   if (!hasRecords) {
+  //     setCurrentPage(1);
+  //     return;
+  //   }
+  //   if (currentPage > totalPages) setCurrentPage(totalPages);
+  // }, [checkedRecords, totalPages, currentPage, hasRecords]);
 
   const openEdit = () => {
     if (!user) return;
@@ -325,11 +346,6 @@ export default function UserProfilePage({
     fetchGroups();
   }, []);
 
-  const deptOptions = [
-    { id: "dept_A", name: "dept_A" },
-    { id: "dept_B", name: "dept_B" },
-  ];
-
   const [loc, setLoc] = useState<any[]>([]);
 
   useEffect(() => {
@@ -344,9 +360,6 @@ export default function UserProfilePage({
     };
     fetchLocations();
   }, []);
-
-  const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
-  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
 
   console.log(loading);
   if (loading) return null;
@@ -407,7 +420,7 @@ export default function UserProfilePage({
           </div>
 
           <div className="flex flex-row gap-5">
-            <Button className="btn-css gradient-bg" onClick={() => handlePDF()}>
+            <Button className="btn-css gradient-bg">
               Export as Excel
               <Sheet />
             </Button>
@@ -419,9 +432,10 @@ export default function UserProfilePage({
                     rows={currentSheet?.visibleRows || []}
                     month={currentSheet?.month ?? month}
                     year={currentSheet?.year ?? year}
+                    user={userInfo}
                   />
                 ) : (
-                  <SheetDaysPdf rows={[]} month={0} year={0} />
+                  <SheetDaysPdf rows={[]} month={0} year={0} user={userInfo} />
                 )
               }
               fileName={`Monthly_Tracker_${currentSheet?.monthKey || "N/A"}.pdf`}
@@ -430,6 +444,7 @@ export default function UserProfilePage({
                 <Button
                   className="btn-css gradient-bg"
                   disabled={loading || !currentSheet}
+                  onClick={() => handleToast(true, "exportTracker")}
                 >
                   {loading ? "Generating PDF..." : "Download PDF"}
                   <FileText className="ml-2" />
@@ -483,7 +498,7 @@ export default function UserProfilePage({
           </div>
 
           <div className="flex flex-row justify-between gap-3 h-[30px]">
-            <Popover>
+            {/* <Popover>
               <PopoverTrigger className="btn-css gradient-bg">
                 Filter by Type
                 <ListFilter />
@@ -544,7 +559,7 @@ export default function UserProfilePage({
                   />
                 </div>
               </PopoverContent>
-            </Popover>
+            </Popover> */}
 
             {/* TO DO */}
             <Popover>

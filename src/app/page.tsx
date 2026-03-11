@@ -1,6 +1,6 @@
 "use client";
 
-// import { ResetPasswordForm } from "@/features/user-profile/components/forgotpassword";
+import { ResetPasswordForm } from "@/features/auth/components/forgotpassword";
 import { LoginForm } from "@/features/auth/components/login";
 import { SignUpForm } from "@/features/auth/components/signup";
 import { Button } from "@/components/ui/button";
@@ -68,8 +68,8 @@ export default function LandingPage() {
             {view === "login" && <LoginForm onChangeView={setView} />}
             {view === "signUp" && <SignUpForm onChangeView={setView} />}
             {view === "forgotPassword" && (
-              <></>
-              // <ResetPasswordForm onChangeView={setView} />
+              // <></>
+              <ResetPasswordForm onChangeView={setView} />
             )}
 
             {/* change language btn */}
@@ -151,8 +151,8 @@ export default function LandingPage() {
       {view === "login" && <LoginForm onChangeView={setView} />}
       {view === "signUp" && <SignUpForm onChangeView={setView} />}
       {view === "forgotPassword" && (
-        <></>
-        // <ResetPasswordForm onChangeView={setView} />
+        // <></>
+        <ResetPasswordForm onChangeView={setView} />
       )}
       <div className="flex justify-center">
         <Popover>
