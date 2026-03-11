@@ -2,7 +2,7 @@
 
 import { useIsMobile } from "@/hooks/useMobile";
 import { Languages, LockKeyhole, LogOut, UserRound } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "../../../public/Sample Title Logo.png";
@@ -13,8 +13,20 @@ import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/auth-context";
 import { toast } from "sonner";
 import { changePassword } from "@/features/auth/services/auth.service";
+import { useTranslations } from "next-intl";
+
+async function setLocale(locale: "en" | "ja") {
+  await fetch("/api/locale", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ locale }),
+  });
+}
 
 export default function Header() {
+  const t = useTranslations("header");
+  const tAuth = useTranslations("auth");
+  const router = useRouter();
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const { session } = useAuth();
@@ -91,7 +103,7 @@ export default function Header() {
                   pathname !== "/dashboard" ? "hover:text-primary" : ""
                 }`}
               >
-                Dashboard
+                {t("dashboard")}
               </p>
             </Link>
             <Link
@@ -105,7 +117,7 @@ export default function Header() {
                   pathname !== "/records" ? "hover:text-primary" : ""
                 }`}
               >
-                My Records
+                {t("myRecords")}
               </p>
             </Link>
             {session?.user?.role === "Admin" && (
@@ -124,7 +136,7 @@ export default function Header() {
                       : ""
                   }`}
                 >
-                  Management
+                  {t("management")}
                 </p>
               </Link>
             )}
@@ -133,7 +145,7 @@ export default function Header() {
 
         <div className="w-full flex justify-end items-center gap-5">
           <div className="w-fit self-center no-wrap text-black-text font-bold text-2xl">
-            Hello,{" "}
+            {t("hello")}{" "}
             <span className="text-primary-300 no-wrap w-fit">
               {session?.user?.firstName} {session?.user?.lastName}
             </span>
@@ -154,17 +166,30 @@ export default function Header() {
                 onClick={() => setIsShowChangePass(true)}
               >
                 <LockKeyhole className="text-primary" size={18} />
-                Change Password
+                {tAuth("changePassword")}
               </div>
               <Separator className="border-1 border-primary-300" />
-              <Link href="/testing" className="popover-content transition-all">
+              <div className="px-2 py-1 text-xs text-gray-500 font-medium">
+                {tAuth("switchLanguage")}
+              </div>
+              <div
+                className="popover-content transition-all cursor-pointer"
+                onClick={() => setLocale("ja").then(() => router.refresh())}
+              >
                 <Languages className="text-primary" size={18} />
-                Switch Language
-              </Link>
+                日本語
+              </div>
+              <div
+                className="popover-content transition-all cursor-pointer"
+                onClick={() => setLocale("en").then(() => router.refresh())}
+              >
+                <Languages className="text-primary" size={18} />
+                English
+              </div>
               <Separator className="border-1 border-primary-300" />
               <Link href="/" className="popover-content transition-all">
                 <LogOut className="text-primary" size={18} />
-                Logout
+                {tAuth("logout")}
               </Link>
             </PopoverContent>
           </Popover>
@@ -175,8 +200,8 @@ export default function Header() {
           onOpenChange={setIsShowChangePass}
           onChangePass={() =>
             toastSuccess(
-              "Password Updated Successfully",
-              "You have changed your password. Please Login again. Thank You.",
+              tAuth("passwordUpdated"),
+              tAuth("passwordUpdatedDesc"),
             )
           }
         />
