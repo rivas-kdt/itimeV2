@@ -20,7 +20,7 @@ import Loader from "@/components/Loader";
 export type FormView = "default" | "login" | "signUp" | "forgotPassword";
 
 export default function LandingPage() {
-  const isMobile = useIsMobile();
+  const {isMobile, isLoading} = useIsMobile();
   const [view, setView] = useState<FormView>("default");
 
   const router = useRouter();
@@ -40,7 +40,7 @@ export default function LandingPage() {
     );
   }
 
-  if (!isMobile) {
+  if (!isMobile && !isLoading) {
     return (
       <div className="min-h-screen text-black flex flex-col items-center justify-center px-8">
         <div className="flex gap-3 box-design p-8 items-stretch h-full">
