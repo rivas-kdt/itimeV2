@@ -31,7 +31,7 @@ async function setLocale(locale: "en" | "ja") {
 export default function LandingPage() {
   const t = useTranslations("landing");
   const router = useRouter();
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
   const [view, setView] = useState<FormView>("default");
 
   const { session } = useAuth();
@@ -55,7 +55,7 @@ export default function LandingPage() {
     );
   }
 
-  if (!isMobile) {
+  if (!isMobile && !isLoading) {
     return (
       <div className="min-h-screen text-black flex flex-col items-center justify-center px-8">
         <div className="flex gap-3 box-design p-8 items-stretch h-full">

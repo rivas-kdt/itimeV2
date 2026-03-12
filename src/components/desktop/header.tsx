@@ -14,6 +14,7 @@ import { useAuth } from "@/features/auth/hooks/auth-context";
 import { toast } from "sonner";
 import { changePassword } from "@/features/auth/services/auth.service";
 import { useTranslations } from "next-intl";
+import { Button } from "../ui/button";
 
 async function setLocale(locale: "en" | "ja") {
   await fetch("/api/locale", {
@@ -29,7 +30,7 @@ export default function Header() {
   const router = useRouter();
   const { isMobile, isLoading } = useIsMobile();
   const pathname = usePathname();
-  const { session } = useAuth();
+  const { session, logout } = useAuth();
   const isActive = `gradient-bg text-white p-2 rounded-full transition-colors`;
   const [isChangePass, setIsShowChangePass] = useState(false);
 
@@ -186,10 +187,14 @@ export default function Header() {
                 English
               </div>
               <Separator className="border-1 border-primary-300" />
-              <Link href="/" className="popover-content transition-all">
+              <Button
+                onClick={logout}
+                variant={"ghost"}
+                className="popover-content transition-all"
+              >
                 <LogOut className="text-primary" size={18} />
                 {tAuth("logout")}
-              </Link>
+              </Button>
             </PopoverContent>
           </Popover>
         </div>

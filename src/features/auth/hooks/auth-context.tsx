@@ -76,13 +76,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoginLoading(false);
       }
     },
-    [router]
+    [router],
   );
 
   const logout = useCallback(async () => {
     await clearSession();
     setSession({ user: null, isAuthenticated: false, isLoading: false });
-    router.push("/landing");
+    router.push("/");
   }, [router]);
 
   return (

@@ -30,7 +30,7 @@ export async function GET(req: Request) {
         SELECT
         i.inspection_id,
         i.inspection_date,
-        TO_CHAR((i.end_time - i.start_time),'HH24:MI:SS') AS duration,
+        COALESCE(TO_CHAR((i.end_time - i.start_time),'HH24:MI:SS'), '00:00:00') AS duration,
         i.type,
         e.first_name,
         e.last_name

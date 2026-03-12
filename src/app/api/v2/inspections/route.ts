@@ -94,7 +94,7 @@ export async function GET(req: Request) {
         ci.construction_item AS "construction",
         o.others AS "others",
         to_char(i.inspection_date::date, 'YYYY-MM-DD') AS date,
-		    TO_CHAR((i.end_time - i.start_time),'HH24:MI:SS') AS "duration",
+		    COALESCE(TO_CHAR((i.end_time - i.start_time),'HH24:MI:SS'), '00:00:00') AS "duration",
         TO_CHAR(i.end_time, 'HH24:MI') as end_time,
         TO_CHAR(i.start_time, 'HH24:MI') as start_time,
         i.type AS type,
