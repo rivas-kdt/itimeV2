@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/useMobile";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { useTranslations } from "next-intl";
 
 import { DataTable } from "./data-table";
 import { getColumns, Inspections } from "./columns";
@@ -18,6 +19,7 @@ import { EditDialog } from "@/features/records/components/EditDialog";
 import { ExportPreviewDialog } from "@/features/records/components/ExportPreviewDialog";
 import { getLocation } from "@/features/records/services/records.service";
 import { exportToExcel } from "@/features/records/services/export.service";
+import { formatDateWithTimezone } from "@/lib/timezone";
 
 export default function UserRecords() {
   return (
@@ -29,6 +31,8 @@ export default function UserRecords() {
 
 function UserRecordsContent() {
   const router = useRouter();
+  const t = useTranslations("records");
+  const tTables = useTranslations("tables");
   const { isMobile, isLoading } = useIsMobile();
 
   const {
@@ -101,8 +105,8 @@ function UserRecordsContent() {
     const rec = records.find((r) => r.id === id) ?? null;
     setSelectedUser(rec ? { ...rec } : null);
     if (rec) {
-      setStartTime(rec.start_time);
-      setEndTime(rec.end_time);
+      setStartTime(rec.startTime);
+      setEndTime(rec.endTime);
     }
     setIsEdit(true);
   };
@@ -112,7 +116,7 @@ function UserRecordsContent() {
 
     try {
       const updated = await onUpdate(selectedUser.id, {
-        date: selectedUser.date,
+        date: formatDateWithTimezone(new Date(selectedUser.date)),
         start_time: startTime,
         end_time: endTime,
         type: selectedUser.type,
@@ -120,13 +124,10 @@ function UserRecordsContent() {
       });
 
       setSelectedUser(updated);
-      toastSuccess(
-        "Updated Successfully",
-        "Information of the record was updated.",
-      );
+      toastSuccess(t("updatedSuccessfully"), t("updatedSuccessfullyDesc"));
       setIsEdit(false);
     } catch (e: any) {
-      toastError("Update Failed", e?.message || "Please try again.");
+      toastError(t("updateFailed"), e?.message || t("pleaseTryAgain"));
     }
   };
 
@@ -134,13 +135,10 @@ function UserRecordsContent() {
     if (!selectedUser?.id) return;
     try {
       await onDelete(selectedUser.id);
-      toastSuccess(
-        "Inspection Record was Removed",
-        "The record was removed from the system.",
-      );
+      toastSuccess(t("recordRemoved"), t("recordRemovedDesc"));
       setIsDelete(false);
     } catch (e: any) {
-      toastError("Deletion Failed", e?.message || "Please try again.");
+      toastError(t("deletionFailed"), e?.message || t("pleaseTryAgain"));
     }
   };
 
@@ -218,10 +216,15 @@ function UserRecordsContent() {
     if (currentPage > totalPages) setCurrentPage(totalPages);
   }, [checkedRecords.length, currentPage, totalPages]);
 
-  const columns = getColumns(selectedIds, setSelectedIds, {
-    onEdit: handleEdit,
-    onDelete: handleDelete,
-  });
+  const columns = getColumns(
+    selectedIds,
+    setSelectedIds,
+    {
+      onEdit: handleEdit,
+      onDelete: handleDelete,
+    },
+    tTables,
+  );
   // TODO
   return (
     <div className="flex flex-row gap-5 h-full p-8">
@@ -238,7 +241,7 @@ function UserRecordsContent() {
           onOpenExport={() => setShowExport(true)}
           onClear={() => {
             clearFilters();
-            toastSuccess("Cleared Filters", "All filters were cleared.");
+            toastSuccess(t("clearedFilters"), t("clearedFiltersDesc"));
           }}
         />
 
@@ -255,8 +258,14 @@ function UserRecordsContent() {
       <ExportDialog
         open={showExport}
         onOpenChange={setShowExport}
-        onExportAll={handleExportAll}
-        onExportMonth={handleExportMonth}
+        onExportAll={() => {
+          handleExportAll();
+          toastSuccess(t("exportedSuccessfully"), t("exportedAllDesc"));
+        }}
+        onExportMonth={() => {
+          handleExportMonth();
+          toastSuccess(t("exportedSuccessfully"), t("exportedMonthDesc"));
+        }}
         onExportSelected={handleCheckedExport}
       />
 
@@ -288,7 +297,10 @@ function UserRecordsContent() {
         onPrev={() => setCurrentPage((p) => Math.max(1, p - 1))}
         onNext={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
         onRemove={handleDelExpEntry}
-        onExport={handleExport}
+        onExport={() => {
+          handleExport();
+          toastSuccess(t("exportedSuccessfully"), t("exportedSelectedDesc"));
+        }}
       />
     </div>
   );

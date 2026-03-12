@@ -66,6 +66,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import type { UserDTO } from "@/features/user-management/types";
 import { useManagement } from "@/features/user-management/hooks/useManagementHooks";
 import { getGroup } from "@/features/user-management/services/management.service";
+import { useTranslations } from "next-intl";
 
 type AddUserForm = {
   empID: string;
@@ -114,6 +115,7 @@ export default function UserManagementPage() {
 function UserManagementContent() {
   const router = useRouter();
   const { isMobile, isLoading } = useIsMobile();
+  const t = useTranslations("userManagement");
 
   useEffect(() => {
     if (isMobile === undefined) return;
@@ -156,28 +158,16 @@ function UserManagementContent() {
 
   const handleToast = (status: boolean, action: string, extra?: string) => {
     if (status && action === "deleteUser") {
-      return toastSuccess(
-        "User Deleted Successfully",
-        "The User was removed from the system."
-      );
+      return toastSuccess(t("userDeletedSuccess"), t("userDeletedDesc"));
     }
     if (status && action === "addUser") {
-      return toastSuccess(
-        "User Added Successfully",
-        "New User was added to the system."
-      );
+      return toastSuccess(t("userAddedSuccess"), t("userAddedDesc"));
     }
     if (!status && action === "deleteUser") {
-      return toastError(
-        "Failed to Delete User",
-        extra ?? "Process Failed. Please try again."
-      );
+      return toastError(t("failedToDeleteUser"), extra ?? t("processFailed"));
     }
     if (!status && action === "addUser") {
-      return toastError(
-        "Failed to Add User",
-        extra ?? "Process Failed. Please try again."
-      );
+      return toastError(t("failedToAddUser"), extra ?? t("processFailed"));
     }
   };
 
@@ -227,7 +217,7 @@ function UserManagementContent() {
   const onSubmitAdd = async () => {
     try {
       if (!form.last_name.trim() || !form.email.trim() || !form.group_id) {
-        handleToast(false, "addUser", "Please fill all required fields.");
+        handleToast(false, "addUser", t("fillAllRequired"));
         return;
       }
 
@@ -280,7 +270,7 @@ function UserManagementContent() {
               </ButtonGroupText>
               <InputGroup className="border border-primary p-0 m-0 focus:outline-none">
                 <InputGroupInput
-                  placeholder="Search..."
+                  placeholder={t("searchPlaceholder")}
                   className="text-black-text text-lg placeholder:text-lg mt-1"
                   value={searchUser}
                   onChange={(e) => setSearchUser(e.target.value)}
@@ -292,7 +282,7 @@ function UserManagementContent() {
           <div className="flex flex-row justify-between gap-3 h-[30px]">
             <Popover>
               <PopoverTrigger className="btn-css gradient-bg">
-                Filter by Role <ListFilter />
+                {t("filterByRole")} <ListFilter />
               </PopoverTrigger>
               <PopoverContent
                 align="center"
@@ -308,7 +298,7 @@ function UserManagementContent() {
                 >
                   <div className="flex items-center gap-3">
                     <UserRound className="text-primary" />
-                    <span className="text-black-text">Admin</span>
+                    <span className="text-black-text">{t("admin")}</span>
                   </div>
                   <Checkbox
                     checked={roleFilter === "Admin"}
@@ -330,7 +320,7 @@ function UserManagementContent() {
                 >
                   <div className="flex items-center gap-3">
                     <UsersRound className="text-primary" />
-                    <span className="text-black-text">User</span>
+                    <span className="text-black-text">{t("user")}</span>
                   </div>
                   <Checkbox
                     checked={roleFilter === "User"}
@@ -350,7 +340,7 @@ function UserManagementContent() {
                 setRoleFilter("ALL");
               }}
             >
-              Clear <Eraser />
+              {t("clear")} <Eraser />
             </Button>
           </div>
         </div>
@@ -360,7 +350,7 @@ function UserManagementContent() {
       {!loading && users.length === 0 && isSearching && (
         <div className="w-full h-full flex flex-col justify-center items-center">
           <SearchX size={200} className="text-primary" />
-          <h1 className="text-black-text font-bold">No matching users found</h1>
+          <h1 className="text-black-text font-bold">{t("noMatchingUsers")}</h1>
         </div>
       )}
 
@@ -369,7 +359,7 @@ function UserManagementContent() {
         <div className="box-design p-4 text-red border border-red">
           {error}
           <Button className="ml-4 gradient-bg" onClick={() => refetch()}>
-            Retry
+            {t("retry")}
           </Button>
         </div>
       )}
@@ -388,7 +378,7 @@ function UserManagementContent() {
                 className="bg-white rounded-full p-5 border-5 border-primary-op-2 group-hover:bg-primary group-hover:text-white hover:cursor-pointer"
               />
             </button>
-            <h4 className="font-bold text-black-text">ADD NEW USER</h4>
+            <h4 className="font-bold text-black-text">{t("addNewUser")}</h4>
           </div>
         )}
 
@@ -410,7 +400,7 @@ function UserManagementContent() {
                     onClick={() => openDelete(user.empID)}
                   >
                     <Trash2 size={20} />
-                    Delete User
+                    {t("deleteUser")}
                   </PopoverContent>
                 </Popover>
               </div>
@@ -437,14 +427,14 @@ function UserManagementContent() {
                 <span className="font-bold text-primary not-italic">
                   {user.inspections}
                 </span>{" "}
-                <p className="text-gray-500 text-sm">Total Inspections</p>
+                <p className="text-gray-500 text-sm">{t("totalInspections")}</p>
               </div>
             </CardContent>
 
             <CardFooter className="transition-all">
               <Link href={`/user-management/${user.empID}`}>
                 <Button className="btn-gradient text-white text-sm font-bold px-10 py-2 rounded-full cursor-pointer ">
-                  View Profile
+                  {t("viewProfile")}
                 </Button>
               </Link>
             </CardFooter>
@@ -456,9 +446,9 @@ function UserManagementContent() {
       <Dialog open={isAddNew} onOpenChange={setIsAddNew}>
         <DialogContent className="box-design max-w-md w-fit text-black-text">
           <DialogHeader className="border-b border-b-primary pb-2">
-            <DialogTitle>Add New User</DialogTitle>
+            <DialogTitle>{t("addNewUserTitle")}</DialogTitle>
             <DialogDescription className="text-gray-300 italic">
-              Required Fields are marked with
+              {t("requiredFieldsMarked")}
               <span className="text-primary"> *</span>
             </DialogDescription>
           </DialogHeader>
@@ -466,14 +456,14 @@ function UserManagementContent() {
           <div className="flex flex-col gap-3">
             <div className="flex flex-col w-full gap-1">
               <label className="font-bold">
-                Employee ID <span className="text-primary">*</span>
+                {t("employeeId")} <span className="text-primary">*</span>
               </label>
               <Input
                 id="empID"
                 type="number"
                 min={0}
                 className="border-gray-300 text-sm"
-                placeholder="123"
+                placeholder={t("placeholderEmpId")}
                 value={form.empID}
                 onChange={(e) =>
                   setForm((p) => ({ ...p, empID: e.target.value }))
@@ -483,11 +473,11 @@ function UserManagementContent() {
 
             <div className="flex flex-row gap-3">
               <div className="flex flex-col w-full gap-1">
-                <label className="font-bold">First Name</label>
+                <label className="font-bold">{t("firstName")}</label>
                 <Input
                   id="firstname"
                   className="border-gray-300 text-sm"
-                  placeholder="Enter First Name"
+                  placeholder={t("enterFirstName")}
                   value={form.first_name}
                   onChange={(e) =>
                     setForm((p) => ({ ...p, first_name: e.target.value }))
@@ -496,12 +486,12 @@ function UserManagementContent() {
               </div>
               <div className="flex flex-col w-full gap-1">
                 <label className="font-bold">
-                  Last Name <span className="text-primary">*</span>
+                  {t("lastName")} <span className="text-primary">*</span>
                 </label>
                 <Input
                   id="lastname"
                   className="border-gray-300 text-sm"
-                  placeholder="Enter Last Name"
+                  placeholder={t("enterLastName")}
                   required
                   value={form.last_name}
                   onChange={(e) =>
@@ -513,12 +503,12 @@ function UserManagementContent() {
 
             <div className="flex flex-col w-full gap-1">
               <label className="font-bold">
-                Email <span className="text-primary">*</span>
+                {t("email")} <span className="text-primary">*</span>
               </label>
               <Input
                 id="email"
                 className="border-gray-300 text-sm"
-                placeholder="Enter Email"
+                placeholder={t("enterEmail")}
                 required
                 value={form.email}
                 onChange={(e) =>
@@ -529,33 +519,33 @@ function UserManagementContent() {
 
             {/* <div className="flex flex-col w-full gap-1">
               <label className="font-bold">Access</label>
-              <Select
-                value={form.access}
-                onValueChange={(v: "Admin" | "User") =>
-                  setForm((p) => ({ ...p, access: v }))
-                }
-              >
-                <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                  <SelectValue placeholder="Select Access" />
-                </SelectTrigger>
-                <SelectContent className="bg-white text-black-text border-gray-300">
-                  <SelectItem value="Admin" className="selection-hover">
-                    Admin
-                  </SelectItem>
-                  <SelectItem value="User" className="selection-hover">
-                    User
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+                <Select
+                  value={form.access}
+                  onValueChange={(v: "Admin" | "User") =>
+                    setForm((p) => ({ ...p, access: v }))
+                  }
+                >
+                  <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
+                    <SelectValue placeholder={t("selectAccess")} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white text-black-text border-gray-300">
+                    <SelectItem value="Admin" className="selection-hover">
+                      {t("admin")}
+                    </SelectItem>
+                    <SelectItem value="User" className="selection-hover">
+                      {t("user")}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
             </div> */}
 
             <div className="flex flex-col w-full gap-1">
-              <label className="font-bold">Password</label>
+              <label className="font-bold">{t("password")}</label>
               <Input
                 id="password"
                 type="password"
                 className="border-gray-300 text-sm"
-                placeholder="Enter Password"
+                placeholder={t("enterPassword")}
                 value={form.password}
                 onChange={(e) =>
                   setForm((p) => ({ ...p, password: e.target.value }))
@@ -566,14 +556,14 @@ function UserManagementContent() {
             <div className="flex flex-row gap-3 justify-between">
               <div className="flex flex-col gap-1 w-full">
                 <label className="font-bold">
-                  Group <span className="text-primary">*</span>
+                  {t("group")} <span className="text-primary">*</span>
                 </label>
                 <Select
                   value={form.group_id}
                   onValueChange={(v) => setForm((p) => ({ ...p, group_id: v }))}
                 >
                   <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                    <SelectValue placeholder="Select Group" />
+                    <SelectValue placeholder={t("selectGroup")} />
                   </SelectTrigger>
                   <SelectContent className="bg-white text-black-text border-gray-300">
                     {groupOptions.map((g) => (
@@ -591,7 +581,7 @@ function UserManagementContent() {
 
               <div className="flex flex-col w-full gap-1">
                 <label className="font-bold">
-                  Access <span className="text-primary">*</span>
+                  {t("access")} <span className="text-primary">*</span>
                 </label>
                 <Select
                   value={form.access}
@@ -600,14 +590,14 @@ function UserManagementContent() {
                   }
                 >
                   <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                    <SelectValue placeholder="Select Access" />
+                    <SelectValue placeholder={t("selectAccess")} />
                   </SelectTrigger>
                   <SelectContent className="bg-white text-black-text border-gray-300">
                     <SelectItem value="Admin" className="selection-hover">
-                      Admin
+                      {t("admin")}
                     </SelectItem>
                     <SelectItem value="User" className="selection-hover">
-                      User
+                      {t("user")}
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -637,7 +627,7 @@ function UserManagementContent() {
                 resetForm();
               }}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               className="gradient-bg rounded-md text-white px-5 py-2"
@@ -656,7 +646,7 @@ function UserManagementContent() {
                 resetForm();
               }}
             >
-              Add User
+              {t("addUser")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -667,30 +657,27 @@ function UserManagementContent() {
         <AlertDialogContent className="box-design">
           <AlertDialogHeader className="text-black">
             <AlertDialogTitle>
-              Delete{" "}
+              {t("deleteUserConfirm")}{" "}
               <span
                 className={cn(fullName ? "text-primary" : "text-red italic")}
               >
-                {fullName ? `${fullName}?` : "User_not_found"}
+                {fullName ? `${fullName}?` : t("userNotFound")}
               </span>
             </AlertDialogTitle>
             <AlertDialogDescription className="my-3">
-              Are you sure you want to delete this user? This action cannot be
-              undone.
+              {t("deleteUserConfirmDesc")}
             </AlertDialogDescription>
             <AlertDialogDescription className="text-xs text-gray-400">
-              Note: In your DB schema, inspection.inspector_id is ON DELETE
-              RESTRICT. If this user has inspections, delete may fail unless you
-              change the FK.
+              {t("deleteUserNote")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-red hover:bg-red-700"
               onClick={onConfirmDelete}
             >
-              Delete User
+              {t("deleteUser")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

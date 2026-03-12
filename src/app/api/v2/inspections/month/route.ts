@@ -20,8 +20,8 @@ export async function GET(req: Request) {
 
     const q = `WITH bounds AS (
   SELECT
-    date_trunc('month', NOW()) AS start_month,
-    date_trunc('month', NOW()) + interval '1 month' AS end_month
+    date_trunc('month', NOW() AT TIME ZONE $1) AS start_month,
+    date_trunc('month', NOW() AT TIME ZONE $1) + interval '1 month' AS end_month
 ),
 days AS (
   SELECT generate_series(
@@ -35,12 +35,12 @@ SELECT
   COUNT(i.*)::int AS total
 FROM days d
 LEFT JOIN inspection_v2 i
-  ON i.inspection_date >= d.day
-  AND i.inspection_date < d.day + interval '1 day'
+  ON (i.inspection_date AT TIME ZONE $1) >= d.day
+  AND (i.inspection_date AT TIME ZONE $1) < d.day + interval '1 day'
 GROUP BY d.day
 ORDER BY d.day;`;
 
-    const res = await client.query(q);
+    const res = await client.query(q, [tz]);
     const data = res.rows.map((row) => ({
       day: row.day,
       "Inspections: ": row.total,

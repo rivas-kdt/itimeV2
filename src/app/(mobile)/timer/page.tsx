@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { createInspectionRecord } from "@/features/timer/services/timer.service";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function TrackerPage() {
   return (
@@ -32,6 +33,9 @@ export default function TrackerPage() {
 }
 
 function TrackerContent() {
+  const t = useTranslations("timer");
+  const tModals = useTranslations("modals");
+  const tCommon = useTranslations("common");
   const [searchWorkOrder, setSearchWorkOrder] = useState("");
   const { records, createRecord } = useRecordTrackerHooks(null);
   const [openModal, setOpenModal] = useState(false);
@@ -95,23 +99,22 @@ function TrackerContent() {
   return (
     <div className="bg-[#e4e4e4] h-full text-black flex flex-col">
       <div className="flex justify-center items-center px-3 pt-6.5 pb-4.5 w-full shadow-lg bg-white">
-        <h3> Time Tracker</h3>
+        <h3>{t("timeTracker")}</h3>
       </div>
       <div className=" h-full p-6 overflow-y-auto space-y-4">
         <div className="p-1">
           <p className="text-xl">
-            To begin tracking inspection time, please select a Work Order and
-            its corresponding details below.
+            {t("beginTrackingDesc")}
           </p>
         </div>
 
         <div className="flex flex-col gap-1">
           <label className="font-semibold">
-            Work Order <span className="text-primary">*</span>
+            {t("workOrder")} <span className="text-primary">*</span>
           </label>
           <Input
             className=" bg-white border-gray-500 text-sm py-5"
-            placeholder="Enter Work Order"
+            placeholder={t("enterWorkOrder")}
             value={searchWorkOrder}
             onChange={(e) => setSearchWorkOrder(e.target.value)}
           />
@@ -131,15 +134,15 @@ function TrackerContent() {
                   <h3 className="text-primary font-bold">{data.workOrder}</h3>
                   <div className="flex flex-row w-full justify-between gap-2 text-sm text-gray-500 px-2">
                     <label className="flex flex-col font-bold">
-                      Construction Item:
+                      {t("constructionItemLabel")}:
                       <span className="font-thin">{data.constructionItem}</span>
                     </label>
                     <label className="font-bold">
-                      Work Code:{" "}
+                      {t("workCodeLabel")}:{" "}
                       <span className="font-thin">{data.workCode}</span>
                     </label>
                     <label className=" font-bold">
-                      Others: <span className="font-thin">{data.others}</span>
+                      {t("othersLabel")}: <span className="font-thin">{data.others}</span>
                     </label>
                   </div>
                 </Button>
@@ -155,72 +158,72 @@ function TrackerContent() {
         <DialogContent className="box-design text-black-text focus:outline-none">
           <DialogHeader className="border-b border-gray-300 pb-2">
             <DialogTitle className="flex flex-row items-center gap-3 font-semibold">
-              Inspection Details
+              {t("inspectionDetails")}
             </DialogTitle>
             <DialogDescription className="text-start text-sm text-gray-300 italic">
-              Input the additional details needed for the inspection.
+              {t("inputAdditionalDetails")}
             </DialogDescription>
           </DialogHeader>
 
           {/* button here for getDate - disabled input only button*/}
           <div className="flex flex-col text-black gap-2">
-            <label className="font-bold">Date</label>
+            <label className="font-bold">{tModals("date")}</label>
             <div className="flex flex-row gap-2">
               <Input
                 className="border-gray-500 text-sm"
-                placeholder="Set Date"
+                placeholder={t("setDatePlaceholder")}
                 value={date}
                 disabled
               />
               <Button className="gradient-bg" onClick={getDate}>
-                Set Date
+                {t("setDateButton")}
               </Button>
             </div>
           </div>
           <div className="flex flex-col text-black gap-2">
-            <label className="font-bold">Type</label>
+            <label className="font-bold">{tModals("type")}</label>
             <Select value={type} onValueChange={handleTypeChange}>
               <SelectTrigger className="border border-gray-500 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                <SelectValue placeholder="Select Type" />
+                <SelectValue placeholder={tModals("selectType")} />
               </SelectTrigger>
 
               <SelectContent className="bg-white text-black-text border-gray-300">
                 <SelectItem value="Inspection" className="selection-hover">
-                  Inspection
+                  {tModals("inspection")}
                 </SelectItem>
 
                 <SelectItem value="Receiving" className="selection-hover">
-                  Receiving
+                  {tModals("receiving")}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="flex flex-col text-black gap-2">
-            <label className="font-bold">Location</label>
+            <label className="font-bold">{tModals("location")}</label>
             <Select value={location} onValueChange={handleLocChange}>
               <SelectTrigger className="border border-gray-500 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                <SelectValue placeholder="Select Location" />
+                <SelectValue placeholder={tModals("selectLocation")} />
               </SelectTrigger>
 
-              <SelectContent className="bg-white text-black-text border-gray-300">
+                <SelectContent className="bg-white text-black-text border-gray-300">
                 <SelectItem value="1" className="selection-hover">
-                  Warehouse A
+                  {t("locationWarehouseA")}
                 </SelectItem>
 
                 <SelectItem value="2" className="selection-hover">
-                  Warehouse B
+                  {t("locationWarehouseB")}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <DialogFooter>
-            <Button className="cancel-btn">Cancel</Button>
+            <Button className="cancel-btn">{tCommon("cancel")}</Button>
             <Button
               className="gradient-bg rounded-md text-white px-5 py-2"
               onClick={() => handleCreateRecord()}
             >
-              Confirm & Start
+              {t("confirmAndStart")}
             </Button>
           </DialogFooter>
         </DialogContent>

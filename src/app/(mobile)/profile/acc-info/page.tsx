@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { useUserProfile } from "@/features/profile/hooks/useUserProfileHooks";
 import { getGroup } from "@/features/user-management/services/management.service";
+import { useTranslations } from "next-intl";
 
 const groupOptions = [
   {
@@ -44,6 +45,9 @@ const groupOptions = [
 ];
 
 export default function AccountInfoPage() {
+  const t = useTranslations("profile");
+  const tAuth = useTranslations("auth");
+  const tCommon = useTranslations("common");
   const [isOpen, setIsOpen] = useState(false);
   const { profile, loading, error, updateProfile } = useUserProfile();
   const [formData, setFormData] = useState({
@@ -98,7 +102,7 @@ export default function AccountInfoPage() {
       !formData.group_name ||
       !formData.group_id
     ) {
-      toastError("All fields are required");
+      toastError(t("allFieldsRequired"));
       return;
     }
 
@@ -112,11 +116,11 @@ export default function AccountInfoPage() {
         group_name: formData.group_name,
         group_id: formData.group_id,
       });
-      toastSuccess("Profile updated successfully");
+      toastSuccess(t("profileUpdatedSuccess"));
       setIsOpen(false);
     } catch (err) {
       toastError(
-        err instanceof Error ? err.message : "Failed to update profile",
+        err instanceof Error ? err.message : t("profileUpdateFailed"),
       );
     } finally {
       setIsUpdating(false);
@@ -149,7 +153,7 @@ export default function AccountInfoPage() {
   if (loading) {
     return (
       <div className="bg-white-gray h-full text-black px-5 flex flex-col gap-2 justify-center items-center">
-        <p>Loading profile...</p>
+        <p>{t("loadingProfile")}</p>
       </div>
     );
   }
@@ -157,7 +161,7 @@ export default function AccountInfoPage() {
   if (error) {
     return (
       <div className="bg-white-gray h-full text-black px-5 flex flex-col gap-2 justify-center items-center">
-        <p className="text-red-500">Error: {error}</p>
+        <p className="text-red-500">{t("errorLabel")}: {error}</p>
       </div>
     );
   }
@@ -166,23 +170,23 @@ export default function AccountInfoPage() {
     <div className=" bg-white-gray h-full text-black p-5 flex flex-col gap-2">
       <div className="flex flex-col gap-2 bg-white rounded-md full-shadow">
         <div className="p-3 border-b-1 border-gray-100">
-          <h5 className="w-full font-bold"> Employee ID</h5>
+          <h5 className="w-full font-bold">{tAuth("employeeId")}</h5>
           <p className="w-full text-sm text-gray-300 ml-3 mt-1">
             {profile?.emp_id}
           </p>
         </div>
         <div className="p-3 border-b-1 border-gray-100">
-          <h5 className="w-full font-bold"> Name</h5>
+          <h5 className="w-full font-bold">{t("name")}</h5>
           <p className="w-full text-sm text-gray-300 ml-3 mt-1">{`${profile?.first_name} ${profile?.last_name}`}</p>
         </div>
         <div className="p-3 border-b-1 border-gray-100">
-          <h5 className="w-full font-bold"> Email</h5>
+          <h5 className="w-full font-bold">{tAuth("email")}</h5>
           <p className="w-full text-sm text-gray-300 ml-3 mt-1">
             {profile?.email}
           </p>
         </div>
         <div className="p-3">
-          <h5 className="w-full font-bold"> Group</h5>
+          <h5 className="w-full font-bold">{tAuth("group")}</h5>
           <p className="w-full text-sm text-gray-300 ml-3 mt-1">
             {profile?.group_name}
           </p>
@@ -193,7 +197,7 @@ export default function AccountInfoPage() {
         className="text-white bg-linear-to-r from-primary-300 to-primary mt-2"
         onClick={handleIsOpen}
       >
-        Edit Account Information
+        {t("editAccountInfo")}
       </Button>
 
       <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -201,7 +205,7 @@ export default function AccountInfoPage() {
           <DialogHeader className="border-b-1 border-gray-300 pb-2">
             <DialogTitle className="flex flex-row items-center gap-3 font-semibold">
               <Image src="/user_edit.png" width={35} height={35} alt="icon" />
-              Update Information
+              {t("updateInformation")}
             </DialogTitle>
             <DialogClose asChild>
               <button
@@ -213,49 +217,49 @@ export default function AccountInfoPage() {
             </DialogClose>
           </DialogHeader>
           <div className="flex flex-col text-black gap-2">
-            <label className="font-bold">Employee ID</label>
+            <label className="font-bold">{tAuth("employeeId")}</label>
             <Input
               className="border-gray-500 text-sm"
-              placeholder="Employee ID"
+              placeholder={tAuth("employeeId")}
               value={profile?.emp_id || ""}
               disabled
             />
           </div>
           <div className="flex flex-col text-black gap-2">
-            <label className="font-bold">First Name</label>
+            <label className="font-bold">{tAuth("firstName")}</label>
             <Input
               className="border-gray-500 text-sm"
-              placeholder="First Name"
+              placeholder={tAuth("enterFirstName")}
               value={formData.first_name}
               onChange={(e) => handleInputChange("first_name", e.target.value)}
             />
           </div>
           <div className="flex flex-col text-black gap-2">
-            <label className="font-bold">Last Name</label>
+            <label className="font-bold">{tAuth("lastName")}</label>
             <Input
               className="border-gray-500 text-sm"
-              placeholder="Last Name"
+              placeholder={tAuth("enterLastName")}
               value={formData.last_name}
               onChange={(e) => handleInputChange("last_name", e.target.value)}
             />
           </div>
           <div className="flex flex-col text-black gap-2">
-            <label className="font-bold">Email</label>
+            <label className="font-bold">{tAuth("email")}</label>
             <Input
               className="border-gray-500 text-sm"
-              placeholder="Email"
+              placeholder={tAuth("enterEmail")}
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
             />
           </div>
           <div className="flex flex-col text-black gap-2">
-            <label className="font-bold">Group</label>
+            <label className="font-bold">{tAuth("group")}</label>
             <Select
               value={formData.group_id}
               onValueChange={(e) => handleInputChange("group_id", e)}
             >
               <SelectTrigger className="border-1 border-gray-500 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                <SelectValue placeholder="Select Group" />
+                <SelectValue placeholder={tAuth("selectGroup")} />
               </SelectTrigger>
               <SelectContent className="bg-white text-black-text border-gray-300">
                 {group.map((g) => (
@@ -272,14 +276,14 @@ export default function AccountInfoPage() {
           </div>
           <DialogFooter className="flex flex-row justify-between items-center h-full gap-3 mt-2">
             <Button className="cancel-btn w-[48%]" onClick={handleClose}>
-              Cancel
+              {tCommon("cancel")}
             </Button>
             <Button
               className="text-white w-[48%] gradient-bg"
               onClick={handleSave}
               disabled={isUpdating}
             >
-              {isUpdating ? "Saving..." : "Save Changes"}
+              {isUpdating ? t("saving") : tCommon("save")}
             </Button>
           </DialogFooter>
         </DialogContent>

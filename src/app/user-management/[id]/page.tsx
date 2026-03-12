@@ -74,6 +74,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/useMobile";
+import { useTranslations } from "next-intl";
 
 import type { InspectionRowDTO } from "@/features/user-management/types";
 import { getColumns } from "./columns";
@@ -125,6 +126,10 @@ export default function UserProfilePage({
 
   const router = useRouter();
   const { isMobile, isLoading } = useIsMobile();
+  const tTables = useTranslations("tables");
+  const t = useTranslations("userProfile");
+  const tMgmt = useTranslations("userManagement");
+  const tCommon = useTranslations("common");
 
   // gets the value from the passed month data
   const [currentSheet, setCurrentSheet] = useState<{
@@ -187,25 +192,25 @@ export default function UserProfilePage({
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
 
   const columns = useMemo(
-    () => getColumns(selectedIds, setSelectedIds),
-    [selectedIds],
+    () => getColumns(selectedIds, setSelectedIds, tTables),
+    [selectedIds, tTables],
   );
 
   const handleToast = (status: boolean, action: string) => {
     if (status && action === "exportAll") {
       return toastSuccess(
-        "Exported the File Successfully",
-        "All of the data in the table has been exported.",
+        t("exportedFileSuccess"),
+        t("exportedAllDesc"),
       );
     } else if (status && action === "exportMonth") {
       return toastSuccess(
-        "Exported the File Successfully",
-        "Data for the Selected Month has been exported.",
+        t("exportedFileSuccess"),
+        t("exportedMonthDesc"),
       );
     } else if (status && action === "exportSelect") {
       return toastSuccess(
-        "Exported the File Successfully",
-        "Selected Data has been exported.",
+        t("exportedFileSuccess"),
+        t("exportedSelectDesc"),
       );
     } else if (
       !status &&
@@ -214,28 +219,28 @@ export default function UserProfilePage({
         action === "exportSelect")
     ) {
       return toastError(
-        "Failed to Export the File",
-        "Process Failed. Please try again.",
+        t("failedToExport"),
+        t("processFailed"),
       );
     } else if (status && action === "exportTracker") {
       return toastSuccess(
-        "Monthly Tracker Exported Successfully",
-        `The Monthly Tracker of the user can now be downloaded.`,
+        t("monthlyTrackerExportedSuccess"),
+        t("monthlyTrackerExportedDesc"),
       );
     } else if (status && action === "updateDetails") {
       return toastSuccess(
-        "Information Updated Successfully",
-        "User Information was updated.",
+        t("informationUpdatedSuccess"),
+        t("informationUpdatedDesc"),
       );
     } else if (!status && action === "exportTracker") {
       return toastError(
-        "Failed to Export Tracker",
-        "Process Failed. Please try again.",
+        t("failedToExportTracker"),
+        t("processFailed"),
       );
     } else if (!status && action === "updateDetails") {
       return toastError(
-        "Failed to Update Information",
-        "User Information was not updated. Please try again.",
+        t("failedToUpdateInformation"),
+        t("failedToUpdateInfoDesc"),
       );
     }
   };
@@ -368,14 +373,13 @@ export default function UserProfilePage({
     return (
       <div className="bg-white flex flex-col justify-center items-center gap-5 h-full text-black-text ">
         <Frown size={150} />
-        <div className="text-5xl font-bold">User not found</div>
+        <div className="text-5xl font-bold">{t("userNotFound")}</div>
         <span className="text-gray-300">
-          We are unable to find the user you&apos;re looking for. Please try
-          again.
+          {t("userNotFoundDesc")}
         </span>
 
         <Link href={`/user-management`}>
-          <Button className="gradient-bg">Go Back</Button>
+          <Button className="gradient-bg">{t("goBack")}</Button>
         </Link>
       </div>
     );
@@ -391,11 +395,11 @@ export default function UserProfilePage({
             className="flex flex-row gap-2 text-black-text cursor-pointer"
           >
             <ChevronLeft />
-            Back
+            {t("back")}
           </Link>
           <div>
             <Button className="btn-css gradient-bg" onClick={openEdit}>
-              Edit User Details
+              {t("editUserDetails")}
               <UserPen />
             </Button>
           </div>
@@ -406,7 +410,7 @@ export default function UserProfilePage({
             {user.last_name}, {user.first_name}
           </p>
           <p className="text-2xl 2xl:text-3xl mt-4 2xl:mt-8">
-            Employee no. {user.empID}
+            {t("employeeNo")} {user.empID}
           </p>
         </div>
       </div>
@@ -416,12 +420,12 @@ export default function UserProfilePage({
         <div className="flex flex-row justify-between pb-3 border-b-1 border-gray-300">
           <div className="flex flex-row gap-3 text-3xl font-bold">
             <CalendarCheck size={32} />
-            Monthly Inspection Tracker
+            {t("monthlyInspectionTracker")}
           </div>
 
           <div className="flex flex-row gap-5">
             <Button className="btn-css gradient-bg">
-              Export as Excel
+              {t("exportAsExcel")}
               <Sheet />
             </Button>
             {/* pdf renderer button */}
@@ -448,7 +452,7 @@ export default function UserProfilePage({
                   disabled={loading || !currentSheet}
                   onClick={() => handleToast(true, "exportTracker")}
                 >
-                  {loading ? "Generating PDF..." : "Download PDF"}
+                  {loading ? t("generatingPdf") : t("downloadPdf")}
                   <FileText className="ml-2" />
                 </Button>
               )}
@@ -472,7 +476,7 @@ export default function UserProfilePage({
       <div className="flex flex-col box-design w-full p-8 gap-5">
         <div className="flex flex-row gap-3 text-3xl font-bold pb-3 border-b-1 border-gray-300">
           <ClipboardCheck size={32} />
-          Inspection Records
+          {t("inspectionRecords")}
         </div>
 
         <div className="flex flex-row gap-3">
@@ -490,7 +494,7 @@ export default function UserProfilePage({
               </ButtonGroupText>
               <InputGroup className=" border border-primary p-0 m-0 focus:outline-none">
                 <InputGroupInput
-                  placeholder="Search..."
+                  placeholder={t("searchPlaceholder")}
                   className="text-gray-500 text-lg placeholder:text-lg mt-1"
                   value={searchRecord}
                   onChange={(e) => setSearchRecord(e.target.value)}
@@ -566,7 +570,7 @@ export default function UserProfilePage({
             {/* TO DO */}
             <Popover>
               <PopoverTrigger className="btn-css gradient-bg">
-                Filter by Location
+                {t("filterByLocation")}
                 <ListFilter />
               </PopoverTrigger>
               <PopoverContent
@@ -575,7 +579,7 @@ export default function UserProfilePage({
               >
                 {loc.length === 0 ? (
                   <div className="p-3 text-sm text-gray-500">
-                    No locations found
+                    {t("noLocationsFound")}
                   </div>
                 ) : (
                   loc.map((l, idx) => (
@@ -618,7 +622,7 @@ export default function UserProfilePage({
               className="btn-css gradient-bg"
               onClick={() => setShowExport(true)}
             >
-              Export
+              {t("export")}
               <FileDown />
             </Button>
 
@@ -631,7 +635,7 @@ export default function UserProfilePage({
                 setLocationFilter([]);
               }}
             >
-              Clear
+              {t("clear")}
               <Eraser />
             </Button>
           </div>
@@ -646,57 +650,46 @@ export default function UserProfilePage({
       <Dialog open={showExport} onOpenChange={setShowExport}>
         <DialogContent className="box-design max-w-6xl">
           <DialogHeader className="flex flex-col justify-between text-black-text pb-2 border-b-1 border-primary">
-            <DialogTitle>Export Data</DialogTitle>
+            <DialogTitle>{t("exportData")}</DialogTitle>
           </DialogHeader>
 
           <div className="flex flex-row gap-5 justify-between max-h-[300px]">
             {/* Export ALL DATA */}
             <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg">
               <DialogTitle className="font-bold text-black-text">
-                Export All Data
+                {t("exportAllData")}
               </DialogTitle>
               <div className="text-black-text">
-                This collects all of the table inside the table and exports it
-                as an Excel File.
+                {t("exportAllDataDesc")}
               </div>
 
               <button
                 className="gradient-bg rounded-md text-white px-5 py-2 w-full text-nowrap mt-auto cursor-pointer"
                 onClick={() => handleToast(true, "exportAll")}
               >
-                Export All Data
+                {t("exportAllData")}
               </button>
             </DialogHeader>
 
             {/* Export Data for Specific Month */}
             <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg">
               <DialogTitle className="font-bold text-black-text">
-                Export Data of a Month
+                {t("exportDataOfMonth")}
               </DialogTitle>
               <div className="text-black-text mb-10">
-                This collects all of the data from the selected month only. It
-                will not export the data from the other months.
+                {t("exportMonthDesc")}
               </div>
 
               <div className="flex flex-row justify-between gap-2 mt-auto">
                 <Select>
                   <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full cursor-pointer">
-                    <SelectValue placeholder="Select Month" />
+                    <SelectValue placeholder={t("selectMonth")} />
                   </SelectTrigger>
                   <SelectContent className="h-[200px] bg-white text-black border-gray-300">
                     {[
-                      "January",
-                      "February",
-                      "March",
-                      "April",
-                      "May",
-                      "June",
-                      "July",
-                      "August",
-                      "September",
-                      "October",
-                      "November",
-                      "December",
+                      t("monthJanuary"), t("monthFebruary"), t("monthMarch"), t("monthApril"),
+                      t("monthMay"), t("monthJune"), t("monthJuly"), t("monthAugust"),
+                      t("monthSeptember"), t("monthOctober"), t("monthNovember"), t("monthDecember"),
                     ].map((m) => (
                       <SelectItem key={m} value={m} className="selection-hover">
                         {m}
@@ -709,7 +702,7 @@ export default function UserProfilePage({
                   className="gradient-bg rounded-md text-white px-5 py-2 w-full text-nowrap cursor-pointer"
                   onClick={() => handleToast(true, "exportMonth")}
                 >
-                  Export this Month
+                  {t("exportThisMonth")}
                 </button>
               </div>
             </DialogHeader>
@@ -717,19 +710,17 @@ export default function UserProfilePage({
             {/* Export Selected Data */}
             <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg">
               <DialogTitle className="font-bold text-black-text">
-                Export Checked Data
+                {t("exportCheckedData")}
               </DialogTitle>
               <div className="text-black-text">
-                This collects all of the data inside the table that has their
-                checkbox marked as checked. It exports the selected records as
-                an Excel File.
+                {t("exportCheckedDataDesc")}
               </div>
 
               <button
                 className="gradient-bg rounded-md text-white px-5 py-2 w-full text-nowrap mt-auto cursor-pointer"
                 onClick={() => handleCheckedExport()}
               >
-                Export Selected Data
+                {t("exportSelectedData")}
               </button>
             </DialogHeader>
           </div>
@@ -740,12 +731,12 @@ export default function UserProfilePage({
       <Dialog open={isEdit} onOpenChange={setIsEdit}>
         <DialogContent className="box-design max-w-md">
           <DialogHeader className="flex flex-col justify-between text-black-text pb-2 border-b-1 border-primary">
-            <DialogTitle>Update User Information</DialogTitle>
+            <DialogTitle>{t("updateUserInformation")}</DialogTitle>
           </DialogHeader>
 
           <div className="flex flex-col gap-3 text-black-text">
             <div className="flex flex-col gap-2">
-              <label className="font-bold">Employee ID</label>
+              <label className="font-bold">{t("employeeId")}</label>
               <Input
                 className="border-gray-700 text-sm bg-gray-100"
                 value={user.empID}
@@ -755,10 +746,10 @@ export default function UserProfilePage({
 
             <div className="flex flex-row justify-between gap-2">
               <div className="flex flex-col gap-2 w-full">
-                <label className="font-bold">First Name</label>
+                <label className="font-bold">{t("firstName")}</label>
                 <Input
                   className="border-gray-300 text-sm"
-                  placeholder="Enter First Name"
+                  placeholder={t("enterFirstName")}
                   value={editForm?.first_name || ""}
                   onChange={(e) =>
                     setEditForm((prev) =>
@@ -768,10 +759,10 @@ export default function UserProfilePage({
                 />
               </div>
               <div className="flex flex-col gap-2 w-full">
-                <label className="font-bold">Last Name</label>
+                <label className="font-bold">{t("lastName")}</label>
                 <Input
                   className="border-gray-300 text-sm"
-                  placeholder="Enter Last Name"
+                  placeholder={t("enterLastName")}
                   value={editForm?.last_name || ""}
                   onChange={(e) =>
                     setEditForm((prev) =>
@@ -783,10 +774,10 @@ export default function UserProfilePage({
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="font-bold">Email</label>
+              <label className="font-bold">{t("email")}</label>
               <Input
                 className="border-gray-300 text-sm"
-                placeholder="Enter Email"
+                placeholder={t("enterEmail")}
                 value={editForm?.email || ""}
                 onChange={(e) =>
                   setEditForm((prev) =>
@@ -797,7 +788,7 @@ export default function UserProfilePage({
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="font-bold">Access</label>
+              <label className="font-bold">{t("access")}</label>
               <Select
                 value={editForm?.access || "User"}
                 onValueChange={(v: "Admin" | "User") =>
@@ -805,14 +796,14 @@ export default function UserProfilePage({
                 }
               >
                 <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                  <SelectValue placeholder="Select Access" />
+                  <SelectValue placeholder={t("selectAccess")} />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-black-text border-gray-300">
                   <SelectItem value="Admin" className="selection-hover">
-                    Admin
+                    {tMgmt("admin")}
                   </SelectItem>
                   <SelectItem value="User" className="selection-hover">
-                    User
+                    {tMgmt("user")}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -820,7 +811,7 @@ export default function UserProfilePage({
 
             <div className="flex flex-row justify-between gap-2">
               <div className="flex flex-col gap-2 w-full">
-                <label className="font-bold">Group</label>
+                <label className="font-bold">{t("group")}</label>
                 <Select
                   value={editForm?.group || ""}
                   onValueChange={(value) => {
@@ -836,7 +827,7 @@ export default function UserProfilePage({
                   }}
                 >
                   <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                    <SelectValue placeholder="Select Group" />
+                    <SelectValue placeholder={t("selectGroup")} />
                   </SelectTrigger>
                   <SelectContent className="bg-white text-black-text border-gray-300">
                     {groupOptions.map((g) => (
@@ -862,13 +853,13 @@ export default function UserProfilePage({
                 setEditForm(null);
               }}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               className="gradient-bg text-white px-5 py-2 rounded-md"
               onClick={handleSave}
             >
-              Save Changes
+              {t("saveChanges")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -878,9 +869,9 @@ export default function UserProfilePage({
       <AlertDialog open={isCheckedExport} onOpenChange={setIsCheckedExport}>
         <AlertDialogContent className="box-design">
           <AlertDialogHeader className="text-black">
-            <AlertDialogTitle>Export these Records? </AlertDialogTitle>
+            <AlertDialogTitle>{t("exportTheseRecords")} </AlertDialogTitle>
             <AlertDialogDescription className="my-3">
-              Check and confirm the list of records to be exported.
+              {t("checkAndConfirmRecords")}
             </AlertDialogDescription>
           </AlertDialogHeader>
 
@@ -927,7 +918,7 @@ export default function UserProfilePage({
                       colSpan={4}
                       className="text-center py-3 text-lg font-bold text-black-text"
                     >
-                      No Entries found
+                      {t("noEntriesFound")}
                     </TableCell>
                   </TableRow>
                 )}
@@ -949,7 +940,7 @@ export default function UserProfilePage({
                 </Button>
 
                 <span className="text-black-text">
-                  Page {currentPage} of {totalPages}
+                  {t("pageOf", { current: currentPage, total: totalPages })}
                 </span>
 
                 <Button
@@ -968,7 +959,7 @@ export default function UserProfilePage({
           </div>
 
           <AlertDialogFooter>
-            <AlertDialogCancel className="cancel-btn">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="cancel-btn">{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               disabled={!hasRecords}
               className={`gradient-bg ${
@@ -978,7 +969,7 @@ export default function UserProfilePage({
               }`}
               onClick={() => handleToast(true, "exportSelect")}
             >
-              Export File
+              {t("exportFile")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

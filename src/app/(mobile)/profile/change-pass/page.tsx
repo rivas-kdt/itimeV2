@@ -6,8 +6,10 @@ import React, { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/auth-context";
 import { toast } from "sonner";
 import { changePassword } from "@/features/auth/services/auth.service";
+import { useTranslations } from "next-intl";
 
 export default function ChangePasswordPage() {
+  const t = useTranslations("auth");
   const router = useRouter();
   const { session } = useAuth();
   const [error, setError] = useState()
@@ -47,17 +49,17 @@ export default function ChangePasswordPage() {
       !formData.newPassword ||
       !formData.confirmPassword
     ) {
-      toastError("All fields are required");
+      toastError(t("fillAllFields"));
       return;
     }
 
     if (formData.newPassword !== formData.confirmPassword) {
-      toastError("New passwords do not match");
+      toastError(t("newPasswordsDoNotMatch"));
       return;
     }
 
     if (formData.newPassword.length < 6) {
-      toastError("Password must be at least 6 characters");
+      toastError(t("passwordMinLength"));
       return;
     }
 
@@ -68,7 +70,7 @@ export default function ChangePasswordPage() {
         confirmPassword: formData.confirmPassword,
       });
       console.log("Password changed successfully");
-      toastSuccess("Password changed successfully");
+      toastSuccess(t("passwordChangedSuccess"));
       setFormData({
         currentPassword: "",
         newPassword: "",
@@ -79,7 +81,7 @@ export default function ChangePasswordPage() {
       console.log("Error changing password:", err);
 
       toastError(
-        err instanceof Error ? err.message : "Failed to change password",
+        err instanceof Error ? err.message : t("failedToChangePassword"),
       );
     } finally {
       setLoading(false)
@@ -91,11 +93,11 @@ export default function ChangePasswordPage() {
       <div className="flex flex-col gap-4 bg-white rounded-md full-shadow p-5">
         <div className="flex flex-col text-black gap-2">
           <label className="">
-            Current Password <span className="text-primary">*</span>
+            {t("currentPassword")} <span className="text-primary">*</span>
           </label>
           <Input
             className="border-gray-500 text-sm"
-            placeholder="Enter Current Password"
+            placeholder={t("enterCurrentPassword")}
             type="password"
             value={formData.currentPassword}
             onChange={(e) =>
@@ -105,11 +107,11 @@ export default function ChangePasswordPage() {
         </div>
         <div className="flex flex-col text-black gap-2">
           <label className="">
-            New Password <span className="text-primary">*</span>
+            {t("newPassword")} <span className="text-primary">*</span>
           </label>
           <Input
             className="border-gray-500 text-sm"
-            placeholder="Enter New Password"
+            placeholder={t("enterNewPassword")}
             type="password"
             value={formData.newPassword}
             onChange={(e) => handleInputChange("newPassword", e.target.value)}
@@ -117,11 +119,11 @@ export default function ChangePasswordPage() {
         </div>
         <div className="flex flex-col text-black gap-2">
           <label className="">
-            Confirm New Password <span className="text-primary">*</span>
+            {t("confirmNewPassword")} <span className="text-primary">*</span>
           </label>
           <Input
             className="border-gray-500 text-sm"
-            placeholder="Confirm New Password"
+            placeholder={t("confirmNewPassword")}
             type="password"
             value={formData.confirmPassword}
             onChange={(e) =>
@@ -137,7 +139,7 @@ export default function ChangePasswordPage() {
           onClick={handleSubmit}
           disabled={loading}
         >
-          {loading ? "Updating..." : "Update Password"}
+          {loading ? t("updatingPassword") : t("updatePassword")}
         </Button>
       </div>
     </div>

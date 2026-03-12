@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 declare module "@tanstack/react-table" {
@@ -39,6 +40,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const t = useTranslations("tables");
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 6,
@@ -135,7 +137,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("noResults")}
                 </TableCell>
               </TableRow>
             )}
@@ -150,7 +152,7 @@ export function DataTable<TData, TValue>({
           disabled={!table.getCanPreviousPage()}
           className="bg-white border-2 border-gray-300 text-black w-[80px]"
         >
-          Previous
+          {t("previous")}
         </Button>
         <Button
           variant="outline"
@@ -159,7 +161,7 @@ export function DataTable<TData, TValue>({
           disabled={!table.getCanNextPage()}
           className="bg-white border-2 border-gray-300 text-black w-[80px]"
         >
-          Next
+          {t("next")}
         </Button>
       </div>
     </div>

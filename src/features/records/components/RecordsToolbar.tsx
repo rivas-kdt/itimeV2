@@ -26,6 +26,7 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { addDays, format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { type DateRange } from "react-day-picker";
+import { useTranslations } from "next-intl";
 
 type Props = {
   searchRecord: string;
@@ -66,6 +67,7 @@ export function RecordsToolbar({
   onOpenExport,
   onClear,
 }: Props) {
+  const t = useTranslations("filters");
   // const loc = ["Warehouse A", "Site B", "Warehouse C"];
   const [loc, setLoc] = useState<Location[]>([]);
   console.log(loc);
@@ -94,7 +96,7 @@ export function RecordsToolbar({
           </ButtonGroupText>
           <InputGroup className=" border border-primary p-0 m-0 focus:outline-none">
             <InputGroupInput
-              placeholder="Search..."
+              placeholder={t("searchPlaceholder")}
               className="text-gray-500 text-lg placeholder:text-lg mt-1"
               value={searchRecord}
               onChange={(e) => setSearchRecord(e.target.value)}
@@ -160,12 +162,7 @@ export function RecordsToolbar({
             id="date-picker-range"
             className="gradient-bg btn-css"
           >
-            {/* <Button
-                variant="outline"
-                id="date-picker-range"
-                className="gradient-bg text-white px-2.5 align-center"
-              > */}
-            Filter Date Range
+            {t("filterDateRange")}
             <CalendarIcon className="text-white" />
             {/* {date?.from ? (
               date.to ? (
@@ -186,7 +183,7 @@ export function RecordsToolbar({
             align="center"
           >
             <div className="flex-col p-4 border-b border-primary">
-              <span className="font-bold">Selected Date Range: </span>
+              <span className="font-bold">{t("selectedDateRange")} </span>
               {date?.from ? (
                 date.to ? (
                   <>
@@ -197,10 +194,10 @@ export function RecordsToolbar({
                   format(date.from, "LLL dd, y")
                 )
               ) : (
-                <span>Pick a date</span>
+                <span>{t("pickADate")}</span>
               )}
               <div className="italic text-sm text-gray-500 mt-1">
-                *Double click a date to set START Date
+                {t("doubleClickStartDate")}
               </div>
             </div>
             <Calendar
@@ -216,7 +213,7 @@ export function RecordsToolbar({
 
         <Popover>
           <PopoverTrigger className="btn-css gradient-bg">
-            Filter by Location
+            {t("filterByLocation")}
             <ListFilter />
           </PopoverTrigger>
 
@@ -247,7 +244,6 @@ export function RecordsToolbar({
                   />
                 </label>
 
-                {/* Separator only if NOT last item */}
                 {index < loc.length - 1 && (
                   <Separator className="border-1 border-primary-300" />
                 )}
@@ -257,12 +253,12 @@ export function RecordsToolbar({
         </Popover>
 
         <Button className="btn-css gradient-bg" onClick={onOpenExport}>
-          Export
+          {t("export")}
           <FileDown />
         </Button>
 
         <Button className="btn-css gradient-bg" onClick={onClear}>
-          Clear
+          {t("clear")}
           <Eraser />
         </Button>
       </div>

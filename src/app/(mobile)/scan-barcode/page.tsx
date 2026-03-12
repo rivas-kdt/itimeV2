@@ -24,6 +24,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 // import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // const CameraOcr = dynamic(() => import("@/components/ocrCard"), {
@@ -34,10 +35,11 @@ const EasyOcr = dynamic(() => import("@/components/EasyOcr"), {
 });
 
 export default function Page() {
+  const t = useTranslations("scanner");
   return (
     <div className="flex flex-col bg-background h-screen text-black overflow-hidden">
       <div className="flex justify-center items-center px-3 pt-6.5 pb-4.5 w-full shadow-lg bg-white">
-        <h3> Scanner</h3>
+        <h3>{t("title")}</h3>
       </div>
 
       <div className="flex-1 min-h-0">

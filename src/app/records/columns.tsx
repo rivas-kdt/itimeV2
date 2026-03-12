@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dispatch, SetStateAction } from "react";
+import { InspectionsDTO } from "@/features/records/types";
 
 export type Inspections = {
   id: string;
@@ -31,11 +32,15 @@ interface RowActions {
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }
+
+type TableT = (key: string) => string;
+
 export const getColumns = (
   selectedIds: string[],
   setSelectedIds: Dispatch<SetStateAction<string[]>>,
-  actions: RowActions
-): ColumnDef<Inspections>[] => [
+  actions: RowActions,
+  t: TableT,
+): ColumnDef<InspectionsDTO>[] => [
   {
     id: "exportBox",
     cell: ({ row }) => {
@@ -48,7 +53,7 @@ export const getColumns = (
           checked={isChecked}
           onCheckedChange={(checked) => {
             setSelectedIds((prev) =>
-              checked ? [...prev, rowId] : prev.filter((id) => id !== rowId)
+              checked ? [...prev, rowId] : prev.filter((id) => id !== rowId),
             );
           }}
           className="w-5 h-5 data-[state=checked]:bg-primary data-[state=checked]:border-none data-[state=checked]:text-white"
@@ -61,37 +66,37 @@ export const getColumns = (
   },
   {
     accessorKey: "workOrder",
-    header: "Work Order",
+    header: t("workOrder"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "construction",
-    header: "Construction Items",
+    header: t("constructionItems"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "workCode",
-    header: "Work Code",
+    header: t("workCode"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "others",
-    header: "Others",
+    header: t("others"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "duration",
-    header: "Time",
+    header: t("time"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "date",
-    header: "Date",
+    header: t("date"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "location",
-    header: "Location",
+    header: t("location"),
     meta: { className: "text-center" },
   },
   {
@@ -114,7 +119,7 @@ export const getColumns = (
               onClick={() => actions.onEdit(inspect.id)}
             >
               <Pencil />
-              Edit
+              {t("edit")}
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-gray-300 m-0 p-0" />
             <DropdownMenuItem
@@ -122,7 +127,7 @@ export const getColumns = (
               onClick={() => actions.onDelete(inspect.id)}
             >
               <Trash2 />
-              Delete
+              {t("delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
