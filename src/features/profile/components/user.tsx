@@ -4,10 +4,13 @@ import { ChevronLeft, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUserProfile } from "../hooks/useUserProfileHooks";
+import { useTranslations } from "next-intl";
 
 const UserProfile = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const { profile } = useUserProfile();
+  const t = useTranslations("profile");
+  const tCommon = useTranslations("common");
 
   return (
     <>
@@ -21,11 +24,11 @@ const UserProfile = ({ children }: { children: React.ReactNode }) => {
                 className="flex flex-row items-center gap-1"
               >
                 <ChevronLeft strokeWidth={3} />
-                <h2 className="my-2"> Back </h2>
+                <h2 className="my-2"> {tCommon("back")} </h2>
               </Link>
             </div>
           ) : (
-            <h2 className="my-2 font-bold text-black-text"> My Profile </h2>
+            <h2 className="my-2 font-bold text-black-text"> {t("myProfile")} </h2>
           )}
           <div className="flex flex-col gap-6">
             <div className=" flex gap-5 px-8 py-6 rounded-md bg-primary text-white shadow-md">
