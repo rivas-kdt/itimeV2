@@ -3,7 +3,7 @@ import { InspectionsDTO } from "../types";
 
 export async function exportToExcel(
   records: InspectionsDTO[],
-  filename: string = "inspection-records",
+  filename: string = "inspection-records"
 ) {
   try {
     const XLSXModule = await import("xlsx");
@@ -15,8 +15,8 @@ export async function exportToExcel(
       Construction: record.construction,
       Others: record.others,
       Date: record.date,
-      "Start Time": record.start_time,
-      "End Time": record.end_time,
+      "Start Time": record.startTime,
+      "End Time": record.endTime,
       Duration: record.duration,
       Type: record.type,
       Location: record.location,
@@ -34,7 +34,7 @@ export async function exportToExcel(
 
     XLSX.writeFile(
       workbook,
-      `${filename}-${new Date().toISOString().split("T")[0]}.xlsx`,
+      `${filename}-${new Date().toISOString().split("T")[0]}.xlsx`
     );
   } catch (error) {
     console.error("Export error:", error);
@@ -44,7 +44,7 @@ export async function exportToExcel(
 
 export function exportToCSV(
   records: InspectionsDTO[],
-  filename: string = "inspection-records",
+  filename: string = "inspection-records"
 ) {
   const headers = [
     "Work Order",
@@ -77,9 +77,9 @@ export function exportToCSV(
     ...rows.map((row) =>
       row
         .map((cell) =>
-          typeof cell === "string" && cell.includes(",") ? `"${cell}"` : cell,
+          typeof cell === "string" && cell.includes(",") ? `"${cell}"` : cell
         )
-        .join(","),
+        .join(",")
     ),
   ].join("\n");
 
@@ -90,7 +90,7 @@ export function exportToCSV(
   link.setAttribute("href", url);
   link.setAttribute(
     "download",
-    `${filename}-${new Date().toISOString().split("T")[0]}.csv`,
+    `${filename}-${new Date().toISOString().split("T")[0]}.csv`
   );
   link.style.visibility = "hidden";
 
