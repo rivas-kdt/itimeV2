@@ -22,6 +22,7 @@ import { Calendar } from "@/components/ui/calendar";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toTimezoneISOString } from "@/lib/timezone";
+import { useTranslations } from "next-intl";
 
 function Skeleton() {
     return (
@@ -39,6 +40,8 @@ function Skeleton() {
 }
 
 export default function EditWorkOrdersPage() {
+    const t = useTranslations("editWorkOrder");
+    const tCommon = useTranslations("common");
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -209,11 +212,11 @@ const getInspectionsForDate = (date?: Date) => {
                 <div className="flex justify-center items-center col-span-1 pl-3">
                     <Link href="/work-orders" className="flex flex-row mt-2">
                         <ChevronLeft className="text-primary" />
-                        <span className="text-primary">Back</span>
+                        <span className="text-primary">{t("back")}</span>
                     </Link>
                 </div>
                 <h3 className="col-span-4 flex justify-center items-center font-semibold">
-                    Edit Work Order Details
+                    {t("title")}
                 </h3>
             </div>
 
@@ -230,7 +233,7 @@ const getInspectionsForDate = (date?: Date) => {
                     <div className="mx-8 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
                         <AlertCircle className="text-red-600 flex-shrink-0" size={20} />
                         <div className="flex-1">
-                            <p className="text-red-800 font-semibold">Error Loading Work Order</p>
+                            <p className="text-red-800 font-semibold">{t("errorLoadingWorkOrder")}</p>
                             <p className="text-red-700 text-sm mt-1">{error}</p>
                             <Button
                                 onClick={refetch}
@@ -238,7 +241,7 @@ const getInspectionsForDate = (date?: Date) => {
                                 variant="outline"
                                 className="mt-3 text-red-700 border-red-300 hover:bg-red-50"
                             >
-                                Try Again
+                                {t("tryAgain")}
                             </Button>
                         </div>
                     </div>
@@ -249,10 +252,10 @@ const getInspectionsForDate = (date?: Date) => {
                         {/* Work Order Details */}
                         {isEditing && formData ? (
                             <div className="flex flex-col bg-white gap-5 rounded-lg mx-8 p-4 shadow-lg">
-                                <h4 className="font-bold">Edit Work Order Details</h4>
+                                <h4 className="font-bold">{t("editWorkOrderDetails")}</h4>
                                 <div className="flex flex-col gap-3">
                                     <div className="flex flex-col">
-                                        <label className="text-sm font-medium">Work Order</label>
+                                        <label className="text-sm font-medium">{t("workOrder")}</label>
                                         <Input
                                             disabled
                                             value={formData.work_order || ""}
@@ -262,7 +265,7 @@ const getInspectionsForDate = (date?: Date) => {
                                     <div className="grid grid-cols-4 gap-2">
                                         <div className="col-span-2">
                                             <label className="text-sm font-medium">
-                                                Construction Item
+                                                {t("constructionItem")}
                                             </label>
                                             <Input
                                                 value={formData.constructionItem || ""}
@@ -273,7 +276,7 @@ const getInspectionsForDate = (date?: Date) => {
                                             />
                                         </div>
                                         <div className="col-span-1">
-                                            <label className="text-sm font-medium">Work Code</label>
+                                            <label className="text-sm font-medium">{t("workCode")}</label>
                                             <Input
                                                 type="number"
                                                 value={formData.workCode || ""}
@@ -284,7 +287,7 @@ const getInspectionsForDate = (date?: Date) => {
                                             />
                                         </div>
                                         <div className="col-span-1">
-                                            <label className="text-sm font-medium">Others</label>
+                                            <label className="text-sm font-medium">{t("others")}</label>
                                             <Input
                                                 type="number"
                                                 value={formData.others || ""}
@@ -301,7 +304,7 @@ const getInspectionsForDate = (date?: Date) => {
                                             disabled={isSubmitting}
                                             className="flex-1 bg-gradient-to-r from-primary-300 to-primary text-white"
                                         >
-                                            {isSubmitting ? "Saving..." : "Save Changes"}
+                                            {isSubmitting ? t("saving") : t("saveChanges")}
                                         </Button>
                                         <Button
                                             onClick={cancelEdit}
@@ -309,7 +312,7 @@ const getInspectionsForDate = (date?: Date) => {
                                             variant="outline"
                                             className="flex-1"
                                         >
-                                            Cancel
+                                            {t("cancel")}
                                         </Button>
                                     </div>
                                 </div>
@@ -317,19 +320,19 @@ const getInspectionsForDate = (date?: Date) => {
                         ) : (
                             <div className="flex flex-col bg-white gap-5 rounded-lg mx-8 p-4 shadow-lg">
                                 <div className="flex flex-row justify-between items-center">
-                                    <h4 className="font-bold">Work Order Details</h4>
+                                    <h4 className="font-bold">{t("workOrderDetails")}</h4>
                                     <button
                                         onClick={() => startEdit(workOrder)}
                                         className="flex items-center gap-2 bg-primary-300 text-white rounded-md py-1 px-3 hover:bg-primary-400 transition"
                                     >
                                         <Pencil size={18} />
-                                        Edit
+                                        {t("edit")}
                                     </button>
                                 </div>
                                 <div className="flex flex-col gap-3">
                                     <div className="flex flex-col">
                                         <label className="text-sm font-medium text-gray-600">
-                                            Work Order
+                                            {t("workOrder")}
                                         </label>
                                         <Input
                                             disabled
@@ -340,7 +343,7 @@ const getInspectionsForDate = (date?: Date) => {
                                     <div className="grid grid-cols-4 gap-2">
                                         <div className="col-span-2">
                                             <label className="text-sm font-medium text-gray-600">
-                                                Construction Item
+                                                {t("constructionItem")}
                                             </label>
                                             <Input
                                                 disabled
@@ -350,7 +353,7 @@ const getInspectionsForDate = (date?: Date) => {
                                         </div>
                                         <div className="col-span-1">
                                             <label className="text-sm font-medium text-gray-600">
-                                                Work Code
+                                                {t("workCode")}
                                             </label>
                                             <Input
                                                 disabled
@@ -360,7 +363,7 @@ const getInspectionsForDate = (date?: Date) => {
                                         </div>
                                         <div className="col-span-1">
                                             <label className="text-sm font-medium text-gray-600">
-                                                Others
+                                                {t("others")}
                                             </label>
                                             <Input
                                                 disabled
@@ -370,7 +373,7 @@ const getInspectionsForDate = (date?: Date) => {
                                         </div>
                                     </div>
                                     <div className="text-sm text-gray-600">
-                                        <span className="font-medium">Total Inspections:</span>{" "}
+                                        <span className="font-medium">{t("totalInspections")}:</span>{" "}
                                         {String(recordsTotal || 0)}
                                     </div>
                                 </div>
@@ -381,7 +384,7 @@ const getInspectionsForDate = (date?: Date) => {
                         <div className="bg-white mx-8 mt-5 mb-4 p-3 rounded-lg shadow-lg">
                             <div className="flex items-center justify-between p-2">
                                 <h3 className="font-bold">
-                                    Select a Date to View Total Inspection Hours
+                                    {t("selectDateToViewHours")}
                                 </h3>
                                 <Popover>
                                     <PopoverTrigger asChild>
@@ -395,18 +398,18 @@ const getInspectionsForDate = (date?: Date) => {
                                         className="border-none bg-white text-black shadow-lg w-fit rounded-lg"
                                     >
                                         <div className="flex flex-col gap-3 min-w-40">
-                                            <h4 className="font-bold text-black">Legend</h4>
+                                            <h4 className="font-bold text-black">{t("legend")}</h4>
                                             <div className="flex flex-row gap-2 items-center">
                                                 <div className="bg-primary-300 w-5 h-5 rounded-full"></div>
-                                                <span className="text-sm">Inspected Date</span>
+                                                <span className="text-sm">{t("inspectedDate")}</span>
                                             </div>
                                             <div className="flex flex-row gap-2 items-center">
                                                 <div className="bg-primary-op-1 w-5 h-5 rounded-full"></div>
-                                                <span className="text-sm">Today&apos;s Date</span>
+                                                <span className="text-sm">{t("todaysDate")}</span>
                                             </div>
                                             <div className="flex flex-row gap-2 items-center">
                                                 <div className="bg-primary w-5 h-5 rounded-full"></div>
-                                                <span className="text-sm">Selected Date</span>
+                                                <span className="text-sm">{t("selectedDate")}</span>
                                             </div>
                                         </div>
                                     </PopoverContent>
@@ -432,7 +435,7 @@ const getInspectionsForDate = (date?: Date) => {
 
                 {!loading && !error && !workOrder && (
                     <div className="mx-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                        <p className="text-yellow-800">No work order found</p>
+                        <p className="text-yellow-800">{t("noWorkOrderFound")}</p>
                     </div>
                 )}
             </div>
@@ -443,7 +446,7 @@ const getInspectionsForDate = (date?: Date) => {
                     <DialogHeader className="border-b pb-2">
                         <DialogTitle className="flex items-center gap-3 font-semibold">
                             <Image src="/clock_icon.png" width={35} height={35} alt="Clock" />
-                            Total Hour Inspection
+                            {t("totalHourInspection")}
                         </DialogTitle>
                     </DialogHeader>
 
@@ -452,7 +455,7 @@ const getInspectionsForDate = (date?: Date) => {
                             <div className="border rounded-lg overflow-hidden">
                                 <div className="flex">
                                     <div className="w-1/2 bg-primary-white p-2 font-bold border-r border-b">
-                                        Work Order
+                                        {t("workOrder")}
                                     </div>
                                     <div className="w-1/2 p-2 border-b">
                                         {workOrder.workOrder}
@@ -460,7 +463,7 @@ const getInspectionsForDate = (date?: Date) => {
                                 </div>
                                 <div className="flex">
                                     <div className="w-1/2 bg-primary-white p-2 font-bold border-r border-b">
-                                        Construction Item
+                                        {t("constructionItem")}
                                     </div>
                                     <div className="w-1/2 p-2 border-b">
                                         {workOrder.construction}
@@ -468,22 +471,22 @@ const getInspectionsForDate = (date?: Date) => {
                                 </div>
                                 <div className="flex">
                                     <div className="w-1/2 bg-primary-white p-2 font-bold border-r border-b">
-                                        Work Code
+                                        {t("workCode")}
                                     </div>
                                     <div className="w-1/2 p-2 border-b">{workOrder.workCode}</div>
                                 </div>
                                 <div className="flex">
                                     <div className="w-1/2 bg-primary-white p-2 font-bold border-r border-b">
-                                        Others
+                                        {t("others")}
                                     </div>
                                     <div className="w-1/2 p-2 border-b">{workOrder.others}</div>
                                 </div>
                                 <div className="flex">
                                     <div className="w-1/2 bg-primary-white p-2 font-bold border-r">
-                                        Date
+                                        {t("date")}
                                     </div>
                                     <div className="w-1/2 p-2">
-                                        {formattedDate ?? "No date selected"}
+                                        {formattedDate ?? t("noDateSelected")}
                                     </div>
                                 </div>
                             </div>
@@ -494,12 +497,12 @@ const getInspectionsForDate = (date?: Date) => {
                                         onClick={startInspection}
                                         className="bg-primary text-white hover:bg-primary-400"
                                     >
-                                        Start Inspection
+                                        {t("startInspection")}
                                     </Button>
                                 </div>
                             ) : (
                                 <div className="flex items-center justify-between px-3 py-2 bg-primary-op-2 rounded-md">
-                                    <span className="font-bold">Recorded Time:</span>
+                                    <span className="font-bold">{t("recordedTime")}:</span>
                                     <div className="flex items-center gap-2">
                                         <span className="font-semibold">
                                             {recordedTime.hours}h {recordedTime.minutes}m
@@ -521,7 +524,7 @@ const getInspectionsForDate = (date?: Date) => {
                                         if (inspectionsOnDate.length === 0) {
                                             return (
                                                 <div className="text-center py-4 text-gray-500">
-                                                    No inspections on this date
+                                                    {t("noInspectionsOnDate")}
                                                 </div>
                                             );
                                         }
@@ -529,7 +532,7 @@ const getInspectionsForDate = (date?: Date) => {
                                         return (
                                             <div className="flex gap-3">
                                                 <div className="flex-1">
-                                                    <label className="text-sm font-medium">Start Time</label>
+                                                    <label className="text-sm font-medium">{t("startTime")}</label>
                                                     <Input
                                                         value={firstInspection.startTime}
                                                         onClick={() => setOpenStartTime(true)}
@@ -544,7 +547,7 @@ const getInspectionsForDate = (date?: Date) => {
                                                     />
                                                 </div>
                                                 <div className="flex-1">
-                                                    <label className="text-sm font-medium">End Time</label>
+                                                    <label className="text-sm font-medium">{t("endTime")}</label>
                                                     <Input
                                                         value={firstInspection.endTime}
                                                         onClick={() => setOpenEndTime(true)}
@@ -565,7 +568,7 @@ const getInspectionsForDate = (date?: Date) => {
                                         onClick={handleUpdateTime}
                                         className="w-full bg-gradient-to-r from-primary-300 to-primary text-white"
                                     >
-                                        Update Time
+                                        {t("updateTime")}
                                     </Button>
                                 </>
                             )}
