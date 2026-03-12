@@ -6,9 +6,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dispatch, SetStateAction } from "react";
 import type { InspectionRowDTO } from "@/features/user-management/types";
 
+type TableT = (key: string) => string;
+
 export const getColumns = (
   selectedIds: string[],
   setSelectedIds: Dispatch<SetStateAction<string[]>>,
+  t: TableT,
 ): ColumnDef<InspectionRowDTO>[] => [
   {
     id: "exportBox",
@@ -34,42 +37,42 @@ export const getColumns = (
   },
   {
     accessorKey: "workOrder",
-    header: "Work Order",
+    header: t("workOrder"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "construction",
-    header: "Construction Items",
+    header: t("constructionItems"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "workCode",
-    header: "Work Code",
+    header: t("workCode"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "others",
-    header: "Others",
+    header: t("others"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "date",
-    header: "Date",
+    header: t("date"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "time",
-    header: "Time",
+    header: t("time"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "type",
-    header: "Type",
+    header: t("type"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "location",
-    header: "Location",
+    header: t("location"),
     meta: { className: "text-center" },
   },
 ];

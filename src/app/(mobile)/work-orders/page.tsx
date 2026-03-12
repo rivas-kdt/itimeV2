@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useWorkOrderHooks } from "@/features/workorders/hooks/useWorkOrderHooks";
+import { useTranslations } from "next-intl";
 
 export default function WorkOrdersPage() {
   return (
@@ -21,6 +22,7 @@ export default function WorkOrdersPage() {
 }
 
 function WorkOrdersContent() {
+  const t = useTranslations("workOrders");
   const { records, searchWorkOrder, setSearchWorkOrder, loading, error } =
     useWorkOrderHooks();
 
@@ -28,14 +30,14 @@ function WorkOrdersContent() {
     <div className=" bg-white-gray h-full text-black flex flex-col">
       <div className=" pt-5 pb-4 px-8 space-y-2 w-full shadow-lg bg-white">
         <p className=" text-2xl font-bold text-black my-2">
-          Work Order Records
+          {t("title")}
         </p>
         <div className="flex gap-2">
           <div className="flex flex-row bg-white rounded-md px-2 py-1 w-full items-center border-2 border-gray-300">
             <Search className="mr-2 text-gray-500" />
             <input
               className=" w-full py-2 border-none m-0 outline-none focus:outline-none"
-              placeholder="Search Work Order"
+              placeholder={t("searchPlaceholder")}
               value={searchWorkOrder}
               onChange={(e) => setSearchWorkOrder(e.target.value)}
             />
@@ -46,11 +48,11 @@ function WorkOrdersContent() {
       <div className=" h-full w-full bg-white-gray pt-4 pb-8 px-8 overflow-y-auto space-y-4 test no-scrollbar">
         {loading ? (
           <div className="text-lg h-full flex justify-center items-center text-gray-500">
-            Loading Work Orders...
+            {t("loadingWorkOrders")}
           </div>
         ) : error ? (
           <div className="text-lg h-full flex justify-center items-center text-red-500">
-            Error: {error}
+            {t("errorLabel")}: {error}
           </div>
         ) : records.length > 0 ? (
           records.map((orders, index) => (
@@ -79,7 +81,7 @@ function WorkOrdersContent() {
                         >
                           {/* <div className="active:bg-primary-op-2 active:text-primary px-2 py-1 rounded-md"> */}
                           <div className="active:bg-primary-op-2 active:text-primary px-5 rounded-md">
-                            Edit
+                            {t("edit")}
                           </div>
                         </Link>
                         {/* <Separator className="my-2 border border-gray-300" /> */}
@@ -94,7 +96,7 @@ function WorkOrdersContent() {
 
                   <div className=" flex justify-between items-center">
                     <div className=" text-xs text-gray-500 font-bold w-[130px]">
-                      Construction Item:
+                      {t("constructionItemLabel")}:
                       <p className="text-gray-500 font-normal">
                         {orders.constructionItem}
                       </p>
@@ -104,7 +106,7 @@ function WorkOrdersContent() {
                       className="border border-gray-300"
                     />
                     <div className=" text-xs text-gray-500 font-bold">
-                      Work Code:
+                      {t("workCodeLabel")}:
                       <p className="text-gray-500 font-normal">
                         {orders.workCode}
                       </p>
@@ -114,7 +116,7 @@ function WorkOrdersContent() {
                       className="border border-gray-300"
                     />
                     <div className=" text-xs text-gray-500 font-bold w-[60px]">
-                      Others:
+                      {t("othersLabel")}:
                       <p className="text-gray-500 font-normal">
                         {orders.others}
                       </p>
@@ -129,7 +131,7 @@ function WorkOrdersContent() {
           ))
         ) : (
           <div className="text-2xl h-full flex justify-center items-center">
-            No Work Orders found
+            {t("noWorkOrdersFound")}
           </div>
         )}
       </div>

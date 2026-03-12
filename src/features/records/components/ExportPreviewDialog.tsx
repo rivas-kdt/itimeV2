@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useTranslations } from "next-intl";
 
 type Props = {
   open: boolean;
@@ -47,6 +48,8 @@ export function ExportPreviewDialog({
   onRemove,
   onExport,
 }: Props) {
+  const t = useTranslations("exportPreview");
+  const tModals = useTranslations("modals");
   const hasRecords = rows.length > 0;
   console.log("rows: ", rows);
 
@@ -54,9 +57,9 @@ export function ExportPreviewDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="box-design">
         <AlertDialogHeader className="text-black">
-          <AlertDialogTitle>Export these Records?</AlertDialogTitle>
+          <AlertDialogTitle>{t("title")}</AlertDialogTitle>
           <AlertDialogDescription className="my-3">
-            Check and confirm the list of records to be exported.
+            {t("description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -65,13 +68,13 @@ export function ExportPreviewDialog({
             <TableHeader>
               <TableRow className="bg-primary-white text-md text-primary-dark">
                 <TableHead className="text-primary-dark text-center w-1/4">
-                  Work ID
+                  {t("workId")}
                 </TableHead>
                 <TableHead className="text-primary-dark text-center w-1/4">
-                  Date
+                  {t("date")}
                 </TableHead>
                 <TableHead className="text-primary-dark text-center w-1/4">
-                  Time
+                  {t("time")}
                 </TableHead>
                 <TableHead className="w-1/9"></TableHead>
               </TableRow>
@@ -100,7 +103,7 @@ export function ExportPreviewDialog({
                     colSpan={4}
                     className="text-center py-3 text-lg font-bold text-black-text"
                   >
-                    No Entries found
+                    {t("noEntriesFound")}
                   </TableCell>
                 </TableRow>
               )}
@@ -120,7 +123,7 @@ export function ExportPreviewDialog({
               </Button>
 
               <span className="text-black-text">
-                Page {currentPage} of {totalPages}
+                {t("pageOf", { current: currentPage, total: totalPages })}
               </span>
 
               <Button
@@ -137,7 +140,7 @@ export function ExportPreviewDialog({
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel className="cancel-btn">Cancel</AlertDialogCancel>
+          <AlertDialogCancel className="cancel-btn">{tModals("cancel")}</AlertDialogCancel>
           <AlertDialogAction
             disabled={!hasRecords}
             className={`gradient-bg ${
@@ -147,7 +150,7 @@ export function ExportPreviewDialog({
             }`}
             onClick={onExport}
           >
-            Export File
+            {t("exportFile")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

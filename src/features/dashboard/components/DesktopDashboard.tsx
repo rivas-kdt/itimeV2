@@ -16,6 +16,7 @@ import {
   YAxis,
 } from "recharts";
 import { useDesktopDashboardHooks } from "../hooks/useDesktopDashboardHooks";
+import { useTranslations } from "next-intl";
 
 const inspectionConfig = {
   week_inspections: {
@@ -32,8 +33,8 @@ const workCodeConfig = {
 } satisfies ChartConfig;
 
 export default function DesktopDashboard() {
+  const t = useTranslations("dashboard");
   const {
-    inspection,
     inspectionToday,
     inspectionThisWeek,
     inspectionThisMonth,
@@ -55,20 +56,20 @@ export default function DesktopDashboard() {
       <div className="flex flex-col box-design w-full p-8 gap-5">
         <div className="flex items-center justify-between">
           <h2 className="text-black-text font-bold">
-            Recent Inspection Records
+            {t("recentInspectionRecords")}
           </h2>
         </div>
         <div className="h-full">
           <div className="grid grid-cols-10 bg-primary-white h-12 text-primary-dark text-lg items-center font-bold">
-            <p className="col-span-3 pl-3">Inspector Name</p>
-            <p className="col-span-2">Date</p>
-            <p className="col-span-2">Duration</p>
-            <p className="col-span-1">Type</p>
+            <p className="col-span-3 pl-3">{t("inspectorName")}</p>
+            <p className="col-span-2">{t("date")}</p>
+            <p className="col-span-2">{t("duration")}</p>
+            <p className="col-span-1">{t("type")}</p>
           </div>
           <div className="overflow-scroll h-[calc(100vh-300px)]">
             {loading ? (
               <p className="flex justify-center items-center h-full w-full text-xl text-gray-500">
-                Loading…
+                {t("loading")}
               </p>
             ) : error ? (
               <p className="flex justify-center items-center h-full w-full text-xl text-gray-500">
@@ -87,7 +88,7 @@ export default function DesktopDashboard() {
               ))
             ) : (
               <div className="py-6 text-sm text-gray-500">
-                No Recent Inspections
+                {t("noRecentInspections")}
               </div>
             )}
           </div>
@@ -106,10 +107,10 @@ export default function DesktopDashboard() {
             </div>
             <div className="flex flex-col gap-3 px-1 pt-3 w-full">
               <p className="font-bold text-black-text text-md 2xl:text-xl">
-                Total Inspections Today
+                {t("totalInspectionsToday")}
               </p>
               <p className="flex justify-end text-lg 2xl:text-3xl font-bold">
-                {inspectionToday.total} Inspections
+                {t("inspectionsCount", { count: inspectionToday.total })}
               </p>
             </div>
           </div>
@@ -122,10 +123,10 @@ export default function DesktopDashboard() {
             </div>
             <div className="flex flex-col gap-3 px-1 pt-3 w-full">
               <p className="font-bold text-black-text text-md 2xl:text-xl">
-                Total Inspections this Year
+                {t("totalInspectionsThisYear")}
               </p>
               <p className="flex justify-end text-lg 2xl:text-3xl font-bold">
-                {inspectionThisYear.total} Inspections
+                {t("inspectionsCount", { count: inspectionThisYear.total })}
               </p>
             </div>
           </div>
@@ -161,7 +162,7 @@ export default function DesktopDashboard() {
                       textAnchor="middle"
                       className="text-black-text font-bold 2xl:text-lg transform -rotate-90 translate-x-[-190px] translate-y-[135px] 2xl:translate-x-[-260px] 2xl:translate-y-[185px]"
                     >
-                      Number of Inspections
+                      {t("numberOfInspections")}
                     </text>
                   );
                 }}
@@ -185,7 +186,7 @@ export default function DesktopDashboard() {
             </LineChart>
           </ChartContainer>
           <h3 className="w-full text-center text-black font-bold">
-            INSPECTIONS THIS WEEK
+            {t("inspectionsThisWeek")}
           </h3>
         </div>
 
@@ -219,7 +220,7 @@ export default function DesktopDashboard() {
                       textAnchor="middle"
                       className="text-black-text font-bold 2xl:text-lg transform -rotate-90 translate-x-[-190px] translate-y-[135px] 2xl:translate-x-[-260px] 2xl:translate-y-[185px]"
                     >
-                      Number of Inspections
+                      {t("numberOfInspections")}
                     </text>
                   );
                 }}
@@ -240,7 +241,7 @@ export default function DesktopDashboard() {
             </BarChart>
           </ChartContainer>
           <h3 className="w-full text-center text-black font-bold">
-            INSPECTIONS PER WORK CODE
+            {t("inspectionsPerWorkCode")}
           </h3>
         </div>
       </div>

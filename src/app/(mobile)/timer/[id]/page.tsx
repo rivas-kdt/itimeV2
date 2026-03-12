@@ -27,8 +27,15 @@ import { updateInspection } from "@/features/timer/services/timer.service";
 import { useTimerHooks } from "@/features/timer/hooks/useTimerHooks";
 import { useElapsedTimer } from "@/features/timer/hooks/useElapsedTimer";
 import { formatDateWithTimezone } from "@/lib/timezone";
+import { useTranslations } from "next-intl";
+
+const TIMER_MONTH_KEYS = [
+  "monthJanuary", "monthFebruary", "monthMarch", "monthApril", "monthMay", "monthJune",
+  "monthJuly", "monthAugust", "monthSeptember", "monthOctober", "monthNovember", "monthDecember",
+] as const;
 
 export default function TimerPage() {
+  const t = useTranslations("timer");
   // const { workOrderID } = useRouter().query;
   const [startInspection, setStartInspection] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -40,22 +47,8 @@ export default function TimerPage() {
   const params = useParams();
   const id = params.id as string;
   const today = new Date();
-  // Array of month names
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const month = months[today.getMonth()]; // getMonth() returns 0-11
+  const monthKey = TIMER_MONTH_KEYS[today.getMonth()];
+  const month = monthKey ? t(monthKey) : "";
   const day = today.getDate();
   const year = today.getFullYear();
   const dateToday = `${month} ${day}, ${year}`;
@@ -252,17 +245,17 @@ export default function TimerPage() {
         <div className="flex justify-center items-center col-span-1">
           <Link href="/timer" className="flex flex-row mt-2 p-0">
             <ChevronLeft className="text-primary" />
-            <span className="text-primary">Back</span>
+            <span className="text-primary">{t("back")}</span>
           </Link>
         </div>
         <h3 className="col-span-4 flex justify-center items-center">
-          Time Tracker
+          {t("timeTracker")}
         </h3>
       </div>
 
       <div className=" h-full p-6 overflow-y-auto space-y-4 gap-5">
         <div className="bg-white p-4 rounded-md full-shadow">
-          <h2 className="font-bold text-black-text">Recording Details</h2>
+          <h2 className="font-bold text-black-text">{t("recordingDetails")}</h2>
           <Separator className="border-gray-300 border mt-2 mb-3" />
 
           {/* simplify */}
@@ -270,7 +263,7 @@ export default function TimerPage() {
             <div className="border border-gray-500">
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Work Order
+                  {t("workOrder")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500 text-primary">
                   {recordsInfo.workOrder}
@@ -279,7 +272,7 @@ export default function TimerPage() {
 
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Construction Item
+                  {t("constructionItem")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500 text-primary">
                   {recordsInfo.construction}
@@ -288,7 +281,7 @@ export default function TimerPage() {
 
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Work Code
+                  {t("workCode")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500 text-primary">
                   {recordsInfo.workCode}
@@ -297,7 +290,7 @@ export default function TimerPage() {
 
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Others
+                  {t("others")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500 text-primary">
                   {recordsInfo.others}
@@ -306,7 +299,7 @@ export default function TimerPage() {
 
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Date
+                  {t("date")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500 text-primary">
                   {recordsInfo?.inspection_date &&
@@ -316,7 +309,7 @@ export default function TimerPage() {
 
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Type
+                  {t("type")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500 text-primary">
                   {recordsInfo.type}
@@ -325,7 +318,7 @@ export default function TimerPage() {
 
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Location
+                  {t("location")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500 text-primary">
                   {recordsInfo.location}
@@ -335,7 +328,7 @@ export default function TimerPage() {
           )}
 
           {recordsInfoLoading && (
-            <div className="text-center py-4">Loading inspection data...</div>
+            <div className="text-center py-4">{t("loadingInspectionData")}</div>
           )}
         </div>
 
@@ -358,13 +351,13 @@ export default function TimerPage() {
                   className="text-white text-lg py-6 green-gradient"
                   onClick={handleSaveInspection}
                 >
-                  Save Inspection
+                  {t("saveInspection")}
                 </Button>
                 <Button
                   className="cancel-btn text-lg h-12"
                   onClick={handleStopInspection}
                 >
-                  Cancel
+                  {t("cancel")}
                 </Button>
               </div>
             </div>
@@ -386,7 +379,7 @@ export default function TimerPage() {
                   className="cancel-btn text-lg h-12"
                   onClick={handleOpenEdit}
                 >
-                  Edit
+                  {t("edit")}
                 </Button>
               </div>
             </div>
@@ -407,7 +400,7 @@ export default function TimerPage() {
                 className="text-white text-lg py-6 green-gradient w-full"
                 onClick={handleInspection}
               >
-                Start Inspection
+                {t("startInspection")}
               </Button>
             </div>
           )}
@@ -424,7 +417,7 @@ export default function TimerPage() {
                 height={35}
                 alt="Icon"
               />
-              Inspection Duration
+              {t("inspectionDuration")}
             </DialogTitle>
           </DialogHeader>
           {recordsInfo && (
@@ -446,11 +439,11 @@ export default function TimerPage() {
               </div>
               <div className="flex flex-col text-black mt-5">
                 <h3>
-                  Work Order Number:{" "}
+                  {t("workOrderNumber")}:{" "}
                   <span className="text-primary">{recordsInfo.workOrder}</span>
                 </h3>
                 <h3>
-                  Date Recorded:{" "}
+                  {t("dateRecorded")}:{" "}
                   <span className="text-primary">{dateToday}</span>
                 </h3>
               </div>
@@ -462,10 +455,10 @@ export default function TimerPage() {
               className="cancel-btn w-full rounded-lg"
               onClick={handleOpenEdit}
             >
-              Edit
+              {t("edit")}
             </button>
             <button className="green-gradient px-5 py-2 w-full text-white rounded-lg">
-              Save
+              {t("save")}
             </button>
           </DialogFooter>
         </DialogContent>
@@ -476,7 +469,7 @@ export default function TimerPage() {
           <DialogHeader className="border-b border-gray-300 pb-2">
             <DialogTitle className="flex flex-row items-center gap-3 font-semibold">
               <Image src="/clock_icon.png" width={35} height={35} alt="icon" />
-              Total Hour Inspection
+              {t("totalHourInspection")}
             </DialogTitle>
           </DialogHeader>
 
@@ -484,7 +477,7 @@ export default function TimerPage() {
             <div className="border border-gray-500 text-black-text">
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Work Order
+                  {t("workOrder")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500">
                   {recordsInfo.workOrder}
@@ -492,7 +485,7 @@ export default function TimerPage() {
               </div>
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Construction Item
+                  {t("constructionItem")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500">
                   {recordsInfo.construction}
@@ -500,7 +493,7 @@ export default function TimerPage() {
               </div>
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Work Code
+                  {t("workCode")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500">
                   {recordsInfo.workCode}
@@ -508,7 +501,7 @@ export default function TimerPage() {
               </div>
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Others
+                  {t("others")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500">
                   {recordsInfo.others}
@@ -516,7 +509,7 @@ export default function TimerPage() {
               </div>
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
-                  Date
+                  {t("date")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500">
                   {recordsInfo?.inspection_date &&
@@ -527,7 +520,7 @@ export default function TimerPage() {
           )}
 
           <div className="flex flex-row gap-2 justify-between items-center px-3 py-1 ">
-            <span className="text-lg font-bold">Recorded Time : </span>
+            <span className="text-lg font-bold">{t("recordedTime")} : </span>
             <div className="flex gap-5 text-center items-center justify-center px-3 py-1 text-black-text bg-primary-op-2 rounded-md">
               {recordedTime.hours}h {recordedTime.minutes}m
               <SquarePen
@@ -541,7 +534,7 @@ export default function TimerPage() {
             <>
               <div className="flex flex-row gap-3">
                 <div className="flex flex-col gap-1 items-center">
-                  <label className="w-full">Start Time</label>
+                  <label className="w-full">{t("startTime")}</label>
                   <Input
                     id="start_time"
                     className="border-gray-300 text-sm"
@@ -561,7 +554,7 @@ export default function TimerPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-1 items-center">
-                  <label className="w-full">End Time</label>
+                  <label className="w-full">{t("endTime")}</label>
                   <Input
                     id="end_time"
                     className="border-gray-300 text-sm"
@@ -582,7 +575,7 @@ export default function TimerPage() {
                 </div>
               </div>
               <Button className="gradient-bg" onClick={handleUpdateInspectTime}>
-                Update Time
+                {t("updateTime")}
               </Button>
             </>
           ) : (

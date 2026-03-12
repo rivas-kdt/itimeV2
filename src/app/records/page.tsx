@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/useMobile";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { useTranslations } from "next-intl";
 
 import { DataTable } from "./data-table";
 import { getColumns, Inspections } from "./columns";
@@ -32,6 +33,8 @@ export default function UserRecords() {
 function UserRecordsContent() {
   const router = useRouter();
   const isMobile = useIsMobile();
+  const t = useTranslations("records");
+  const tTables = useTranslations("tables");
 
   const {
     records,
@@ -121,12 +124,12 @@ function UserRecordsContent() {
 
       setSelectedUser(updated);
       toastSuccess(
-        "Updated Successfully",
-        "Information of the record was updated.",
+        t("updatedSuccessfully"),
+        t("updatedSuccessfullyDesc"),
       );
       setIsEdit(false);
     } catch (e: any) {
-      toastError("Update Failed", e?.message || "Please try again.");
+      toastError(t("updateFailed"), e?.message || t("pleaseTryAgain"));
     }
   };
 
@@ -135,12 +138,12 @@ function UserRecordsContent() {
     try {
       await onDelete(selectedUser.id);
       toastSuccess(
-        "Inspection Record was Removed",
-        "The record was removed from the system.",
+        t("recordRemoved"),
+        t("recordRemovedDesc"),
       );
       setIsDelete(false);
     } catch (e: any) {
-      toastError("Deletion Failed", e?.message || "Please try again.");
+      toastError(t("deletionFailed"), e?.message || t("pleaseTryAgain"));
     }
   };
 
@@ -174,7 +177,7 @@ function UserRecordsContent() {
   const columns = getColumns(selectedIds, setSelectedIds, {
     onEdit: handleEdit,
     onDelete: handleDelete,
-  });
+  }, tTables);
   // TODO
   return (
     <div className="flex flex-row gap-5 h-full p-8">
@@ -189,7 +192,7 @@ function UserRecordsContent() {
           onOpenExport={() => setShowExport(true)}
           onClear={() => {
             clearFilters();
-            toastSuccess("Cleared Filters", "All filters were cleared.");
+            toastSuccess(t("clearedFilters"), t("clearedFiltersDesc"));
           }}
         />
 
@@ -209,15 +212,15 @@ function UserRecordsContent() {
         //TODO: implement export all
         onExportAll={() =>
           toastSuccess(
-            "Exported the File Successfully",
-            "All data was exported. (Wire excel export later)",
+            t("exportedSuccessfully"),
+            t("exportedAllDesc"),
           )
         }
         //TODO: implement export month
         onExportMonth={() =>
           toastSuccess(
-            "Exported the File Successfully",
-            "Selected month data exported. (Wire later)",
+            t("exportedSuccessfully"),
+            t("exportedMonthDesc"),
           )
         }
         onExportSelected={handleCheckedExport}
@@ -254,8 +257,8 @@ function UserRecordsContent() {
         //TODO: implement export checked
         onExport={() =>
           toastSuccess(
-            "Exported the File Successfully",
-            "Selected data exported. (Wire excel export later)",
+            t("exportedSuccessfully"),
+            t("exportedSelectedDesc"),
           )
         }
       />

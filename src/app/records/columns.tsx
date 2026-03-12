@@ -31,10 +31,14 @@ interface RowActions {
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }
+
+type TableT = (key: string) => string;
+
 export const getColumns = (
   selectedIds: string[],
   setSelectedIds: Dispatch<SetStateAction<string[]>>,
   actions: RowActions,
+  t: TableT,
 ): ColumnDef<Inspections>[] => [
   {
     id: "exportBox",
@@ -61,37 +65,37 @@ export const getColumns = (
   },
   {
     accessorKey: "workOrder",
-    header: "Work Order",
+    header: t("workOrder"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "construction",
-    header: "Construction Items",
+    header: t("constructionItems"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "workCode",
-    header: "Work Code",
+    header: t("workCode"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "others",
-    header: "Others",
+    header: t("others"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "duration",
-    header: "Time",
+    header: t("time"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "type",
-    header: "Type",
+    header: t("type"),
     meta: { className: "text-center" },
   },
   {
     accessorKey: "location",
-    header: "Location",
+    header: t("location"),
     meta: { className: "text-center" },
   },
   {
@@ -114,7 +118,7 @@ export const getColumns = (
               onClick={() => actions.onEdit(inspect.id)}
             >
               <Pencil />
-              Edit
+              {t("edit")}
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-gray-300 m-0 p-0" />
             <DropdownMenuItem
@@ -122,7 +126,7 @@ export const getColumns = (
               onClick={() => actions.onDelete(inspect.id)}
             >
               <Trash2 />
-              Delete
+              {t("delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

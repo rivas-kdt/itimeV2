@@ -74,6 +74,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/useMobile";
+import { useTranslations } from "next-intl";
 
 import type { InspectionRowDTO } from "@/features/user-management/types";
 import { getColumns } from "./columns";
@@ -125,6 +126,7 @@ export default function UserProfilePage({
 
   const router = useRouter();
   const isMobile = useIsMobile();
+  const tTables = useTranslations("tables");
 
   // gets the value from the passed month data
   const [currentSheet, setCurrentSheet] = useState<{
@@ -187,8 +189,8 @@ export default function UserProfilePage({
   const [selectedYear, setSelectedYear] = useState(today.getFullYear());
 
   const columns = useMemo(
-    () => getColumns(selectedIds, setSelectedIds),
-    [selectedIds],
+    () => getColumns(selectedIds, setSelectedIds, tTables),
+    [selectedIds, tTables],
   );
 
   const handleToast = (status: boolean, action: string) => {

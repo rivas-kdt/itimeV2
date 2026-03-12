@@ -25,8 +25,10 @@ import { Toggle } from "@/components/ui/toggle";
 import { Switch } from "@/components/ui/switch";
 import { useUserProfile } from "@/features/profile/hooks/useUserProfileHooks";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function ProfilePage() {
+  const t = useTranslations("profile");
   const { profile, loading } = useUserProfile();
   const { logout } = useAuth();
   const [isSwitchLang, setIsSwitchLang] = useState(false);
@@ -54,9 +56,9 @@ export default function ProfilePage() {
     try {
       await logout();
       router.push('/')
-      toastSuccess("Logged out successfully");
+      toastSuccess(t("loggedOutSuccess"));
     } catch (error) {
-      toastError("Failed to logout");
+      toastError(t("logoutFailed"));
 
       console.error("Logout error:", error);
     }
@@ -91,9 +93,9 @@ export default function ProfilePage() {
                 />
               </div>
               <div className="flex flex-col justify-center items-center">
-                <h5 className="w-full font-thin">Account Information</h5>
+                <h5 className="w-full font-thin">{t("accountInformation")}</h5>
                 <p className="w-full text-xs text-gray-500">
-                  View your Account Details
+                  {t("viewAccountDetails")}
                 </p>
               </div>
             </div>
@@ -136,9 +138,9 @@ export default function ProfilePage() {
                 <KeyRound size={32} strokeWidth={1} className="text-primary" />
               </div>
               <div className="flex flex-col justify-center items-center">
-                <h5 className="w-full font-thin">Change Password</h5>
+                <h5 className="w-full font-thin">{t("changePassword")}</h5>
                 <p className="w-full text-xs text-gray-500">
-                  Secure your account with a new password
+                  {t("secureAccount")}
                 </p>
               </div>
             </div>
@@ -154,9 +156,9 @@ export default function ProfilePage() {
               <DoorOpen size={32} strokeWidth={1} className="text-primary" />
             </div>
             <div className="flex flex-col justify-center items-center">
-              <h5 className="w-full font-thin">Logout</h5>
+              <h5 className="w-full font-thin">{t("logout")}</h5>
               <p className="w-full text-xs text-gray-500">
-                Sign out of your account
+                {t("signOut")}
               </p>
             </div>
           </div>
@@ -170,7 +172,7 @@ export default function ProfilePage() {
 
       {/* Additionals */}
       <div className="flex flex-col gap-3">
-        <h5>Additional Settings</h5>
+        <h5>{t("additionalSettings")}</h5>
 
         <div className=" p-4 rounded-md bg-white full-shadow">
           <div className="flex justify-between px-1 py-3">
@@ -179,10 +181,9 @@ export default function ProfilePage() {
                 <Languages size={32} strokeWidth={1} className="text-primary" />
               </div>
               <div className="flex flex-col justify-center items-center">
-                <h5 className="w-full font-thin">Change Language</h5>
+                <h5 className="w-full font-thin">{t("changeLanguage")}</h5>
                 <p className="w-full text-xs text-gray-500">
-                  {/* Switch the application language */}
-                  Toggle to switch between EN and JP
+                  {t("toggleLanguage")}
                 </p>
               </div>
             </div>
@@ -204,12 +205,12 @@ export default function ProfilePage() {
                   className="text-primary"
                 />
               </div>
-              <div className="flex flex-col justify-center items-center">
-                <h5 className="w-full font-thin">Help & Support</h5>
-                <p className="w-full text-xs text-gray-500">
-                  A list of our frequently asked questions
-                </p>
-              </div>
+            <div className="flex flex-col justify-center items-center">
+              <h5 className="w-full font-thin">{t("helpSupport")}</h5>
+              <p className="w-full text-xs text-gray-500">
+                {t("faq")}
+              </p>
+            </div>
             </div>
             <div className="flex justify-center items-center">
               <ChevronRight size={32} />
@@ -221,12 +222,12 @@ export default function ProfilePage() {
               <div className="flex justify-center items-center bg-primary-op-2 p-2 rounded-full">
                 <Info size={32} strokeWidth={1} className="text-primary" />
               </div>
-              <div className="flex flex-col justify-center items-center">
-                <h5 className="w-full font-thin">About App</h5>
-                <p className="w-full text-xs text-gray-500">
-                  Learn more about this app and its features
-                </p>
-              </div>
+            <div className="flex flex-col justify-center items-center">
+              <h5 className="w-full font-thin">{t("aboutApp")}</h5>
+              <p className="w-full text-xs text-gray-500">
+                {t("aboutAppDesc")}
+              </p>
+            </div>
             </div>
             <div className="flex justify-center items-center">
               <ChevronRight size={32} />

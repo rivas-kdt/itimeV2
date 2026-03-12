@@ -15,8 +15,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { use } from "react";
 import { useMobileDashboardHooks } from "../hooks/useMobileDashboardHooks";
+import { useTranslations } from "next-intl";
 
 export default function MobileDashboard() {
+  const t = useTranslations("dashboard");
   const {
     inspectionToday,
     inspectionThisWeek,
@@ -28,14 +30,14 @@ export default function MobileDashboard() {
   const { session } = useAuth();
 
   const activeSession = true;
-  const userName = session?.user?.firstName || "Inspector";
+  const userName = session?.user?.firstName || t("defaultInspectorName");
 
   // Get greeting based on time of day
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 18) return "Good Afternoon";
-    return "Good Evening";
+    if (hour < 12) return t("goodMorning");
+    if (hour < 18) return t("goodAfternoon");
+    return t("goodEvening");
   };
 
   if (error) {
@@ -43,7 +45,7 @@ export default function MobileDashboard() {
       <div className="text-black flex flex-col items-center justify-center">
         <CloudAlert className="text-red-500" size={150} />
         <p className="text-red-500 font-bold text-3xl">
-          Error loading dashboard
+          {t("errorLoadingDashboard")}
         </p>
         <p className="text-lg text-gray-500 mt-5">{error}</p>
       </div>
@@ -59,32 +61,32 @@ export default function MobileDashboard() {
             <span className=" text-primary font-bold">{userName}!</span>
           </p>
           <p className=" text-md text-black/75">
-            Here&apos;s your progress today.
+            {t("progressToday")}
           </p>
         </div>
         <div className=" h-full p-4 overflow-y-auto translate-y-22 space-y-4 no-scrollbar">
           {/* START SUMMARY CARD */}
           <div className=" p-4 rounded-md bg-white shadow-md">
-            <h3 className=" font-bold text-primary">Today&apos;s Summary</h3>
+            <h3 className=" font-bold text-primary">{t("todaysSummary")}</h3>
 
             <div className=" flex justify-between px-4 pt-4 pb-2">
               <div className=" flex flex-col items-center">
                 <p className=" font-bold text-black text-xl">
                   {loading ? "-" : inspectionToday.total}
                 </p>
-                <p className=" text-gray-300 text-md">Today</p>
+                <p className=" text-gray-300 text-md">{t("summaryToday")}</p>
               </div>
               <div className=" flex flex-col items-center">
                 <p className=" font-bold text-black text-xl">
                   {loading ? "-" : inspectionThisWeek.total}
                 </p>
-                <p className=" text-gray-300 text-md">This Week</p>
+                <p className=" text-gray-300 text-md">{t("summaryThisWeek")}</p>
               </div>
               <div className=" flex flex-col items-center">
                 <p className=" font-bold text-black text-xl">
                   {loading ? "-" : inspection.total}
                 </p>
-                <p className=" text-gray-300 text-md">Total</p>
+                <p className=" text-gray-300 text-md">{t("summaryTotal")}</p>
               </div>
             </div>
           </div>
@@ -92,16 +94,16 @@ export default function MobileDashboard() {
 
           {/* START INSPECTION HISTORY CARD */}
           <div className=" p-4 rounded-md bg-white shadow-md">
-            <h3 className="text-primary font-bold">Recent Inspections</h3>
+            <h3 className="text-primary font-bold">{t("recentInspectionRecords")}</h3>
             <p className="text-sm text-gray-500 mt-1">
-              Your recent inspection history.
+              {t("recentInspectionHistory")}
             </p>
 
             {/* Map recent inspections */}
             <div className="h-full">
               {loading ? (
                 <div className="mt-5 text-center text-gray-500">
-                  Loading inspections...
+                  {t("loadingInspections")}
                 </div>
               ) : recentInspections.length > 0 ? (
                 recentInspections.slice(0, 7).map((inspection, index) => (
@@ -118,7 +120,7 @@ export default function MobileDashboard() {
                       <div className=" flex gap-2 text-black justify-between h-[20px]">
                         <p className=" flex flex-row w-full justify-center items-center text-center font-bold text-sm mt-1">
                           <ClipboardList className="text-primary-300 mr-1 mt-[-3px]" />
-                          Inspector:{" "}
+                          {t("inspectorLabel")}:{" "}
                           <span className=" pl-1 font-normal">
                             {inspection.inspector}
                           </span>
@@ -129,7 +131,7 @@ export default function MobileDashboard() {
                         />
                         <p className=" flex flex-row w-full justify-center items-center text-center font-bold text-sm mt-1">
                           <AlarmClock className="text-primary-300 mr-1 mt-[-3px]" />
-                          Time:{" "}
+                          {t("timeLabel")}:{" "}
                           <span className="pl-1 font-normal">
                             {inspection.time}
                           </span>
@@ -143,7 +145,7 @@ export default function MobileDashboard() {
                 ))
               ) : (
                 <div className="mt-5 text-center text-gray-500">
-                  No recent inspections
+                  {t("noRecentInspections")}
                 </div>
               )}
             </div>
