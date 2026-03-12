@@ -14,8 +14,8 @@ export function useRecordsHooks() {
     const [locationFilter, setLocationFilter] = useState<LocationName[]>([]);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(new Date().getFullYear(), 0, 20),
-        to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
+        from: undefined,
+        to: undefined,
     });
 
     const fetchInspections = async () => {
