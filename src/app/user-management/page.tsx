@@ -114,7 +114,7 @@ export default function UserManagementPage() {
 
 function UserManagementContent() {
   const router = useRouter();
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
   const t = useTranslations("userManagement");
 
   useEffect(() => {
