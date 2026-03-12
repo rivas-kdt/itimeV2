@@ -20,9 +20,14 @@ import {
 import Image from "next/image";
 import { Input } from "./ui/input";
 import { CustomComboBox } from "./customComboBox";
+import { useTranslations } from "next-intl";
 
 export default function HomeClient() {
   const router = useRouter();
+  const t = useTranslations("scanner");
+  const tTimer = useTranslations("timer");
+  const tCommon = useTranslations("common");
+  const tProfile = useTranslations("profile");
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const cameraBoxRef = useRef<HTMLDivElement | null>(null);
@@ -169,7 +174,7 @@ export default function HomeClient() {
     } catch (e: any) {
       setErr(
         e?.message ||
-          "Camera failed to start. Make sure you are on HTTPS (or localhost) and allowed camera permission.",
+          t("cameraFailed"),
       );
       stopCamera();
     } finally {
@@ -333,7 +338,7 @@ export default function HomeClient() {
 
       await storeBlobAndGo(blob, "capture");
     } catch (e: any) {
-      setErr(e?.message || "Failed to capture.");
+      setErr(e?.message || t("failedToCapture"));
     } finally {
       setCapturing(false);
     }
@@ -349,12 +354,12 @@ export default function HomeClient() {
   const handleSubmitManualInput = async () => {
     try {
       if (!manualWorkOrder.trim()) {
-        alert("Work Order is required");
+        alert(t("workOrderRequired"));
         return;
       }
 
       if (!consItemVal.trim() || !workCodeVal.trim() || !othersVal.trim()) {
-        alert("Please select Construction Item, Work Code, and Others");
+        alert(t("selectAllFields"));
         return;
       }
 
@@ -482,7 +487,7 @@ export default function HomeClient() {
       window.location.href = `/timer/${inspectionId}`;
     } catch (error: any) {
       console.error("Error:", error);
-      alert("Error: " + (error?.message || "Failed to save work order"));
+      alert("Error: " + (error?.message || t("failedToSaveWorkOrder")));
     } finally {
       setIsSubmitting(false);
     }
@@ -508,7 +513,7 @@ export default function HomeClient() {
 
         {!ready && (
           <div className="absolute inset-0 flex items-center justify-center text-white/80 text-sm">
-            Starting camera…
+            {t("startingCamera")}
           </div>
         )}
 
@@ -525,16 +530,16 @@ export default function HomeClient() {
             aria-label="Shutter"
             className="flex-1 gradient-bg text-xl"
           >
-            Scan
+            {t("scan")}
           </Button>
           <Button
             className="flex-1 text-xl gradient-bg disabled:bg-transparent disabled:text-gray-100"
             onClick={() => setOpenModal(true)}
           >
-            Manual Input
+            {t("manualInput")}
           </Button>
           <p className="text-center text-sm text-white ">
-            Cannot scan the Work Order? Add it here manually.
+            {t("cannotScanHint")}
             {/* <span>
               <Link href={"/scan-barcode/ocr"}>Go to EasyOCR</Link>
             </span> */}
@@ -548,16 +553,16 @@ export default function HomeClient() {
           <DialogHeader className="border-b border-gray-300 pb-2">
             <DialogTitle className="flex flex-row items-center gap-3 font-semibold">
               <Image src="/manual_edit.png" width={35} height={35} alt="icon" />
-              Manual Input
+              {t("manualInput")}
             </DialogTitle>
           </DialogHeader>
 
           {/* TODO save the information to db */}
           <div className="flex flex-col w-full gap-1">
-            <label className="font-bold">Work Order</label>
+            <label className="font-bold">{tTimer("workOrder")}</label>
             <Input
               className="border-gray-500 text-sm"
-              placeholder="Enter Work Order"
+              placeholder={t("enterWorkOrder")}
               value={manualWorkOrder}
               onChange={(e) => setManualWorkOrder(e.target.value)}
             />
@@ -565,31 +570,31 @@ export default function HomeClient() {
           <div className="flex flex-col w-full gap-1">
             {/* <label className="font-bold">Construction Item</label> */}
             <CustomComboBox
-              label="Construction Item"
+              label={tTimer("constructionItemLabel")}
               value={consItemVal}
               setValue={setConsItemVal}
               items={itemList}
-              placeholder="Select Construction Item"
+              placeholder={t("selectConstructionItem")}
             />
           </div>
           <div className="flex flex-col w-full gap-1">
             {/* <label className="font-bold">Work Code</label> */}
             <CustomComboBox
-              label="Work Code"
+              label={tTimer("workCodeLabel")}
               value={workCodeVal}
               setValue={setWorkCodeVal}
               items={workCodeList}
-              placeholder="Select Work Code"
+              placeholder={t("selectWorkCode")}
             />
           </div>
           <div className="flex flex-col w-full gap-1">
             {/* <label className="font-bold">Others</label> */}
             <CustomComboBox
-              label="Others"
+              label={tTimer("othersLabel")}
               value={othersVal}
               setValue={setOthersVal}
               items={othersList}
-              placeholder="Select Others"
+              placeholder={t("selectOthers")}
             />
           </div>
 
@@ -602,7 +607,7 @@ export default function HomeClient() {
                 handleCancel();
               }}
             >
-              Cancel
+              {tCommon("cancel")}
             </Button>
             {/* TODO link work order id on timer here */}
             <Button
@@ -610,7 +615,7 @@ export default function HomeClient() {
               onClick={handleSubmitManualInput}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Saving..." : "Start Inspection"}
+              {isSubmitting ? tProfile("saving") : tTimer("startInspection")}
             </Button>
           </DialogFooter>
         </DialogContent>

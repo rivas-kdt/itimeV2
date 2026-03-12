@@ -229,6 +229,25 @@
     "locationWarehouseA": "Warehouse A",
     "locationWarehouseB": "Warehouse B"
   },
+  "scanner": {
+    "title": "Scanner",
+    "scan": "Scan",
+    "manualInput": "Manual Input",
+    "cannotScanHint": "Cannot scan the Work Order? Add it here manually.",
+    "scanningResults": "Scanning Results",
+    "startingCamera": "Starting camera…",
+    "enterWorkOrder": "Enter Work Order",
+    "workOrderPlaceholder": "Work Order",
+    "selectConstructionItem": "Select Construction Item",
+    "selectWorkCode": "Select Work Code",
+    "selectOthers": "Select Others",
+    "workOrderRequired": "Work Order is required",
+    "selectAllFields": "Please select Construction Item, Work Code, and Others",
+    "cameraFailed": "Camera failed to start. Make sure you are on HTTPS (or localhost) and allowed camera permission.",
+    "failedToCapture": "Failed to capture.",
+    "failedToSaveWorkOrder": "Failed to save work order",
+    "failedToCreateWorkOrder": "Failed to create work order"
+  },
   "workOrders": {
     "title": "Work Order Records",
     "searchPlaceholder": "Search Work Order",

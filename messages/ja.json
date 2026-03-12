@@ -229,6 +229,25 @@
     "locationWarehouseA": "倉庫A",
     "locationWarehouseB": "倉庫B"
   },
+  "scanner": {
+    "title": "スキャナー",
+    "scan": "スキャン",
+    "manualInput": "手入力",
+    "cannotScanHint": "作業指示がスキャンできない場合は、ここから手入力できます。",
+    "scanningResults": "スキャン結果",
+    "startingCamera": "カメラを起動しています…",
+    "enterWorkOrder": "作業指示を入力",
+    "workOrderPlaceholder": "作業指示",
+    "selectConstructionItem": "工事項目を選択",
+    "selectWorkCode": "作業コードを選択",
+    "selectOthers": "その他を選択",
+    "workOrderRequired": "作業指示は必須です",
+    "selectAllFields": "工事項目、作業コード、その他を選択してください",
+    "cameraFailed": "カメラを起動できませんでした。HTTPS（またはlocalhost）で、カメラの許可を確認してください。",
+    "failedToCapture": "撮影に失敗しました。",
+    "failedToSaveWorkOrder": "作業指示の保存に失敗しました",
+    "failedToCreateWorkOrder": "作業指示の作成に失敗しました"
+  },
   "workOrders": {
     "title": "作業指示一覧",
     "searchPlaceholder": "作業指示を検索",
