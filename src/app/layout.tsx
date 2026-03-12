@@ -2,6 +2,8 @@
 import "./globals.css";
 import { Poppins } from "next/font/google";
 import ClientLayout from "@/components/ClientLayout";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -14,15 +16,20 @@ export const metadata = {
   description: "Manage your time effectively with iTime.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className="antialiased">
-        <ClientLayout>{children}</ClientLayout>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <ClientLayout>{children}</ClientLayout>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

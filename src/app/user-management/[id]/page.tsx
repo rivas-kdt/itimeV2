@@ -91,6 +91,11 @@ type EditForm = {
   group_id?: string; // if you have real UUIDs
 };
 
+export type UserInfo = {
+  name: string;
+  empID?: string;
+};
+
 const toastStyle = (bg: string, border: string, text: string) => ({
   width: "100%",
   background: `var(${bg})`,
@@ -158,6 +163,7 @@ export default function UserProfilePage({
   } = useUserHooks(empID);
 
   console.log(monthlyData);
+  console.log("User data: ", user);
 
   const [showExport, setShowExport] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -169,6 +175,12 @@ export default function UserProfilePage({
   const [isEdit, setIsEdit] = useState(false);
   const [editForm, setEditForm] = useState<EditForm | null>(null);
 
+  const userName = `${user?.first_name ?? ""} ${user?.last_name ?? ""}`;
+  console.log("userName: ", userName);
+  const userInfo = {
+    name: userName,
+    empID: user?.empID,
+  };
   const today = new Date();
 
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
@@ -176,24 +188,24 @@ export default function UserProfilePage({
 
   const columns = useMemo(
     () => getColumns(selectedIds, setSelectedIds),
-    [selectedIds]
+    [selectedIds],
   );
 
   const handleToast = (status: boolean, action: string) => {
     if (status && action === "exportAll") {
       return toastSuccess(
         "Exported the File Successfully",
-        "All of the data in the table has been exported."
+        "All of the data in the table has been exported.",
       );
     } else if (status && action === "exportMonth") {
       return toastSuccess(
         "Exported the File Successfully",
-        "Data for the Selected Month has been exported."
+        "Data for the Selected Month has been exported.",
       );
     } else if (status && action === "exportSelect") {
       return toastSuccess(
         "Exported the File Successfully",
-        "Selected Data has been exported."
+        "Selected Data has been exported.",
       );
     } else if (
       !status &&
@@ -203,27 +215,27 @@ export default function UserProfilePage({
     ) {
       return toastError(
         "Failed to Export the File",
-        "Process Failed. Please try again."
+        "Process Failed. Please try again.",
       );
     } else if (status && action === "exportTracker") {
       return toastSuccess(
         "Monthly Tracker Exported Successfully",
-        `The Monthly Tracker of the user can now be downloaded.`
+        `The Monthly Tracker of the user can now be downloaded.`,
       );
     } else if (status && action === "updateDetails") {
       return toastSuccess(
         "Information Updated Successfully",
-        "User Information was updated."
+        "User Information was updated.",
       );
     } else if (!status && action === "exportTracker") {
       return toastError(
         "Failed to Export Tracker",
-        "Process Failed. Please try again."
+        "Process Failed. Please try again.",
       );
     } else if (!status && action === "updateDetails") {
       return toastError(
         "Failed to Update Information",
-        "User Information was not updated. Please try again."
+        "User Information was not updated. Please try again.",
       );
     }
   };
@@ -237,15 +249,24 @@ export default function UserProfilePage({
   };
 
   const handleDelExpEntry = (id: string) => {
+    // const updated = checkedRecords.filter((r) => r.id !== id);
+    // setCheckedRecords(updated);
+
+    // const updatedSelected = selectedIds.filter((x) => x !== id);
+    // setSelectedIds(updatedSelected);
+
+    // const newTotalPages = Math.ceil(updated.length / rowsPerPage);
+    // if (currentPage > newTotalPages && newTotalPages > 0)
+    //   setCurrentPage(newTotalPages);
     const updated = checkedRecords.filter((r) => r.id !== id);
     setCheckedRecords(updated);
 
     const updatedSelected = selectedIds.filter((x) => x !== id);
     setSelectedIds(updatedSelected);
 
-    const newTotalPages = Math.ceil(updated.length / rowsPerPage);
-    if (currentPage > newTotalPages && newTotalPages > 0)
-      setCurrentPage(newTotalPages);
+    const newTotalPages = Math.max(1, Math.ceil(updated.length / rowsPerPage));
+
+    setCurrentPage((prev) => Math.min(prev, newTotalPages));
   };
 
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -253,14 +274,9 @@ export default function UserProfilePage({
   const currentRows = checkedRecords.slice(indexOfFirstRow, indexOfLastRow);
   const totalPages = Math.max(
     1,
-    Math.ceil(checkedRecords.length / rowsPerPage)
+    Math.ceil(checkedRecords.length / rowsPerPage),
   );
   const hasRecords = checkedRecords.length > 0;
-
-  const handlePDF = () => {
-    handleToast(true, "exportTracker");
-    window.print();
-  };
 
   const handleSheetChange = useCallback(
     (data: {
@@ -273,16 +289,16 @@ export default function UserProfilePage({
       setSelectedMonth(data.month);
       setSelectedYear(data.year);
     },
-    []
+    [setCurrentSheet, setSelectedMonth, setSelectedYear],
   );
 
-  useEffect(() => {
-    if (!hasRecords) {
-      setCurrentPage(1);
-      return;
-    }
-    if (currentPage > totalPages) setCurrentPage(totalPages);
-  }, [checkedRecords, totalPages, currentPage, hasRecords]);
+  // useEffect(() => {
+  //   if (!hasRecords) {
+  //     setCurrentPage(1);
+  //     return;
+  //   }
+  //   if (currentPage > totalPages) setCurrentPage(totalPages);
+  // }, [checkedRecords, totalPages, currentPage, hasRecords]);
 
   const openEdit = () => {
     if (!user) return;
@@ -330,11 +346,6 @@ export default function UserProfilePage({
     fetchGroups();
   }, []);
 
-  const deptOptions = [
-    { id: "dept_A", name: "dept_A" },
-    { id: "dept_B", name: "dept_B" },
-  ];
-
   const [loc, setLoc] = useState<any[]>([]);
 
   useEffect(() => {
@@ -350,6 +361,7 @@ export default function UserProfilePage({
     fetchLocations();
   }, []);
 
+  console.log(loading);
   if (loading) return null;
 
   if (!user) {
@@ -408,7 +420,7 @@ export default function UserProfilePage({
           </div>
 
           <div className="flex flex-row gap-5">
-            <Button className="btn-css gradient-bg" onClick={() => handlePDF()}>
+            <Button className="btn-css gradient-bg">
               Export as Excel
               <Sheet />
             </Button>
@@ -420,9 +432,10 @@ export default function UserProfilePage({
                     rows={currentSheet?.visibleRows || []}
                     month={currentSheet?.month ?? month}
                     year={currentSheet?.year ?? year}
+                    user={userInfo}
                   />
                 ) : (
-                  <SheetDaysPdf rows={[]} month={0} year={0} />
+                  <SheetDaysPdf rows={[]} month={0} year={0} user={userInfo} />
                 )
               }
               fileName={`Monthly_Tracker_${
@@ -433,6 +446,7 @@ export default function UserProfilePage({
                 <Button
                   className="btn-css gradient-bg"
                   disabled={loading || !currentSheet}
+                  onClick={() => handleToast(true, "exportTracker")}
                 >
                   {loading ? "Generating PDF..." : "Download PDF"}
                   <FileText className="ml-2" />
@@ -486,7 +500,7 @@ export default function UserProfilePage({
           </div>
 
           <div className="flex flex-row justify-between gap-3 h-[30px]">
-            <Popover>
+            {/* <Popover>
               <PopoverTrigger className="btn-css gradient-bg">
                 Filter by Type
                 <ListFilter />
@@ -547,7 +561,7 @@ export default function UserProfilePage({
                   />
                 </div>
               </PopoverContent>
-            </Popover>
+            </Popover> */}
 
             {/* TO DO */}
             <Popover>
@@ -584,7 +598,7 @@ export default function UserProfilePage({
                             setLocationFilter((prev) =>
                               checked
                                 ? [...prev, l.location]
-                                : prev.filter((x) => x !== l.location)
+                                : prev.filter((x) => x !== l.location),
                             );
                           }}
                           className="checkbox-css mr-2"
@@ -748,7 +762,7 @@ export default function UserProfilePage({
                   value={editForm?.first_name || ""}
                   onChange={(e) =>
                     setEditForm((prev) =>
-                      prev ? { ...prev, first_name: e.target.value } : prev
+                      prev ? { ...prev, first_name: e.target.value } : prev,
                     )
                   }
                 />
@@ -761,7 +775,7 @@ export default function UserProfilePage({
                   value={editForm?.last_name || ""}
                   onChange={(e) =>
                     setEditForm((prev) =>
-                      prev ? { ...prev, last_name: e.target.value } : prev
+                      prev ? { ...prev, last_name: e.target.value } : prev,
                     )
                   }
                 />
@@ -776,7 +790,7 @@ export default function UserProfilePage({
                 value={editForm?.email || ""}
                 onChange={(e) =>
                   setEditForm((prev) =>
-                    prev ? { ...prev, email: e.target.value } : prev
+                    prev ? { ...prev, email: e.target.value } : prev,
                   )
                 }
               />
@@ -812,12 +826,12 @@ export default function UserProfilePage({
                   onValueChange={(value) => {
                     // map chosen group name to uuid for PATCH if you have them
                     const found = groupOptions.find(
-                      (g) => g.group_name === value
+                      (g) => g.group_name === value,
                     );
                     setEditForm((prev) =>
                       prev
                         ? { ...prev, group: value, group_id: found?.group_id }
-                        : prev
+                        : prev,
                     );
                   }}
                 >

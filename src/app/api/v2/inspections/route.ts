@@ -11,6 +11,8 @@ export async function GET(req: Request) {
     const own = searchParams.get("own") === "true";
     const types = searchParams.getAll("type") ?? [];
     const locations = searchParams.getAll("location") ?? [];
+    const dateFrom = searchParams.get("dateFrom") ?? "";
+    const dateTo = searchParams.get("dateTo") ?? "";
     const limit = Math.min(Number(searchParams.get("limit") ?? 20), 100);
     const offset = Number(searchParams.get("offset") ?? 0);
     const workOrderId = searchParams.get("wo") ?? "";
@@ -50,6 +52,16 @@ export async function GET(req: Request) {
     if (locations.length) {
       values.push(locations);
       where.push(`l.location = ANY($${values.length}::text[])`);
+    }
+
+    if (dateFrom.length) {
+      values.push(dateFrom);
+      where.push(`i.inspection_date::date >= $${values.length}::date`);
+    }
+
+    if (dateTo.length) {
+      values.push(dateTo);
+      where.push(`i.inspection_date::date <= $${values.length}::date`);
     }
 
     if (workOrderId.length) {

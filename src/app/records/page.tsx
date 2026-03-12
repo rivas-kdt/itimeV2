@@ -37,10 +37,12 @@ function UserRecordsContent() {
 
     searchRecord,
     setSearchRecord,
-    typeFilter,
-    setTypeFilter,
+    // typeFilter,
+    // setTypeFilter,
     locationFilter,
     setLocationFilter,
+    date,
+    setDate,
 
     selectedIds,
     setSelectedIds,
@@ -119,7 +121,7 @@ function UserRecordsContent() {
       setSelectedUser(updated);
       toastSuccess(
         "Updated Successfully",
-        "Information of the record was updated."
+        "Information of the record was updated.",
       );
       setIsEdit(false);
     } catch (e: any) {
@@ -133,7 +135,7 @@ function UserRecordsContent() {
       await onDelete(selectedUser.id);
       toastSuccess(
         "Inspection Record was Removed",
-        "The record was removed from the system."
+        "The record was removed from the system.",
       );
       setIsDelete(false);
     } catch (e: any) {
@@ -155,7 +157,7 @@ function UserRecordsContent() {
 
   const totalPages = Math.max(
     1,
-    Math.ceil(checkedRecords.length / rowsPerPage)
+    Math.ceil(checkedRecords.length / rowsPerPage),
   );
   const currentRows = useMemo(() => {
     const start = (currentPage - 1) * rowsPerPage;
@@ -179,10 +181,12 @@ function UserRecordsContent() {
         <RecordsToolbar
           searchRecord={searchRecord}
           setSearchRecord={setSearchRecord}
-          typeFilter={typeFilter as any}
-          setTypeFilter={setTypeFilter as any}
+          // typeFilter={typeFilter as any}
+          // setTypeFilter={setTypeFilter as any}
           locationFilter={locationFilter as any}
           setLocationFilter={setLocationFilter as any}
+          date={date}
+          setDate={setDate}
           onOpenExport={() => setShowExport(true)}
           onClear={() => {
             clearFilters();
@@ -207,14 +211,14 @@ function UserRecordsContent() {
         onExportAll={() =>
           toastSuccess(
             "Exported the File Successfully",
-            "All data was exported. (Wire excel export later)"
+            "All data was exported. (Wire excel export later)",
           )
         }
         //TODO: implement export month
         onExportMonth={() =>
           toastSuccess(
             "Exported the File Successfully",
-            "Selected month data exported. (Wire later)"
+            "Selected month data exported. (Wire later)",
           )
         }
         onExportSelected={handleCheckedExport}
@@ -252,7 +256,7 @@ function UserRecordsContent() {
         onExport={() =>
           toastSuccess(
             "Exported the File Successfully",
-            "Selected data exported. (Wire excel export later)"
+            "Selected data exported. (Wire excel export later)",
           )
         }
       />

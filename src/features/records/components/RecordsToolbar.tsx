@@ -21,16 +21,24 @@ import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { useEffect, useState } from "react";
 import { getLocation } from "../services/records.service";
+import { Calendar } from "@/components/ui/calendar";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { addDays, format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { type DateRange } from "react-day-picker";
 
 type Props = {
   searchRecord: string;
   setSearchRecord: (v: string) => void;
 
-  typeFilter: string[];
-  setTypeFilter: (v: string[]) => void;
+  // typeFilter: string[];
+  // setTypeFilter: (v: string[]) => void;
 
   locationFilter: string[];
   setLocationFilter: (v: string[]) => void;
+
+  date: DateRange | undefined;
+  setDate: (v: DateRange | undefined) => void;
 
   onOpenExport: () => void;
   onClear: () => void;
@@ -49,16 +57,19 @@ function toggle(arr: string[], value: string, checked: boolean) {
 export function RecordsToolbar({
   searchRecord,
   setSearchRecord,
-  typeFilter,
-  setTypeFilter,
+  // typeFilter,
+  // setTypeFilter,
   locationFilter,
   setLocationFilter,
+  date,
+  setDate,
   onOpenExport,
   onClear,
 }: Props) {
   // const loc = ["Warehouse A", "Site B", "Warehouse C"];
   const [loc, setLoc] = useState<Location[]>([]);
   console.log(loc);
+
   useEffect(() => {
     const fetchLocations = async () => {
       const res = await getLocation();
@@ -94,6 +105,7 @@ export function RecordsToolbar({
 
       <div className="flex flex-row justify-between gap-3 h-[30px]">
         {/* <Popover>
+        {/* <Popover>
           <PopoverTrigger className="btn-css gradient-bg">
             Filter by Type
             <ListFilter />
@@ -113,7 +125,7 @@ export function RecordsToolbar({
                 checked={typeFilter.includes("Inspection")}
                 onCheckedChange={(checked) =>
                   setTypeFilter(
-                    toggle(typeFilter, "Inspection", Boolean(checked))
+                    toggle(typeFilter, "Inspection", Boolean(checked)),
                   )
                 }
                 className="checkbox-css mr-2"
@@ -132,7 +144,7 @@ export function RecordsToolbar({
                 checked={typeFilter.includes("Receiving")}
                 onCheckedChange={(checked) =>
                   setTypeFilter(
-                    toggle(typeFilter, "Receiving", Boolean(checked))
+                    toggle(typeFilter, "Receiving", Boolean(checked)),
                   )
                 }
                 className="checkbox-css mr-2"
@@ -140,6 +152,67 @@ export function RecordsToolbar({
             </label>
           </PopoverContent>
         </Popover> */}
+        {/* filter by date range here */}
+        {/* <Field className="mx-auto w-60"> */}
+        {/* <FieldLabel htmlFor="date-picker-range">Date Picker Range</FieldLabel> */}
+        <Popover>
+          <PopoverTrigger
+            id="date-picker-range"
+            className="gradient-bg btn-css"
+          >
+            {/* <Button
+                variant="outline"
+                id="date-picker-range"
+                className="gradient-bg text-white px-2.5 align-center"
+              > */}
+            Filter Date Range
+            <CalendarIcon className="text-white" />
+            {/* {date?.from ? (
+              date.to ? (
+                <>
+                  {format(date.from, "LLL dd, y")} -{" "}
+                  {format(date.to, "LLL dd, y")}
+                </>
+              ) : (
+                format(date.from, "LLL dd, y")
+              )
+            ) : (
+              <span>Pick a date</span>
+            )} */}
+            {/* </Button> */}
+          </PopoverTrigger>
+          <PopoverContent
+            className="popover-design text-black-text w-auto p-0"
+            align="center"
+          >
+            <div className="flex-col p-4 border-b border-primary">
+              <span className="font-bold">Selected Date Range: </span>
+              {date?.from ? (
+                date.to ? (
+                  <>
+                    {format(date.from, "LLL dd, y")} -{" "}
+                    {format(date.to, "LLL dd, y")}
+                  </>
+                ) : (
+                  format(date.from, "LLL dd, y")
+                )
+              ) : (
+                <span>Pick a date</span>
+              )}
+              <div className="italic text-sm text-gray-500 mt-1">
+                *Double click a date to set START Date
+              </div>
+            </div>
+            <Calendar
+              mode="range"
+              defaultMonth={date?.from}
+              selected={date}
+              onSelect={setDate}
+              numberOfMonths={2}
+            />
+          </PopoverContent>
+        </Popover>
+        {/* </Field> */}
 
         <Popover>
           <PopoverTrigger className="btn-css gradient-bg">
@@ -166,8 +239,8 @@ export function RecordsToolbar({
                         toggle(
                           locationFilter,
                           location.location,
-                          Boolean(checked)
-                        )
+                          Boolean(checked),
+                        ),
                       )
                     }
                     className="checkbox-css mr-2"

@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoginLoading(false);
       }
     },
-    [router]
+    [router],
   );
 
   const logout = useCallback(async () => {

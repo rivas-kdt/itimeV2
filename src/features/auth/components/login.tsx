@@ -9,6 +9,7 @@ import { useAuth } from "@/features/auth/hooks/auth-context";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 type Props = {
   onChangeView: (view: "login" | "signUp" | "forgotPassword") => void;
@@ -58,6 +59,7 @@ const toastError = (
   });
 
 export function LoginForm({ onChangeView }: Props) {
+  const t = useTranslations("auth");
   const isMobile = useIsMobile();
   const { login, loginLoading } = useAuth();
 
@@ -71,35 +73,35 @@ export function LoginForm({ onChangeView }: Props) {
 
     // Validation
     if (!email || !password) {
-      setFormError("*Please fill in all fields");
-      toastError(isMobile, "Validation Error", "Please fill in all fields");
+      setFormError(`*${t("fillAllFields")}`);
+      toastError(isMobile, t("validationError"), t("fillAllFields"));
       return;
     }
 
     if (!email.includes("@")) {
-      setFormError("*Please enter a valid email");
-      toastError(isMobile, "Validation Error", "Please enter a valid email");
+      setFormError(`*${t("validEmail")}`);
+      toastError(isMobile, t("validationError"), t("validEmail"));
       return;
     }
 
     if (password.length < 6) {
-      setFormError("*Password must be at least 6 characters");
+      setFormError(`*${t("passwordMinLength")}`);
       toastError(
         isMobile,
-        "Validation Error",
-        "Password must be at least 6 characters",
+        t("validationError"),
+        t("passwordMinLength"),
       );
       return;
     }
 
     try {
       await login(email, password);
-      toastSuccess(isMobile, "Login Successful", "You are now logged in");
+      toastSuccess(isMobile, t("loginSuccess"), t("loggedIn"));
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Login failed";
+        error instanceof Error ? error.message : t("loginFailed");
       setFormError(errorMessage);
-      toastError(isMobile, "Login Failed", errorMessage || "Please try again.");
+      toastError(isMobile, t("loginFailed"), errorMessage || t("pleaseTryAgain"));
     }
   };
 
@@ -116,23 +118,22 @@ export function LoginForm({ onChangeView }: Props) {
               className="h-fit"
             />
             <p className="w-fit text-5xl font-semibold bg-gradient-to-br from-[#FFb347] to-[#FF6801] bg-clip-text text-transparent leading-normal">
-              Login
+              {t("login")}
             </p>
           </div>
           <p className=" mt-2 text-gray-500 text-md">
-            Effortlessly monitor inspection durations for precise time tracking
-            and seamless reporting.
+            {t("loginSubtitle")}
           </p>
           {formError && (
             <p className="text-red-500 text-sm mb-2">{formError}</p>
           )}
           <form className=" flex flex-col mt-10" onSubmit={handleSubmit}>
             <div className=" flex flex-col gap-2 mb-4">
-              <label className=" font-semibold text-black">Email</label>
+              <label className=" font-semibold text-black">{t("email")}</label>
               <div className="flex px-4 w-full py-1 rounded-md border border-gray-500 ">
                 <Mail className="text-gray-500 flex self-center" size={30} />
                 <Input
-                  placeholder="Enter Email"
+                  placeholder={t("enterEmail")}
                   type="email"
                   className="input-invis placeholder:text-sm"
                   value={email}
@@ -142,11 +143,11 @@ export function LoginForm({ onChangeView }: Props) {
             </div>
 
             <div className=" flex flex-col gap-2 mb-2">
-              <label className=" font-semibold text-black">Password</label>
+              <label className=" font-semibold text-black">{t("password")}</label>
               <div className="flex px-4 w-full py-1 rounded-md border border-black-500 ">
                 <Lock className="text-gray-500 flex self-center" size={30} />
                 <Input
-                  placeholder="Enter Password"
+                  placeholder={t("enterPassword")}
                   type="password"
                   className="input-invis placeholder:text-sm"
                   value={password}
@@ -161,7 +162,7 @@ export function LoginForm({ onChangeView }: Props) {
               onClick={() => onChangeView("forgotPassword")}
               type="button"
             >
-              Forgot Password?
+              {t("forgotPassword")}
             </Button>
 
             <Button
@@ -169,11 +170,11 @@ export function LoginForm({ onChangeView }: Props) {
               className=" gradient-bg text-white px-4 py-2 rounded-md mt-15 disabled:opacity-50"
               disabled={loginLoading}
             >
-              {loginLoading ? "Logging in..." : "Login"}
+              {loginLoading ? t("loggingIn") : t("login")}
             </Button>
 
             <p className=" text-sm font-medium text-gray-500 mt-4">
-              New Inspector?
+              {t("newInspector")}
               <span className=" ml-2">
                 <Button
                   variant="ghost"
@@ -181,7 +182,7 @@ export function LoginForm({ onChangeView }: Props) {
                   onClick={() => onChangeView("signUp")}
                   type="button"
                 >
-                  Create new account
+                  {t("createNewAccount")}
                 </Button>
               </span>
             </p>
@@ -194,22 +195,21 @@ export function LoginForm({ onChangeView }: Props) {
     <div className=" flex flex-col gap-2 w-full p-8">
       <div className=" h-full max-w-2xl">
         <p className="text-5xl font-semibold bg-gradient-to-br from-[#FFb347] to-[#FF6801] bg-clip-text text-transparent leading-normal">
-          Login
+          {t("login")}
         </p>
         <p className=" mt-2 text-gray-500 text-md">
-          Effortlessly monitor inspection durations for precise time tracking
-          and seamless reporting.
+          {t("loginSubtitle")}
         </p>
         {formError && (
           <p className="text-red-500 text-sm mb-2 mt-4">{formError}</p>
         )}
         <form className=" flex flex-col mt-10" onSubmit={handleSubmit}>
           <div className=" flex flex-col gap-2 mb-4">
-            <label className=" font-semibold text-black">Email</label>
+            <label className=" font-semibold text-black">{t("email")}</label>
             <div className="flex px-4 w-full py-1 rounded-md border border-gray-500 ">
               <Mail className="text-gray-500 flex self-center" size={30} />
               <Input
-                placeholder="Enter Email"
+                placeholder={t("enterEmail")}
                 type="email"
                 className="input-invis placeholder:text-sm"
                 value={email}
@@ -219,11 +219,11 @@ export function LoginForm({ onChangeView }: Props) {
           </div>
 
           <div className=" flex flex-col gap-2 mb-2">
-            <label className=" font-semibold text-black">Password</label>
+            <label className=" font-semibold text-black">{t("password")}</label>
             <div className="flex px-4 w-full py-1 rounded-md border border-black-500 ">
               <Lock className="text-gray-500 flex self-center" size={30} />
               <Input
-                placeholder="Enter Password"
+                placeholder={t("enterPassword")}
                 type="password"
                 className="input-invis placeholder:text-sm"
                 value={password}
@@ -238,7 +238,7 @@ export function LoginForm({ onChangeView }: Props) {
             onClick={() => onChangeView("forgotPassword")}
             type="button"
           >
-            Forgot Password?
+            {t("forgotPassword")}
           </Button>
 
           <Button
@@ -246,11 +246,11 @@ export function LoginForm({ onChangeView }: Props) {
             className=" gradient-bg text-white px-4 py-2 rounded-md mt-15 cursor-pointer disabled:opacity-50"
             disabled={loginLoading}
           >
-            {loginLoading ? "Logging in..." : "Login"}
+            {loginLoading ? t("loggingIn") : t("login")}
           </Button>
 
           <p className=" text-sm font-medium text-gray-500 mt-4">
-            New Inspector?
+            {t("newInspector")}
             <span className="">
               <Button
                 variant="ghost"
@@ -258,7 +258,7 @@ export function LoginForm({ onChangeView }: Props) {
                 onClick={() => onChangeView("signUp")}
                 type="button"
               >
-                Create new account
+                {t("createNewAccount")}
               </Button>
             </span>
           </p>

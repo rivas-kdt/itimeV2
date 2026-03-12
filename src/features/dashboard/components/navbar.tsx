@@ -3,8 +3,10 @@ import { CircleUser, Clock, FileText, Home, ScanLine } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { useTranslations } from "next-intl";
 
 const Navbar = ({ children }: { children: React.ReactNode }) => {
+  const t = useTranslations("navbar");
   const pathname = usePathname();
   const isActive = `text-primary`;
 
@@ -40,7 +42,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
             } flex flex-col items-center gap-1 w-[65px]`}
           >
             <Home size={28} strokeWidth={1} />
-            <p className=" text-md">Home</p>
+            <p className=" text-md">{t("home")}</p>
           </Link>
           <Link
             href="/work-orders"
@@ -49,7 +51,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
             } flex flex-col items-center gap-1 w-[65px]`}
           >
             <FileText size={28} strokeWidth={1} />
-            <p className=" text-md">Records</p>
+            <p className=" text-md">{t("records")}</p>
           </Link>
         </div>
 
@@ -69,7 +71,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
             } flex flex-col items-center gap-1 w-[65px]`}
           >
             <Clock size={28} strokeWidth={1} />
-            <p className=" text-md">Tracker</p>
+            <p className=" text-md">{t("tracker")}</p>
           </Link>
           <Link
             href="/profile"
@@ -78,7 +80,7 @@ const Navbar = ({ children }: { children: React.ReactNode }) => {
             } flex flex-col items-center gap-1 w-[65px]`}
           >
             <CircleUser size={28} strokeWidth={1} />
-            <p className=" text-md">Profile</p>
+            <p className=" text-md">{t("profile")}</p>
           </Link>
         </div>
       </div>

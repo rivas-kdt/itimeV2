@@ -103,11 +103,17 @@ function Calendar({
           defaultClassNames.day,
         ),
         range_start: cn(
-          "rounded-l-md bg-accent",
+          "rounded-l-md bg-accent text-white",
           defaultClassNames.range_start,
         ),
-        range_middle: cn("rounded-none", defaultClassNames.range_middle),
-        range_end: cn("rounded-r-md bg-accent", defaultClassNames.range_end),
+        range_middle: cn(
+          "rounded-none bg-primary/5 border-t border-b border-gray-500",
+          defaultClassNames.range_middle,
+        ),
+        range_end: cn(
+          "rounded-r-md bg-accent text-white",
+          defaultClassNames.range_end,
+        ),
         today: cn(
           "bg-primary-op-1 text-accent-foreground rounded-full data-[selected=true]:rounded-full",
           defaultClassNames.today,

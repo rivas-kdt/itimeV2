@@ -2,11 +2,13 @@
 
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { RowData, MonthKey, toNumberHours } from "./sheet";
+import { UserInfo } from "@/app/user-management/[id]/page";
 
 type Props = {
   rows: RowData[];
   month: number;
   year: number;
+  user: UserInfo;
 };
 
 const styles = StyleSheet.create({
@@ -39,6 +41,38 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: "#9ca3af",
   },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 4,
+    marginBottom: 8,
+  },
+  titleDiv: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 6,
+    gap: 8,
+  },
+  title: {
+    fontWeight: "bold",
+    fontSize: 24,
+  },
+  yearMonth: {
+    fontSize: 12,
+  },
+  userInfoDiv: {
+    display: "flex",
+    paddingVertical: 2,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    justifyContent: "center",
+  },
+  userInfo: {
+    flexDirection: "row",
+    gap: 16,
+    justifyContent: "center",
+  },
 });
 
 const getDaysInMonth = (m: number, y: number): Date[] => {
@@ -57,7 +91,7 @@ const formatValue2Decimal = (val: number) => {
   return intPart + decimal;
 };
 
-export const SheetDaysPdf = ({ rows, month, year }: Props) => {
+export const SheetDaysPdf = ({ rows, month, year, user }: Props) => {
   // const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
   const monthKey: MonthKey =
     `${year}-${String(month + 1).padStart(2, "0")}` as MonthKey;
@@ -106,6 +140,23 @@ export const SheetDaysPdf = ({ rows, month, year }: Props) => {
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
+        <View style={styles.header}>
+          <View style={styles.titleDiv}>
+            <Text style={styles.title}>Man Hour Performance Table</Text>
+            <Text style={styles.yearMonth}>
+              ( {year}
+              {"0" + month} )
+            </Text>
+          </View>
+          <View style={styles.userInfoDiv}>
+            <Text>Full Name</Text>
+            <View style={styles.userInfo}>
+              <Text>{user.empID}</Text>
+              <Text>{user.name}</Text>
+            </View>
+          </View>
+        </View>
+
         <View style={styles.table}>
           {/* Header */}
           <View style={styles.headerRow}>

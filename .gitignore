@@ -42,3 +42,4 @@ yarn-error.log*
 next-env.d.ts
 
 .venv/
+src/app/service/__pycache__/ocr.cpython-312.pyc

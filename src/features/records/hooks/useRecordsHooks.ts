@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { InspectionsDTO, InspectionType, LocationName } from "../types";
 import { deleteInspection, getInspections, updateInspection } from "../services/records.service";
+import { addDays } from "date-fns";
+import { type DateRange } from "react-day-picker";
 
 export function useRecordsHooks() {
     const [records, setRecords] = useState<InspectionsDTO[]>([]);
@@ -11,6 +13,10 @@ export function useRecordsHooks() {
     const [typeFilter, setTypeFilter] = useState<InspectionType[]>([]);
     const [locationFilter, setLocationFilter] = useState<LocationName[]>([]);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [date, setDate] = useState<DateRange | undefined>({
+        from: new Date(new Date().getFullYear(), 0, 20),
+        to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
+    });
 
     const fetchInspections = async () => {
         setLoading(true);
@@ -21,6 +27,8 @@ export function useRecordsHooks() {
                 type: typeFilter.length ? typeFilter : undefined,
                 own: true,
                 location: locationFilter.length ? locationFilter : undefined,
+                dateFrom: date?.from ? date.from.toISOString().split('T')[0] : undefined,
+                dateTo: date?.to ? date.to.toISOString().split('T')[0] : undefined,
                 limit: 500,
                 offset: 0,
             });
@@ -35,13 +43,17 @@ export function useRecordsHooks() {
 
     useEffect(() => {
         fetchInspections();
-    }, [searchRecord, typeFilter, locationFilter]);
+    }, [searchRecord, typeFilter, locationFilter, date]);
 
     const clearFilters = () => {
         setSelectedIds([]);
         setSearchRecord("");
         setTypeFilter([]);
         setLocationFilter([]);
+        setDate({
+            from: new Date(new Date().getFullYear(), 0, 20),
+            to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
+        });
     }
 
     const onUpdate = async (id: string, patch: any) => {
@@ -69,6 +81,8 @@ export function useRecordsHooks() {
         setTypeFilter,
         locationFilter,
         setLocationFilter,
+        date,
+        setDate,
         selectedIds,
         setSelectedIds,
         clearFilters,

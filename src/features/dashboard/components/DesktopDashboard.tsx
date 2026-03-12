@@ -16,6 +16,14 @@ import {
   YAxis,
 } from "recharts";
 import { useDesktopDashboardHooks } from "../hooks/useDesktopDashboardHooks";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useIsMobile } from "@/hooks/useMobile";
 
 const inspectionConfig = {
   month_inspections: {
@@ -49,6 +57,9 @@ export default function DesktopDashboard() {
   const inspectionData = monthChart;
   const workCodeData = workCodeChart;
   const recentRows = recentInspections;
+
+  const isMobile = useIsMobile();
+  console.log("isMobile: ", isMobile);
 
   return (
     <div className="flex flex-row gap-8 p-4">
@@ -131,7 +142,36 @@ export default function DesktopDashboard() {
             </div>
           </div>
         </div>
+
         <div className="box-design w-full p-5">
+          <div className="flex justify-end w-full mb-1">
+            <Select>
+              <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-2 py-3">
+                <SelectValue placeholder="Select Month" />
+              </SelectTrigger>
+              <SelectContent className="h-[200px] bg-white text-black border-gray-300">
+                {[
+                  "January",
+                  "February",
+                  "March",
+                  "April",
+                  "May",
+                  "June",
+                  "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December",
+                ].map((m) => (
+                  <SelectItem key={m} value={m} className="selection-hover">
+                    {m}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <ChartContainer
             config={inspectionConfig}
             className="h-[205px] 2xl:h-[270px] w-full ml-[-15]"
