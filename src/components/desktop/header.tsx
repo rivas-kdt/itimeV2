@@ -88,9 +88,7 @@ export default function Header() {
 
         <div className="flex justify-center w-full gap-5">
           <div
-            className={`grid ${
-              session?.user?.role === "Admin" ? "grid-cols-3" : "grid-cols-2"
-            } items-center justify-end w-full text-lg text-black gap-5`}
+            className={`flex items-center justify-center gap-10 w-full text-lg text-black`}
           >
             <Link
               href="/dashboard"

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dispatch, SetStateAction } from "react";
+import { InspectionsDTO } from "@/features/records/types";
 
 export type Inspections = {
   id: string;
@@ -39,7 +40,7 @@ export const getColumns = (
   setSelectedIds: Dispatch<SetStateAction<string[]>>,
   actions: RowActions,
   t: TableT,
-): ColumnDef<Inspections>[] => [
+): ColumnDef<InspectionsDTO>[] => [
   {
     id: "exportBox",
     cell: ({ row }) => {
@@ -89,8 +90,8 @@ export const getColumns = (
     meta: { className: "text-center" },
   },
   {
-    accessorKey: "type",
-    header: t("type"),
+    accessorKey: "date",
+    header: t("date"),
     meta: { className: "text-center" },
   },
   {

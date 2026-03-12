@@ -37,7 +37,7 @@ export async function GET(req: NextRequest, ctx: any) {
         i.start_time,
         i.end_time,
         i.created_at,
-        i.inspection_date,
+        to_char((i.inspection_date AT TIME ZONE 'Asia/Tokyo')::date, 'YYYY-MM-DD') AS inspection_date,
         i.status
       FROM inspection_v2 i
       JOIN work_order_v2 wo ON wo.id = i.work_order_id
@@ -134,7 +134,7 @@ export async function PATCH(req: Request, ctx: any) {
     const outQuery = `SELECT
     i.inspection_id::text AS id,
     wo.work_order AS "WorkOrder",
-    to_char(i.inspection_date::date, 'YYYY-MM-DD') AS date,
+    to_char((i.inspection_date AT TIME ZONE 'Asia/Tokyo')::date, 'YYYY-MM-DD') AS date,
     TO_CHAR((i.end_time - i.start_time),'HH24:MI') AS "duration",
     i.start_time::text AS start_time,
     i.end_time::text AS end_time,

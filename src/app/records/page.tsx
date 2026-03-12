@@ -19,6 +19,7 @@ import { EditDialog } from "@/features/records/components/EditDialog";
 import { ExportPreviewDialog } from "@/features/records/components/ExportPreviewDialog";
 import { getLocation } from "@/features/records/services/records.service";
 import { exportToExcel } from "@/features/records/services/export.service";
+import { formatDateWithTimezone } from "@/lib/timezone";
 
 export default function UserRecords() {
   return (
@@ -104,8 +105,8 @@ function UserRecordsContent() {
     const rec = records.find((r) => r.id === id) ?? null;
     setSelectedUser(rec ? { ...rec } : null);
     if (rec) {
-      setStartTime(rec.start_time);
-      setEndTime(rec.end_time);
+      setStartTime(rec.startTime);
+      setEndTime(rec.endTime);
     }
     setIsEdit(true);
   };
@@ -115,7 +116,7 @@ function UserRecordsContent() {
 
     try {
       const updated = await onUpdate(selectedUser.id, {
-        date: selectedUser.date,
+        date: formatDateWithTimezone(new Date(selectedUser.date)),
         start_time: startTime,
         end_time: endTime,
         type: selectedUser.type,
