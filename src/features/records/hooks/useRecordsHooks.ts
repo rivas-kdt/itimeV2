@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { InspectionsDTO, InspectionType, LocationName } from "../types";
 import { deleteInspection, getInspections, updateInspection } from "../services/records.service";
-import { addDays } from "date-fns";
+import { addDays, format } from "date-fns";
 import { type DateRange } from "react-day-picker";
 
 export function useRecordsHooks() {
@@ -27,8 +27,8 @@ export function useRecordsHooks() {
                 type: typeFilter.length ? typeFilter : undefined,
                 own: true,
                 location: locationFilter.length ? locationFilter : undefined,
-                dateFrom: date?.from ? date.from.toISOString().split('T')[0] : undefined,
-                dateTo: date?.to ? date.to.toISOString().split('T')[0] : undefined,
+                dateFrom: date?.from ? format(date.from, 'yyyy-MM-dd') : undefined,
+                dateTo: date?.to ? format(date.to, 'yyyy-MM-dd') : undefined,
                 limit: 500,
                 offset: 0,
             });

@@ -1,0 +1,103 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { InspectionsDTO } from "../types";
+
+export async function exportToExcel(records: InspectionsDTO[], filename: string = "inspection-records") {
+  try {
+    // Dynamically import xlsx to avoid build issues if not installed
+    const XLSXModule = await import("xlsx");
+    const XLSX = XLSXModule;
+    
+    // Transform records to export format
+    const exportData = records.map((record) => ({
+      "Work Order": record.workOrder,
+      "Work Code": record.workCode,
+      "Construction": record.construction,
+      "Others": record.others,
+      "Date": record.date,
+      "Start Time": record.startTime,
+      "End Time": record.endTime,
+      "Duration": record.duration,
+      "Type": record.type,
+      "Location": record.location,
+    }));
+
+    // Create worksheet
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    
+    // Create workbook and add worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Inspections");
+
+    // Set column widths
+    const maxWidth = 20;
+    worksheet["!cols"] = Array(Object.keys(exportData[0] || {}).length).fill({
+      wch: maxWidth,
+    });
+
+    // Write file
+    XLSX.writeFile(workbook, `${filename}-${new Date().toISOString().split('T')[0]}.xlsx`);
+  } catch (error) {
+    console.error("Export error:", error);
+    // Fallback to CSV export
+    exportToCSV(records, filename);
+  }
+}
+
+export function exportToCSV(records: InspectionsDTO[], filename: string = "inspection-records") {
+  // Convert records to CSV format
+  const headers = [
+    "Work Order",
+    "Work Code",
+    "Construction",
+    "Others",
+    "Date",
+    "Start Time",
+    "End Time",
+    "Duration",
+    "Type",
+    "Location",
+  ];
+
+  const rows = records.map((record) => [
+    record.workOrder,
+    record.workCode,
+    record.construction,
+    record.others,
+    record.date,
+    record.startTime,
+    record.endTime,
+    record.duration,
+    record.type,
+    record.location,
+  ]);
+
+  // Create CSV content
+  const csvContent = [
+    headers.join(","),
+    ...rows.map((row) =>
+      row
+        .map((cell) =>
+          typeof cell === "string" && cell.includes(",")
+            ? `"${cell}"`
+            : cell
+        )
+        .join(",")
+    ),
+  ].join("\n");
+
+  // Create blob and download
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  
+  link.setAttribute("href", url);
+  link.setAttribute(
+    "download",
+    `${filename}-${new Date().toISOString().split('T')[0]}.csv`
+  );
+  link.style.visibility = "hidden";
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}

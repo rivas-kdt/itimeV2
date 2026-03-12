@@ -17,6 +17,7 @@ import { DeleteDialog } from "@/features/records/components/DeleteDialog";
 import { EditDialog } from "@/features/records/components/EditDialog";
 import { ExportPreviewDialog } from "@/features/records/components/ExportPreviewDialog";
 import { getLocation } from "@/features/records/services/records.service";
+import { exportToExcel } from "@/features/records/services/export.service";
 
 export default function UserRecords() {
   return (
@@ -155,6 +156,53 @@ function UserRecordsContent() {
     setSelectedIds((prev) => prev.filter((x) => x !== id));
   };
 
+  const handleExport = async () => {
+    try {
+      await exportToExcel(checkedRecords, "inspection-records");
+      toastSuccess(
+        "Exported Successfully",
+        `${checkedRecords.length} record(s) exported to file.`,
+      );
+      setIsCheckedExport(false);
+    } catch (e: any) {
+      toastError("Export Failed", e?.message || "Please try again.");
+    }
+  };
+
+  const handleExportAll = async () => {
+    try {
+      await exportToExcel(records, "all-inspection-records");
+      toastSuccess(
+        "Exported Successfully",
+        `All ${records.length} record(s) exported to file.`,
+      );
+      setShowExport(false);
+    } catch (e: any) {
+      toastError("Export Failed", e?.message || "Please try again.");
+    }
+  };
+
+  const handleExportMonth = async () => {
+    try {
+      if (!date?.from || !date?.to) {
+        toastError("Invalid Date Range", "Please select a date range first.");
+        return;
+      }
+      const monthYear = new Date(date.from).toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      });
+      await exportToExcel(records, `inspection-records-${monthYear}`);
+      toastSuccess(
+        "Exported Successfully",
+        `${records.length} record(s) from selected date range exported.`,
+      );
+      setShowExport(false);
+    } catch (e: any) {
+      toastError("Export Failed", e?.message || "Please try again.");
+    }
+  };
+
   const totalPages = Math.max(
     1,
     Math.ceil(checkedRecords.length / rowsPerPage),
@@ -207,20 +255,8 @@ function UserRecordsContent() {
       <ExportDialog
         open={showExport}
         onOpenChange={setShowExport}
-        //TODO: implement export all
-        onExportAll={() =>
-          toastSuccess(
-            "Exported the File Successfully",
-            "All data was exported. (Wire excel export later)",
-          )
-        }
-        //TODO: implement export month
-        onExportMonth={() =>
-          toastSuccess(
-            "Exported the File Successfully",
-            "Selected month data exported. (Wire later)",
-          )
-        }
+        onExportAll={handleExportAll}
+        onExportMonth={handleExportMonth}
         onExportSelected={handleCheckedExport}
       />
 
@@ -252,13 +288,7 @@ function UserRecordsContent() {
         onPrev={() => setCurrentPage((p) => Math.max(1, p - 1))}
         onNext={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
         onRemove={handleDelExpEntry}
-        //TODO: implement export checked
-        onExport={() =>
-          toastSuccess(
-            "Exported the File Successfully",
-            "Selected data exported. (Wire excel export later)",
-          )
-        }
+        onExport={handleExport}
       />
     </div>
   );
