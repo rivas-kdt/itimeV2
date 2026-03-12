@@ -6,8 +6,8 @@ export type InspectionsDTO = {
   workOrder: string;
   date: string; // YYYY-MM-DD
   duration: string; // e.g. "02:30"
-  start_time: string;
-  end_time: string;
+  startTime: string;
+  endTime: string;
   type: InspectionType;
   location: LocationName;
   construction: string;
