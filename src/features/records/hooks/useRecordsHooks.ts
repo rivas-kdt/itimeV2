@@ -51,8 +51,8 @@ export function useRecordsHooks() {
         setTypeFilter([]);
         setLocationFilter([]);
         setDate({
-            from: new Date(new Date().getFullYear(), 0, 20),
-            to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
+            from: undefined,
+            to: undefined,
         });
     }
 
