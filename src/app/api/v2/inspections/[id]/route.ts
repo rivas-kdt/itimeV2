@@ -166,3 +166,47 @@ export async function PATCH(req: Request, ctx: any) {
     client.release();
   }
 }
+
+
+export async function DELETE(req: NextRequest, ctx: any) {
+  const token = await readSession();
+
+  if (!token) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  const decoded = await decrypt(token);
+
+  if (!decoded?.user?.empId) {
+    return NextResponse.json({ message: "Invalid session" }, { status: 401 });
+  }
+
+  const { id: inspectionId } = await ctx.params;
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      `DELETE FROM inspection_v2 WHERE inspection_id = $1 RETURNING inspection_id`,
+      [inspectionId]
+    );
+
+    if (result.rows.length === 0) {
+      return NextResponse.json(
+        { message: "Inspection not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: "Inspection deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("DELETE /api/v2/inspections/[id] error:", error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
+  } finally {
+    client.release();
+  }
+}

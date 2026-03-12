@@ -147,7 +147,7 @@ export function EditDialog({
                   )
                 }
               >
-                <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
+                <SelectTrigger className="border border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
                   <SelectValue placeholder={t("selectType")} />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-black-text border-gray-300">

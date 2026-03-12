@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { InspectionsDTO, InspectionType, LocationName } from "../types";
 import { deleteInspection, getInspections, updateInspection } from "../services/records.service";
+import { addDays, format } from "date-fns";
+import { type DateRange } from "react-day-picker";
 
 export function useRecordsHooks() {
     const [records, setRecords] = useState<InspectionsDTO[]>([]);
@@ -11,6 +13,10 @@ export function useRecordsHooks() {
     const [typeFilter, setTypeFilter] = useState<InspectionType[]>([]);
     const [locationFilter, setLocationFilter] = useState<LocationName[]>([]);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [date, setDate] = useState<DateRange | undefined>({
+        from: undefined,
+        to: undefined,
+    });
 
     const fetchInspections = async () => {
         setLoading(true);
@@ -21,6 +27,8 @@ export function useRecordsHooks() {
                 type: typeFilter.length ? typeFilter : undefined,
                 own: true,
                 location: locationFilter.length ? locationFilter : undefined,
+                dateFrom: date?.from ? format(date.from, 'yyyy-MM-dd') : undefined,
+                dateTo: date?.to ? format(date.to, 'yyyy-MM-dd') : undefined,
                 limit: 500,
                 offset: 0,
             });
@@ -35,13 +43,17 @@ export function useRecordsHooks() {
 
     useEffect(() => {
         fetchInspections();
-    }, [searchRecord, typeFilter, locationFilter]);
+    }, [searchRecord, typeFilter, locationFilter, date]);
 
     const clearFilters = () => {
         setSelectedIds([]);
         setSearchRecord("");
         setTypeFilter([]);
         setLocationFilter([]);
+        setDate({
+            from: undefined,
+            to: undefined,
+        });
     }
 
     const onUpdate = async (id: string, patch: any) => {
@@ -69,6 +81,8 @@ export function useRecordsHooks() {
         setTypeFilter,
         locationFilter,
         setLocationFilter,
+        date,
+        setDate,
         selectedIds,
         setSelectedIds,
         clearFilters,

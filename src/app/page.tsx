@@ -13,8 +13,10 @@ import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/useMobile";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/features/auth/hooks/auth-context";
+import Loader from "@/components/Loader";
+import { useTranslations } from "next-intl";
 
 export type FormView = "default" | "login" | "signUp" | "forgotPassword";
 
@@ -29,23 +31,31 @@ async function setLocale(locale: "en" | "ja") {
 export default function LandingPage() {
   const t = useTranslations("landing");
   const router = useRouter();
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
   const [view, setView] = useState<FormView>("default");
-  const [mounted, setMounted] = useState(false);
+
+  const { session } = useAuth();
 
   const handleLocaleChange = (locale: "en" | "ja") => {
     setLocale(locale).then(() => router.refresh());
   };
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (session.isAuthenticated && !session.isLoading) {
+      router.push("/dashboard");
+    }
+  });
 
-  if (!mounted || isMobile === undefined) {
-    return null;
+  console.log("landing isMobile: ", isMobile, window.innerWidth);
+  if (session.isLoading) {
+    return (
+      <div className=" h-screen w-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
   }
 
-  if (!isMobile) {
+  if (!isMobile && !isLoading) {
     return (
       <div className="min-h-screen text-black flex flex-col items-center justify-center px-8">
         <div className="flex gap-3 box-design p-8 items-stretch h-full">
@@ -57,7 +67,10 @@ export default function LandingPage() {
               </h1>
               <h3 className=" text-gray-500">
                 {t("tagline")}
-                <span className=" text-primary font-semibold"> {t("appName")}</span>
+                <span className=" text-primary font-semibold">
+                  {" "}
+                  {t("appName")}
+                </span>
               </h3>
             </div>
           </div>
@@ -101,9 +114,19 @@ export default function LandingPage() {
                     align="center"
                     className="popover-lang w-37.5 text-black my-1"
                   >
-                    <div className="popover-select cursor-pointer" onClick={() => handleLocaleChange("ja")}>{t("japanese")}</div>
+                    <div
+                      className="popover-select cursor-pointer"
+                      onClick={() => handleLocaleChange("ja")}
+                    >
+                      {t("japanese")}
+                    </div>
                     <Separator className="border border-gray-300" />
-                    <div className="popover-select cursor-pointer" onClick={() => handleLocaleChange("en")}>{t("english")}</div>
+                    <div
+                      className="popover-select cursor-pointer"
+                      onClick={() => handleLocaleChange("en")}
+                    >
+                      {t("english")}
+                    </div>
                   </PopoverContent>
                 </Popover>
               </div>
@@ -119,9 +142,19 @@ export default function LandingPage() {
                     align="center"
                     className="popover-lang w-37.5 text-black my-1"
                   >
-                    <div className="popover-select cursor-pointer" onClick={() => handleLocaleChange("ja")}>{t("japanese")}</div>
+                    <div
+                      className="popover-select cursor-pointer"
+                      onClick={() => handleLocaleChange("ja")}
+                    >
+                      {t("japanese")}
+                    </div>
                     <Separator className="border border-gray-300" />
-                    <div className="popover-select cursor-pointer" onClick={() => handleLocaleChange("en")}>{t("english")}</div>
+                    <div
+                      className="popover-select cursor-pointer"
+                      onClick={() => handleLocaleChange("en")}
+                    >
+                      {t("english")}
+                    </div>
                   </PopoverContent>
                 </Popover>
               </div>
@@ -144,7 +177,10 @@ export default function LandingPage() {
             </h1>
             <h3 className=" text-gray-500">
               {t("tagline")}
-              <span className=" text-primary font-semibold"> {t("appName")}</span>
+              <span className=" text-primary font-semibold">
+                {" "}
+                {t("appName")}
+              </span>
             </h3>
           </div>
 
@@ -182,11 +218,17 @@ export default function LandingPage() {
             align="center"
             className="popover-lang w-37.5 text-black my-1"
           >
-            <div className="flex justify-center px-4 py-2 active:bg-primary active:text-white cursor-pointer" onClick={() => handleLocaleChange("ja")}>
+            <div
+              className="flex justify-center px-4 py-2 active:bg-primary active:text-white cursor-pointer"
+              onClick={() => handleLocaleChange("ja")}
+            >
               {t("japanese")}
             </div>
             <Separator className="border border-primary-300" />
-            <div className="flex justify-center px-4 py-2  active:bg-primary active:text-white cursor-pointer" onClick={() => handleLocaleChange("en")}>
+            <div
+              className="flex justify-center px-4 py-2  active:bg-primary active:text-white cursor-pointer"
+              onClick={() => handleLocaleChange("en")}
+            >
               {t("english")}
             </div>
           </PopoverContent>

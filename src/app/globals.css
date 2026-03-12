@@ -160,8 +160,7 @@ body * ::-webkit-scrollbar {
   border: none;
   background-color: var(--white);
   border-radius: 0.5rem;
-  box-shadow:
-    0 10px 15px -3px rgba(0, 0, 0, 0.3),
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
@@ -319,4 +318,58 @@ body * ::-webkit-scrollbar {
 .input-invis:focus-visible {
   outline: none;
   box-shadow: none;
+}
+
+/* From Uiverse.io by Ali-Tahmazi99 */
+.loader {
+  width: 65px;
+  height: 65px;
+  border: 8px solid #ee9b00a6;
+  border-radius: 50px;
+  position: relative;
+}
+
+.loader span {
+  display: block;
+  background: #ee9b00;
+}
+
+.loader .hour,
+.loader .min {
+  width: 6px;
+  height: 22px;
+  border-radius: 50px;
+  position: absolute;
+  top: 24.5px;
+  left: 21px;
+  animation: load9243 1.2s linear infinite;
+  transform-origin: top center;
+}
+
+.loader .min {
+  height: 17px;
+  animation: load9243 4s linear infinite;
+}
+
+.loader .circel {
+  width: 10px;
+  height: 10px;
+  border-radius: 50px;
+  position: absolute;
+  top: 19px;
+  left: 19px;
+}
+
+@keyframes load9243 {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  transform: scale(1.5);
 }

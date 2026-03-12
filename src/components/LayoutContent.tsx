@@ -7,13 +7,7 @@ interface LayoutContentProps {
   children: React.ReactNode;
 }
 
-const publicRoutes = [
-  "/login",
-  "/forgot-password",
-  "/change-password",
-  "/",
-  "/landing",
-];
+const publicRoutes = ["/login", "/forgot-password", "/change-password", "/"];
 
 export default function LayoutContent({ children }: LayoutContentProps) {
   const pathname = usePathname();
@@ -25,7 +19,11 @@ export default function LayoutContent({ children }: LayoutContentProps) {
       <div className="h-screen w-screen flex">
         <div className="flex flex-col flex-1">
           <Header />
-          <div className={`overflow-y-auto ${isMobile ? "h-screen w-screen" : "h-[calc(100vh-80px)]"}`}>
+          <div
+            className={`overflow-y-auto ${
+              isMobile ? "h-screen w-screen" : "h-[calc(100vh-80px)]"
+            }`}
+          >
             {/* <div className="h-[calc(100vh-80px)] overflow-y-auto"> */}
             {children}
           </div>

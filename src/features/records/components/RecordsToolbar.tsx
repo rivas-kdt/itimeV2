@@ -38,6 +38,9 @@ type Props = {
   locationFilter: string[];
   setLocationFilter: (v: string[]) => void;
 
+  date: DateRange | undefined;
+  setDate: (v: DateRange | undefined) => void;
+
   onOpenExport: () => void;
   onClear: () => void;
 };
@@ -59,6 +62,8 @@ export function RecordsToolbar({
   // setTypeFilter,
   locationFilter,
   setLocationFilter,
+  date,
+  setDate,
   onOpenExport,
   onClear,
 }: Props) {
@@ -66,11 +71,6 @@ export function RecordsToolbar({
   // const loc = ["Warehouse A", "Site B", "Warehouse C"];
   const [loc, setLoc] = useState<Location[]>([]);
   console.log(loc);
-
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(new Date().getFullYear(), 0, 20),
-    to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
-  });
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -106,6 +106,7 @@ export function RecordsToolbar({
       </div>
 
       <div className="flex flex-row justify-between gap-3 h-[30px]">
+        {/* <Popover>
         {/* <Popover>
           <PopoverTrigger className="btn-css gradient-bg">
             Filter by Type

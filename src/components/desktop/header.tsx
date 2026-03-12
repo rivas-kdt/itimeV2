@@ -14,6 +14,7 @@ import { useAuth } from "@/features/auth/hooks/auth-context";
 import { toast } from "sonner";
 import { changePassword } from "@/features/auth/services/auth.service";
 import { useTranslations } from "next-intl";
+import { Button } from "../ui/button";
 
 async function setLocale(locale: "en" | "ja") {
   await fetch("/api/locale", {
@@ -27,14 +28,13 @@ export default function Header() {
   const t = useTranslations("header");
   const tAuth = useTranslations("auth");
   const router = useRouter();
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
   const pathname = usePathname();
-  const { session } = useAuth();
-  console.log(session);
+  const { session, logout } = useAuth();
   const isActive = `gradient-bg text-white p-2 rounded-full transition-colors`;
   const [isChangePass, setIsShowChangePass] = useState(false);
 
-  if (isMobile) return null;
+  if (isMobile && !isLoading) return null;
 
   if (
     pathname.startsWith("/profile/") ||
@@ -42,7 +42,7 @@ export default function Header() {
     pathname === "/timer" ||
     pathname.startsWith("/work-orders/") ||
     pathname === "/signup" ||
-    pathname === "/landing"
+    pathname === "/"
   ) {
     return null;
   }
@@ -159,7 +159,7 @@ export default function Header() {
             </PopoverTrigger>
             <PopoverContent
               align="end"
-              className="popover-design w-[220px] text-black"
+              className="popover-design w-55 text-black"
             >
               <div
                 className="popover-content transition-all"
@@ -168,7 +168,7 @@ export default function Header() {
                 <LockKeyhole className="text-primary" size={18} />
                 {tAuth("changePassword")}
               </div>
-              <Separator className="border-1 border-primary-300" />
+              <Separator className="border border-primary-300" />
               <div className="px-2 py-1 text-xs text-gray-500 font-medium">
                 {tAuth("switchLanguage")}
               </div>
@@ -186,11 +186,15 @@ export default function Header() {
                 <Languages className="text-primary" size={18} />
                 English
               </div>
-              <Separator className="border-1 border-primary-300" />
-              <Link href="/" className="popover-content transition-all">
+              <Separator className="border border-primary-300" />
+              <Button
+                onClick={logout}
+                variant={"ghost"}
+                className="popover-content transition-all"
+              >
                 <LogOut className="text-primary" size={18} />
                 {tAuth("logout")}
-              </Link>
+              </Button>
             </PopoverContent>
           </Popover>
         </div>
@@ -199,10 +203,7 @@ export default function Header() {
           open={isChangePass}
           onOpenChange={setIsShowChangePass}
           onChangePass={() =>
-            toastSuccess(
-              tAuth("passwordUpdated"),
-              tAuth("passwordUpdatedDesc"),
-            )
+            toastSuccess(tAuth("passwordUpdated"), tAuth("passwordUpdatedDesc"))
           }
         />
       </div>

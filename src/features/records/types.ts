@@ -20,6 +20,8 @@ export type GetInspectionsParams = {
   type?: string[]; // ["Inspection","Receiving"]
   own?: boolean;
   location?: string[]; // ["Warehouse A","Warehouse B"]
+  dateFrom?: string; // YYYY-MM-DD
+  dateTo?: string; // YYYY-MM-DD
   limit?: number;
   offset?: number;
 };

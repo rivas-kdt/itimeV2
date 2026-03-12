@@ -27,6 +27,8 @@ export async function getInspections(
     type: params.type,
     own: params.own,
     location: params.location,
+    dateFrom: params.dateFrom,
+    dateTo: params.dateTo,
     limit: params.limit ?? 200,
     offset: params.offset ?? 0,
   });

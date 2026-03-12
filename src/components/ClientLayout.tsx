@@ -6,13 +6,22 @@ import LayoutContent from "@/components/LayoutContent";
 import { useIsMobile } from "@/hooks/useMobile";
 import { AuthProvider } from "@/features/auth/hooks/auth-context";
 import { Toaster } from "@/components/ui/sonner";
+import Loader from "./Loader";
 
 export default function ClientLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const isMobile = useIsMobile();
+  const { isMobile, isLoading } = useIsMobile();
+
+  if (isLoading) {
+    return (
+      <div className=" h-screen w-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <AuthProvider>

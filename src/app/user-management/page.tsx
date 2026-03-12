@@ -119,8 +119,8 @@ function UserManagementContent() {
 
   useEffect(() => {
     if (isMobile === undefined) return;
-    if (isMobile) router.replace("/dashboard");
-  }, [isMobile, router]);
+    if (isMobile && !isLoading) router.replace("/dashboard");
+  }, [isMobile, router, isLoading]);
 
   const {
     refetch,
@@ -158,28 +158,16 @@ function UserManagementContent() {
 
   const handleToast = (status: boolean, action: string, extra?: string) => {
     if (status && action === "deleteUser") {
-      return toastSuccess(
-        t("userDeletedSuccess"),
-        t("userDeletedDesc"),
-      );
+      return toastSuccess(t("userDeletedSuccess"), t("userDeletedDesc"));
     }
     if (status && action === "addUser") {
-      return toastSuccess(
-        t("userAddedSuccess"),
-        t("userAddedDesc"),
-      );
+      return toastSuccess(t("userAddedSuccess"), t("userAddedDesc"));
     }
     if (!status && action === "deleteUser") {
-      return toastError(
-        t("failedToDeleteUser"),
-        extra ?? t("processFailed"),
-      );
+      return toastError(t("failedToDeleteUser"), extra ?? t("processFailed"));
     }
     if (!status && action === "addUser") {
-      return toastError(
-        t("failedToAddUser"),
-        extra ?? t("processFailed"),
-      );
+      return toastError(t("failedToAddUser"), extra ?? t("processFailed"));
     }
   };
 
@@ -224,7 +212,7 @@ function UserManagementContent() {
   //   { id: "00000000-0000-0000-0000-000000000002", name: "group_B" },
   // ];
 
-  console.log(form.password)
+  console.log(form.password);
 
   const onSubmitAdd = async () => {
     try {
@@ -281,12 +269,12 @@ function UserManagementContent() {
                 />
               </ButtonGroupText>
               <InputGroup className="border border-primary p-0 m-0 focus:outline-none">
-              <InputGroupInput
-                placeholder={t("searchPlaceholder")}
-                className="text-black-text text-lg placeholder:text-lg mt-1"
-                value={searchUser}
-                onChange={(e) => setSearchUser(e.target.value)}
-              />
+                <InputGroupInput
+                  placeholder={t("searchPlaceholder")}
+                  className="text-black-text text-lg placeholder:text-lg mt-1"
+                  value={searchUser}
+                  onChange={(e) => setSearchUser(e.target.value)}
+                />
               </InputGroup>
             </ButtonGroup>
           </div>

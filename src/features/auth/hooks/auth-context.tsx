@@ -11,12 +11,11 @@ import React, {
 import { decrypt } from "@/lib/jwt";
 import { createSession, readSession, clearSession } from "@/lib/cookie";
 import { login as loginService } from "../services/auth.service";
-// import { AuthSession, AuthUser } from "@/types/auth";
 import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   session: any;
-  login: (email: string, password: string) => Promise<void>; // ✅ rename to email (optional)
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   loginError: string | null;
   loginLoading: boolean;
@@ -43,20 +42,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession({ user: null, isAuthenticated: false, isLoading: false });
         return;
       }
-
       const decoded = await decrypt(token);
       if (!decoded?.user) {
         setSession({ user: null, isAuthenticated: false, isLoading: false });
         return;
       }
-
       setSession({
         user: decoded.user,
         isAuthenticated: true,
         isLoading: false,
       });
     }
-
     loadSession();
   }, []);
 
@@ -64,12 +60,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (email: string, password: string) => {
       setLoginLoading(true);
       setLoginError(null);
-
       try {
-        // ✅ call your Next.js API route
         const result = await loginService(email, password);
-
-        // ✅ store JWT in cookie (your current flow)
         await createSession(result.token);
         console.log("Login successful, session created.");
         setSession({
@@ -77,8 +69,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           isAuthenticated: true,
           isLoading: false,
         });
-        console.log(result)
-        console.log("Login successful, session created: ", session);
         router.push("/dashboard");
       } catch (error: any) {
         setLoginError(error?.message || "Login failed");
@@ -92,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(async () => {
     await clearSession();
     setSession({ user: null, isAuthenticated: false, isLoading: false });
-    router.push("/landing");
+    router.push("/");
   }, [router]);
 
   return (
