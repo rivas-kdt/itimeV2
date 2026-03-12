@@ -89,7 +89,7 @@ export function EditDialog({
               <Input
                 id="date"
                 type="date"
-                className="border-gray-300 text-sm"
+                className="border-gray-300 text-sm h-full"
                 value={selectedUser?.date ?? ""}
                 onChange={(e) =>
                   setSelectedUser((prev: any) =>
@@ -100,6 +100,42 @@ export function EditDialog({
             </div>
 
             <div className="flex flex-col w-full gap-1">
+              <label htmlFor="location" className="font-bold">
+                {t("location")}
+              </label>
+              <Select
+                value={selectedUser?.location ?? ""}
+                onValueChange={(value: "Warehouse A" | "Warehouse B") =>
+                  setSelectedUser((prev: any) =>
+                    prev ? { ...prev, location: value } : prev,
+                  )
+                }
+              >
+                <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
+                  <SelectValue placeholder={t("selectLocation")} />
+                </SelectTrigger>
+                <SelectContent className="bg-white text-black-text border-gray-300">
+                  {loc.map((location: Location) => (
+                    <SelectItem
+                      key={location.id}
+                      value={location.location}
+                      className="selection-hover"
+                    >
+                      {location.location}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+                {/* <SelectContent className="bg-white text-black-text border-gray-300">
+                <SelectItem value="Warehouse A" className="selection-hover">
+                  Warehouse A
+                </SelectItem>
+                <SelectItem value="Warehouse B" className="selection-hover">
+                  Warehouse B
+                </SelectItem>
+              </SelectContent> */}
+              </Select>
+            </div>
+            {/* <div className="flex flex-col w-full gap-1">
               <label htmlFor="type" className="font-bold">
                 {t("type")}
               </label>
@@ -123,7 +159,7 @@ export function EditDialog({
                   </SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex flex-row gap-3">
@@ -153,43 +189,6 @@ export function EditDialog({
               />
             </div>
           </div>
-
-          <div className="flex flex-col w-full gap-1">
-            <label htmlFor="location" className="font-bold">
-              {t("location")}
-            </label>
-            <Select
-              value={selectedUser?.location ?? ""}
-              onValueChange={(value: "Warehouse A" | "Warehouse B") =>
-                setSelectedUser((prev: any) =>
-                  prev ? { ...prev, location: value } : prev,
-                )
-              }
-            >
-              <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                <SelectValue placeholder={t("selectLocation")} />
-              </SelectTrigger>
-              <SelectContent className="bg-white text-black-text border-gray-300">
-                {loc.map((location: Location) => (
-                  <SelectItem
-                    key={location.id}
-                    value={location.location}
-                    className="selection-hover"
-                  >
-                    {location.location}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-              {/* <SelectContent className="bg-white text-black-text border-gray-300">
-                <SelectItem value="Warehouse A" className="selection-hover">
-                  Warehouse A
-                </SelectItem>
-                <SelectItem value="Warehouse B" className="selection-hover">
-                  Warehouse B
-                </SelectItem>
-              </SelectContent> */}
-            </Select>
-          </div>
         </div>
 
         {/* show duration calculation if both start and end are set */}
@@ -210,7 +209,7 @@ export function EditDialog({
           </div>
         )}
 
-        <DialogFooter>
+        <DialogFooter className="mt-2">
           <Button className="cancel-btn" onClick={() => onOpenChange(false)}>
             {t("cancel")}
           </Button>

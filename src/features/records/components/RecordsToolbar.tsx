@@ -243,7 +243,6 @@ export function RecordsToolbar({
                   />
                 </label>
 
-                {/* Separator only if NOT last item */}
                 {index < loc.length - 1 && (
                   <Separator className="border-1 border-primary-300" />
                 )}
