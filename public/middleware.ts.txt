@@ -1,0 +1,55 @@
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Public routes that don't require authentication
+  const publicRoutes = [
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/landing",
+    "/",
+  ];
+
+  // Check if current path is a public route
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  );
+
+  // Get JWT token from cookies
+  const token = request.cookies.get("jwt")?.value;
+
+  // If trying to access protected route without token, redirect to landing
+  if (!isPublicRoute && !token) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // If authenticated and trying to access auth pages, redirect to dashboard
+  console.log("Middleware token:", token);
+  if (
+    token &&
+    (pathname === "/login" ||
+      pathname === "/signup" ||
+      pathname === "/forgot-password" ||
+      pathname === "/landing" ||
+      pathname === "/")
+  ) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!_next/static|_next/image|favicon.ico|public/).*)",
+  ],
+};
