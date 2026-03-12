@@ -3,11 +3,9 @@ import { InspectionsDTO } from "../types";
 
 export async function exportToExcel(records: InspectionsDTO[], filename: string = "inspection-records") {
   try {
-    // Dynamically import xlsx to avoid build issues if not installed
     const XLSXModule = await import("xlsx");
     const XLSX = XLSXModule;
     
-    // Transform records to export format
     const exportData = records.map((record) => ({
       "Work Order": record.workOrder,
       "Work Code": record.workCode,
@@ -21,30 +19,24 @@ export async function exportToExcel(records: InspectionsDTO[], filename: string 
       "Location": record.location,
     }));
 
-    // Create worksheet
     const worksheet = XLSX.utils.json_to_sheet(exportData);
-    
-    // Create workbook and add worksheet
+  
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Inspections");
 
-    // Set column widths
     const maxWidth = 20;
     worksheet["!cols"] = Array(Object.keys(exportData[0] || {}).length).fill({
       wch: maxWidth,
     });
 
-    // Write file
     XLSX.writeFile(workbook, `${filename}-${new Date().toISOString().split('T')[0]}.xlsx`);
   } catch (error) {
     console.error("Export error:", error);
-    // Fallback to CSV export
     exportToCSV(records, filename);
   }
 }
 
 export function exportToCSV(records: InspectionsDTO[], filename: string = "inspection-records") {
-  // Convert records to CSV format
   const headers = [
     "Work Order",
     "Work Code",
@@ -71,7 +63,6 @@ export function exportToCSV(records: InspectionsDTO[], filename: string = "inspe
     record.location,
   ]);
 
-  // Create CSV content
   const csvContent = [
     headers.join(","),
     ...rows.map((row) =>
@@ -85,7 +76,6 @@ export function exportToCSV(records: InspectionsDTO[], filename: string = "inspe
     ),
   ].join("\n");
 
-  // Create blob and download
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   const url = URL.createObjectURL(blob);
