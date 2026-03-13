@@ -15,6 +15,14 @@ import {
 import NextImage from "next/image";
 import { Input } from "./ui/input";
 import { CustomComboBox } from "./customComboBox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { useTranslations } from "next-intl";
 
 type Sel = { x: number; y: number; w: number; h: number };
 
@@ -82,6 +90,8 @@ function tokensToString(tokens: DigitToken[]) {
 export default function DigitalClient() {
   const router = useRouter();
   const params = useSearchParams();
+  const tModals = useTranslations("modals");
+  const t = useTranslations("scanner");
 
   const CameraCaptureAny = CameraCapture as unknown as React.ComponentType<any>;
 
@@ -126,6 +136,7 @@ export default function DigitalClient() {
   const [consItemVal, setConsItemVal] = useState("");
   const [workCodeVal, setWorkCodeVal] = useState("");
   const [othersVal, setOthersVal] = useState("");
+  const [location, setLocation] = useState("");
 
   // Fetched Lists
   const [itemList, setItemList] = useState<string[]>([]);
@@ -456,26 +467,22 @@ export default function DigitalClient() {
       }
 
       if (!consItemVal.trim() || !workCodeVal.trim() || !othersVal.trim()) {
-        console.log(
-          "Please select Construction Item, Work Code, and Others"
-        );
+        console.log("Please select Construction Item, Work Code, and Others");
         return;
       }
 
       // Helper function to check if value exists in list
       const valueExists = (value: string, list: string[]) => {
-        return list.some(
-          (item) => item.toLowerCase() === value.toLowerCase()
-        );
+        return list.some((item) => item.toLowerCase() === value.toLowerCase());
       };
 
       // Helper function to insert new item if needed and return its ID
       const ensureItemExists = async (
         value: string,
         list: string[],
-        endpoint: string
+        endpoint: string,
       ) => {
-        const fieldName = endpoint.split("/").pop(); // construction-item, work-code, or others
+        const fieldName: any = endpoint.split("/").pop(); // construction-item, work-code, or others
         const body = {
           [fieldName === "construction-item"
             ? "construction_item"
@@ -503,7 +510,7 @@ export default function DigitalClient() {
       };
 
       // Get or create IDs for construction_item, work_code, others
-      let constructionItemId, workCodeId, othersId;
+      // let constructionItemId, workCodeId, othersId;
 
       // Fetch existing IDs or create new ones
       const [itemsRes, codesRes, othersRes] = await Promise.all([
@@ -520,22 +527,20 @@ export default function DigitalClient() {
       const findOrCreateId = async (
         value: string,
         list: any[],
-        endpoint: string
+        endpoint: string,
       ) => {
-        const existing = list.find(
-          (item) => {
-            if (!item) return false;
-            const itemValue = String(item.value || item || '');
-            return itemValue.toLowerCase() === value.toLowerCase();
-          }
-        );
+        const existing = list.find((item) => {
+          if (!item) return false;
+          const itemValue = String(item.value || item || "");
+          return itemValue.toLowerCase() === value.toLowerCase();
+        });
         if (existing) return existing.id;
 
         // Create new
         return ensureItemExists(value, [], endpoint);
       };
 
-      [constructionItemId, workCodeId, othersId] = await Promise.all([
+      const [constructionItemId, workCodeId, othersId] = await Promise.all([
         findOrCreateId(consItemVal, items, "/construction-item"),
         findOrCreateId(workCodeVal, codes, "/work-code"),
         findOrCreateId(othersVal, others, "/others"),
@@ -584,9 +589,7 @@ export default function DigitalClient() {
 
       const inspectionData = await inspectionRes.json();
       if (!inspectionRes.ok) {
-        throw new Error(
-          inspectionData?.error || "Failed to create inspection"
-        );
+        throw new Error(inspectionData?.error || "Failed to create inspection");
       }
 
       const inspectionId = inspectionData.data || inspectionData.inspection_id;
@@ -610,6 +613,10 @@ export default function DigitalClient() {
       localStorage.setItem("itime:lastMode", "digital");
     } catch {}
     router.push("/scan-barcode");
+  }
+
+  function handleLocChange(value: string) {
+    setLocation(value);
   }
 
   return (
@@ -873,6 +880,25 @@ export default function DigitalClient() {
             />
           </div>
 
+          <div className="flex flex-col w-full gap-1">
+            <label className="font-bold">{tModals("location")}</label>
+            <Select value={location} onValueChange={handleLocChange}>
+              <SelectTrigger className="border border-gray-500 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
+                <SelectValue placeholder={tModals("selectLocation")} />
+              </SelectTrigger>
+
+              <SelectContent className="bg-white text-black-text border-gray-300">
+                <SelectItem value="1" className="selection-hover">
+                  {/* {t("locationWarehouseA")} */}Warehouse A
+                </SelectItem>
+
+                <SelectItem value="2" className="selection-hover">
+                  {/* {t("locationWarehouseB")} */}Warehouse B
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <DialogFooter className="mt-3">
             <Button
               variant="outline"
@@ -881,7 +907,7 @@ export default function DigitalClient() {
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               className="gradient-bg text-lg py-5"
               onClick={handleStartInspection}
             >

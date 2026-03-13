@@ -30,8 +30,18 @@ import { formatDateWithTimezone } from "@/lib/timezone";
 import { useTranslations } from "next-intl";
 
 const TIMER_MONTH_KEYS = [
-  "monthJanuary", "monthFebruary", "monthMarch", "monthApril", "monthMay", "monthJune",
-  "monthJuly", "monthAugust", "monthSeptember", "monthOctober", "monthNovember", "monthDecember",
+  "monthJanuary",
+  "monthFebruary",
+  "monthMarch",
+  "monthApril",
+  "monthMay",
+  "monthJune",
+  "monthJuly",
+  "monthAugust",
+  "monthSeptember",
+  "monthOctober",
+  "monthNovember",
+  "monthDecember",
 ] as const;
 
 export default function TimerPage() {
@@ -307,14 +317,14 @@ export default function TimerPage() {
                 </p>
               </div>
 
-              <div className="flex flex-row justify-between">
+              {/* <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
                   {t("type")}
                 </p>
                 <p className="flex justify-center w-full border border-gray-500 text-primary">
                   {recordsInfo.type}
                 </p>
-              </div>
+              </div> */}
 
               <div className="flex flex-row justify-between">
                 <p className="flex justify-center w-full border border-gray-500 bg-primary-white font-bold">
@@ -406,63 +416,6 @@ export default function TimerPage() {
           )}
         </div>
       </div>
-
-      <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="box-design gap-5 focus:outline-none focus:border-none">
-          <DialogHeader className="flex flex-row border-b-2 border-gray-100 pb-3">
-            <DialogTitle className="flex flex-row items-center gap-3 text-black font-semibold">
-              <Image
-                src="/stopwatch_icon.png"
-                width={35}
-                height={35}
-                alt="Icon"
-              />
-              {t("inspectionDuration")}
-            </DialogTitle>
-          </DialogHeader>
-          {recordsInfo && (
-            <div>
-              {/* value here should be from data */}
-              <div className="flex justify-center w-full text-5xl text-black font-bold">
-                5
-                <span className="flex items-end font-normal text-gray-300 text-3xl mr-2">
-                  h
-                </span>
-                37
-                <span className="flex items-end font-normal text-gray-300 text-3xl mr-2">
-                  m
-                </span>
-                43
-                <span className="flex items-end font-normal text-gray-300 text-3xl">
-                  s
-                </span>
-              </div>
-              <div className="flex flex-col text-black mt-5">
-                <h3>
-                  {t("workOrderNumber")}:{" "}
-                  <span className="text-primary">{recordsInfo.workOrder}</span>
-                </h3>
-                <h3>
-                  {t("dateRecorded")}:{" "}
-                  <span className="text-primary">{dateToday}</span>
-                </h3>
-              </div>
-            </div>
-          )}
-          <DialogFooter className="flex flex-row justify-between">
-            {/* alert dialog or normal dialog */}
-            <button
-              className="cancel-btn w-full rounded-lg"
-              onClick={handleOpenEdit}
-            >
-              {t("edit")}
-            </button>
-            <button className="green-gradient px-5 py-2 w-full text-white rounded-lg">
-              {t("save")}
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={isEditing} onOpenChange={handleCloseEdit}>
         <DialogContent className="box-design text-black-text focus:outline-none">
