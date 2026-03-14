@@ -21,10 +21,18 @@ import Image from "next/image";
 import { Input } from "./ui/input";
 import { CustomComboBox } from "./customComboBox";
 import { useTranslations } from "next-intl";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 export default function HomeClient() {
   const router = useRouter();
   const t = useTranslations("scanner");
+  const tModals = useTranslations("modals");
   const tTimer = useTranslations("timer");
   const tCommon = useTranslations("common");
   const tProfile = useTranslations("profile");
@@ -64,6 +72,7 @@ export default function HomeClient() {
   const [itemList, setItemList] = useState<string[]>([]);
   const [workCodeList, setWorkCodeList] = useState<string[]>([]);
   const [othersList, setOthersList] = useState<string[]>([]);
+  const [location, setLocation] = useState();
 
   const stopCamera = useCallback(() => {
     setReady(false);
@@ -172,10 +181,7 @@ export default function HomeClient() {
       await applyZoom(1);
       setReady(true);
     } catch (e: any) {
-      setErr(
-        e?.message ||
-          t("cameraFailed"),
-      );
+      setErr(e?.message || t("cameraFailed"));
       stopCamera();
     } finally {
       startingRef.current = false;
@@ -369,7 +375,7 @@ export default function HomeClient() {
         list: string[],
         endpoint: string,
       ) => {
-        const fieldName = endpoint.split("/").pop(); // construction-item, work-code, or others
+        const fieldName: any = endpoint.split("/").pop(); // construction-item, work-code, or others
         const body = {
           [fieldName === "construction-item"
             ? "construction_item"
@@ -397,7 +403,7 @@ export default function HomeClient() {
       };
 
       // Get or create IDs for construction_item, work_code, others
-      let constructionItemId, workCodeId, othersId;
+      // let constructionItemId, workCodeId, othersId;
 
       // Fetch existing IDs or create new ones
       const [itemsRes, codesRes, othersRes] = await Promise.all([
@@ -427,7 +433,7 @@ export default function HomeClient() {
         return ensureItemExists(value, [], endpoint);
       };
 
-      [constructionItemId, workCodeId, othersId] = await Promise.all([
+      const [constructionItemId, workCodeId, othersId] = await Promise.all([
         findOrCreateId(consItemVal, items, "/construction-item"),
         findOrCreateId(workCodeVal, codes, "/work-code"),
         findOrCreateId(othersVal, others, "/others"),
@@ -469,8 +475,8 @@ export default function HomeClient() {
           workCodeId,
           constructionItemId,
           othersId,
-          type: "inspection",
-          locationId: 1, // Default location, can be parameterized
+          type: "Inspection",
+          locationId: location, // Default location, can be parameterized
           startTime: new Date().toISOString(),
           status: null,
         }),
@@ -492,6 +498,10 @@ export default function HomeClient() {
       setIsSubmitting(false);
     }
   };
+
+  function handleLocChange(value: any) {
+    setLocation(value);
+  }
 
   return (
     <main className="h-full flex flex-col overflow-hidden">
@@ -596,6 +606,24 @@ export default function HomeClient() {
               items={othersList}
               placeholder={t("selectOthers")}
             />
+          </div>
+          <div className="flex flex-col w-full gap-1">
+            <label className="font-bold">{tModals("location")}</label>
+            <Select value={location} onValueChange={handleLocChange}>
+              <SelectTrigger className="border border-gray-500 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
+                <SelectValue placeholder={tModals("selectLocation")} />
+              </SelectTrigger>
+
+              <SelectContent className="bg-white text-black-text border-gray-300">
+                <SelectItem value="1" className="selection-hover">
+                  {/* {t("locationWarehouseA")} */}Warehouse A
+                </SelectItem>
+
+                <SelectItem value="2" className="selection-hover">
+                  {/* {t("locationWarehouseB")} */}Warehouse B
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <DialogFooter className="mt-3">

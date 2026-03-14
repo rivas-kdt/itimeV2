@@ -46,7 +46,7 @@ function TrackerContent() {
   const router = useRouter();
 
   const filterWorkOrders = records.filter((data) =>
-    data.workOrder.toLowerCase().includes(searchWorkOrder.toLowerCase())
+    data.workOrder.toLowerCase().includes(searchWorkOrder.toLowerCase()),
   );
 
   const handleClickWorkOrder = (id: string) => {
@@ -71,7 +71,7 @@ function TrackerContent() {
         workCodeId: record.workCodeId,
         othersId: record.othersId,
         date,
-        type,
+        // type,
         locationId: location,
         status: null,
       });
@@ -103,9 +103,7 @@ function TrackerContent() {
       </div>
       <div className=" h-full p-6 overflow-y-auto space-y-4">
         <div className="p-1">
-          <p className="text-xl">
-            {t("beginTrackingDesc")}
-          </p>
+          <p className="text-xl">{t("beginTrackingDesc")}</p>
         </div>
 
         <div className="flex flex-col gap-1">
@@ -142,7 +140,8 @@ function TrackerContent() {
                       <span className="font-thin">{data.workCode}</span>
                     </label>
                     <label className=" font-bold">
-                      {t("othersLabel")}: <span className="font-thin">{data.others}</span>
+                      {t("othersLabel")}:{" "}
+                      <span className="font-thin">{data.others}</span>
                     </label>
                   </div>
                 </Button>
@@ -180,7 +179,7 @@ function TrackerContent() {
               </Button>
             </div>
           </div>
-          <div className="flex flex-col text-black gap-2">
+          {/* <div className="flex flex-col text-black gap-2">
             <label className="font-bold">{tModals("type")}</label>
             <Select value={type} onValueChange={handleTypeChange}>
               <SelectTrigger className="border border-gray-500 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
@@ -197,7 +196,7 @@ function TrackerContent() {
                 </SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
           <div className="flex flex-col text-black gap-2">
             <label className="font-bold">{tModals("location")}</label>
             <Select value={location} onValueChange={handleLocChange}>
@@ -205,7 +204,7 @@ function TrackerContent() {
                 <SelectValue placeholder={tModals("selectLocation")} />
               </SelectTrigger>
 
-                <SelectContent className="bg-white text-black-text border-gray-300">
+              <SelectContent className="bg-white text-black-text border-gray-300">
                 <SelectItem value="1" className="selection-hover">
                   {t("locationWarehouseA")}
                 </SelectItem>
