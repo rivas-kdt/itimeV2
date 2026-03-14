@@ -22,8 +22,6 @@ const toastStyle = (
   text: string,
 ) => {
   const width = isMobile ? "70%" : "100%";
-  console.log("isMobile: ", isMobile);
-  console.log("width: ", width);
 
   return {
     width,
@@ -60,7 +58,7 @@ const toastError = (
 
 export function LoginForm({ onChangeView }: Props) {
   const t = useTranslations("auth");
-  const isMobile = useIsMobile();
+  const { isMobile } = useIsMobile();
   const { login, loginLoading } = useAuth();
 
   const [email, setEmail] = useState("");

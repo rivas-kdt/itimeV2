@@ -212,8 +212,6 @@ function UserManagementContent() {
   //   { id: "00000000-0000-0000-0000-000000000002", name: "group_B" },
   // ];
 
-  console.log(form.password);
-
   const onSubmitAdd = async () => {
     try {
       if (!form.last_name.trim() || !form.email.trim() || !form.group_id) {
@@ -260,7 +258,7 @@ function UserManagementContent() {
             <ButtonGroup className="w-full">
               <ButtonGroupText
                 asChild
-                className="h-9 w-[40px] border border-primary p-2"
+                className="h-9 w-10 border border-primary p-2"
               >
                 <SearchIcon
                   size={10}
@@ -279,14 +277,14 @@ function UserManagementContent() {
             </ButtonGroup>
           </div>
 
-          <div className="flex flex-row justify-between gap-3 h-[30px]">
+          <div className="flex flex-row justify-between gap-3 h-7.5">
             <Popover>
               <PopoverTrigger className="btn-css gradient-bg">
                 {t("filterByRole")} <ListFilter />
               </PopoverTrigger>
               <PopoverContent
                 align="center"
-                className="popover-design w-[160px] text-black"
+                className="popover-design w-40 text-black"
               >
                 {/* Admin Checkbox */}
                 <div
@@ -308,7 +306,7 @@ function UserManagementContent() {
                     className="checkbox-css mr-2"
                   />
                 </div>
-                <Separator className="border-1 border-primary-300" />
+                <Separator className="border border-primary-300" />
 
                 {/* User Checkbox */}
                 <div
@@ -386,7 +384,7 @@ function UserManagementContent() {
         {users.map((user) => (
           <Card
             key={user.empID}
-            className="flex flex-col gap-2 justify-center items-center text-center box-design hover:mt-[-10px] hover:mb-[10px]"
+            className="flex flex-col gap-2 justify-center items-center text-center box-design hover:-mt-2.5 hover:mb-2.5"
           >
             <CardHeader className="text-black w-full">
               <div className="flex justify-end">
@@ -562,7 +560,7 @@ function UserManagementContent() {
                   value={form.group_id}
                   onValueChange={(v) => setForm((p) => ({ ...p, group_id: v }))}
                 >
-                  <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
+                  <SelectTrigger className="border border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
                     <SelectValue placeholder={t("selectGroup")} />
                   </SelectTrigger>
                   <SelectContent className="bg-white text-black-text border-gray-300">
@@ -589,7 +587,7 @@ function UserManagementContent() {
                     setForm((p) => ({ ...p, access: v }))
                   }
                 >
-                  <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
+                  <SelectTrigger className="border border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
                     <SelectValue placeholder={t("selectAccess")} />
                   </SelectTrigger>
                   <SelectContent className="bg-white text-black-text border-gray-300">

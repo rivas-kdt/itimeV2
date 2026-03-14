@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 export function useElapsedTimer(startTime?: string | null, active?: boolean) {
+  // eslint-disable-next-line react-hooks/purity
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {

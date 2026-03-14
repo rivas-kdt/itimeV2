@@ -51,7 +51,6 @@ export function ExportPreviewDialog({
   const t = useTranslations("exportPreview");
   const tModals = useTranslations("modals");
   const hasRecords = rows.length > 0;
-  console.log("rows: ", rows);
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>

@@ -67,10 +67,8 @@ export default function ProfilePage() {
   const handleSwitchLang = (checked: boolean) => {
     setIsSwitchLang(checked);
     if (checked) {
-      console.log("Language changed to Spanish");
       // trigger your i18n change here
     } else {
-      console.log("Language changed to English");
     }
   };
 

@@ -11,7 +11,7 @@ type TableT = (key: string) => string;
 export const getColumns = (
   selectedIds: string[],
   setSelectedIds: Dispatch<SetStateAction<string[]>>,
-  t: TableT,
+  t: TableT
 ): ColumnDef<InspectionRowDTO>[] => [
   {
     id: "exportBox",
@@ -24,7 +24,7 @@ export const getColumns = (
           checked={isChecked}
           onCheckedChange={(checked) => {
             setSelectedIds((prev) =>
-              checked ? [...prev, rowId] : prev.filter((id) => id !== rowId),
+              checked ? [...prev, rowId] : prev.filter((id) => id !== rowId)
             );
           }}
           className="w-5 h-5 data-[state=checked]:bg-primary data-[state=checked]:border-none data-[state=checked]:text-white"
@@ -61,7 +61,7 @@ export const getColumns = (
     meta: { className: "text-center" },
   },
   {
-    accessorKey: "time",
+    accessorKey: "duration",
     header: t("time"),
     meta: { className: "text-center" },
   },

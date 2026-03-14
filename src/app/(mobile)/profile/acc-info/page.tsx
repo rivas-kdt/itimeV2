@@ -108,7 +108,6 @@ export default function AccountInfoPage() {
 
     setIsUpdating(true);
     try {
-      console.log("FORM DATA SUBMIT:", formData);
       await updateProfile({
         first_name: formData.first_name,
         last_name: formData.last_name,
@@ -137,8 +136,6 @@ export default function AccountInfoPage() {
     fetchGroups();
   }, []);
 
-  console.log("GROUPS:", group);
-
   const handleIsOpen = () => {
     setIsOpen(true);
   };
@@ -146,9 +143,6 @@ export default function AccountInfoPage() {
   const handleClose = () => {
     setIsOpen(false);
   };
-
-  console.log("PROFILE DATA:", profile);
-  console.log("FORM DATA:", formData);
 
   if (loading) {
     return (
@@ -169,17 +163,17 @@ export default function AccountInfoPage() {
   return (
     <div className=" bg-white-gray h-full text-black p-5 flex flex-col gap-2">
       <div className="flex flex-col gap-2 bg-white rounded-md full-shadow">
-        <div className="p-3 border-b-1 border-gray-100">
+        <div className="p-3 border-b border-gray-100">
           <h5 className="w-full font-bold">{tAuth("employeeId")}</h5>
           <p className="w-full text-sm text-gray-300 ml-3 mt-1">
             {profile?.emp_id}
           </p>
         </div>
-        <div className="p-3 border-b-1 border-gray-100">
+        <div className="p-3 border-b border-gray-100">
           <h5 className="w-full font-bold">{t("name")}</h5>
           <p className="w-full text-sm text-gray-300 ml-3 mt-1">{`${profile?.first_name} ${profile?.last_name}`}</p>
         </div>
-        <div className="p-3 border-b-1 border-gray-100">
+        <div className="p-3 border-b border-gray-100">
           <h5 className="w-full font-bold">{tAuth("email")}</h5>
           <p className="w-full text-sm text-gray-300 ml-3 mt-1">
             {profile?.email}
@@ -202,7 +196,7 @@ export default function AccountInfoPage() {
 
       <Dialog open={isOpen} onOpenChange={handleClose}>
         <DialogContent className="box-design text-black-text">
-          <DialogHeader className="border-b-1 border-gray-300 pb-2">
+          <DialogHeader className="border-b border-gray-300 pb-2">
             <DialogTitle className="flex flex-row items-center gap-3 font-semibold">
               <Image src="/user_edit.png" width={35} height={35} alt="icon" />
               {t("updateInformation")}
@@ -258,7 +252,7 @@ export default function AccountInfoPage() {
               value={formData.group_id}
               onValueChange={(e) => handleInputChange("group_id", e)}
             >
-              <SelectTrigger className="border-1 border-gray-500 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
+              <SelectTrigger className="border border-gray-500 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
                 <SelectValue placeholder={tAuth("selectGroup")} />
               </SelectTrigger>
               <SelectContent className="bg-white text-black-text border-gray-300">

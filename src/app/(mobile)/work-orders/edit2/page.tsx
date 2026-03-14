@@ -86,7 +86,6 @@ export default function EditWorkOrdersPage() {
         return recordsInfo[0];
     }, [recordsInfo]);
 
-    console.log(recordsInfo);
     const inspectedDates = useMemo(() => {
         if (!recordsInfo || recordsInfo.length === 0) return [];
         return recordsInfo
@@ -171,7 +170,6 @@ const getInspectionsForDate = (date?: Date) => {
 
             // Format selected date using timezone utility
             const selectedDateISO = toTimezoneISOString(selectedDate);
-            console.log("Selected date (ISO):", selectedDateISO);
             const inspectionRes = await fetch("/api/v2/inspections", {
                 method: "POST",
                 credentials: "include",
@@ -231,7 +229,7 @@ const getInspectionsForDate = (date?: Date) => {
 
                 {error && !loading && (
                     <div className="mx-8 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                        <AlertCircle className="text-red-600 flex-shrink-0" size={20} />
+                        <AlertCircle className="text-red-600 shrink-0" size={20} />
                         <div className="flex-1">
                             <p className="text-red-800 font-semibold">{t("errorLoadingWorkOrder")}</p>
                             <p className="text-red-700 text-sm mt-1">{error}</p>
@@ -302,7 +300,7 @@ const getInspectionsForDate = (date?: Date) => {
                                         <Button
                                             onClick={handleSaveEdit}
                                             disabled={isSubmitting}
-                                            className="flex-1 bg-gradient-to-r from-primary-300 to-primary text-white"
+                                            className="flex-1 bg-linear-to-r from-primary-300 to-primary text-white"
                                         >
                                             {isSubmitting ? t("saving") : t("saveChanges")}
                                         </Button>
@@ -566,7 +564,7 @@ const getInspectionsForDate = (date?: Date) => {
                                     })()}
                                     <Button
                                         onClick={handleUpdateTime}
-                                        className="w-full bg-gradient-to-r from-primary-300 to-primary text-white"
+                                        className="w-full bg-linear-to-r from-primary-300 to-primary text-white"
                                     >
                                         {t("updateTime")}
                                     </Button>

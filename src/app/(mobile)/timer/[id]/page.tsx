@@ -82,9 +82,7 @@ export default function TimerPage() {
 
   useEffect(() => {
     if (isMobile === undefined) return;
-    console.log("isMobile: ", isMobile);
     if (!isMobile) router.replace("/dashboard");
-    console.log("isMobile routing: ", isMobile);
   }, [isMobile, router]);
 
   useEffect(() => {
@@ -203,8 +201,6 @@ export default function TimerPage() {
     recordsInfo?.start_time,
     recordsInfo?.end_time,
   );
-
-  console.log("recordsInfo: ", recordsInfo);
 
   return (
     <div className="bg-background h-full text-black flex flex-col">

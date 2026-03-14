@@ -121,7 +121,6 @@ export async function GET(req: Request) {
         ORDER BY i.inspection_date DESC
         LIMIT $${values.length - 1} OFFSET $${values.length};`;
 
-    console.log(query, values);
     const recordsRes = await client.query(query, values);
 
     const rows = recordsRes.rows.map((r: any) => ({
@@ -176,7 +175,6 @@ export async function POST(req: NextRequest) {
   const endTime = body?.endTime;
   const status = body?.status;
 
-  console.log("Received POST /api/v2/inspections with body:", body);
 
   try {
     const currentDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format

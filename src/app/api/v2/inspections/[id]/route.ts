@@ -87,8 +87,6 @@ export async function PATCH(req: Request, ctx: any) {
     const fields: string[] = [];
     const values: any[] = [];
 
-    console.log("Received update for inspection ID:", id, "with data:", body);
-
     if (date) {
       values.push(date);
       fields.push(`inspection_date = $${values.length}`);
@@ -156,7 +154,6 @@ export async function PATCH(req: Request, ctx: any) {
     if (updatedRes.rows.length === 0) {
       return NextResponse.json({ error: "Inspection not found" }, { status: 404 });
     }
-    console.log("Updated inspection:", updatedRes.rows[0]);
     return NextResponse.json(updatedRes.rows[0]);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);

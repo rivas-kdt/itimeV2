@@ -43,10 +43,11 @@ export function useWorkOrderEdit() {
     if (!formData || !formData.id) return false;
     setIsSubmitting(true);
     try {
-      await updateWorkOrder(formData.id, {
-        constructionItem: formData.constructionItem,
-        workCode: formData.workCode,
-        others: formData.others,
+      await updateWorkOrder({
+        workOrderId: formData.id,
+        constructionId: formData.constructionItem,
+        workCodeId: formData.workCode,
+        othersId: formData.others,
       });
       setIsEditing(false);
       setFormData(null);

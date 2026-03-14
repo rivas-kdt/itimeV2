@@ -11,18 +11,23 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const tz = searchParams.get("tz") ?? "Asia/Tokyo";
     const range = (searchParams.get("range") ?? "year").toLowerCase();
+    const self = searchParams.get("self");
 
-    const token = await readSession();
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const params: any[] = [tz];
+    let inspectorFilter = "";
+
+    if (self === "true") {
+      const token = await readSession();
+      if (!token) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      const decoded = await decrypt(token);
+      if (!decoded?.user?.empId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      inspectorFilter = ` AND i.inspector_id = $${params.length + 1}`;
+      params.push(decoded.user.empId);
     }
-
-    const decoded = await decrypt(token);
-    if (!decoded?.user?.empId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const inspectorId = decoded.user.empId;
 
     let intervalSql = "interval '1 year'";
     if (range === "month") intervalSql = "interval '1 month'";
@@ -34,12 +39,12 @@ export async function GET(req: Request) {
         COUNT(*)::int AS total
       FROM inspection_v2 i
       JOIN work_code wc ON wc.id = i.work_code_id
-      WHERE (i.inspection_date AT TIME ZONE $1) >= ((NOW() AT TIME ZONE $1) - ${intervalSql})
+      WHERE (i.inspection_date AT TIME ZONE $1) >= ((NOW() AT TIME ZONE $1) - ${intervalSql})${inspectorFilter}
       GROUP BY work_code
       ORDER BY work_code ASC;
     `;
 
-    const res = await client.query(q, [tz]);
+    const res = await client.query(q, params);
     const data = res.rows.map((r: any) => ({
       workCode: r.workCode,
       "Inspections: ": Number(r.total),

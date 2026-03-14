@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/chart";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useUserProfile } from "@/features/profile/hooks/useProfile";
+import { useUserProfile } from "@/features/profile/hooks/useUserProfileHooks";
 import React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";

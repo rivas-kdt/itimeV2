@@ -116,11 +116,7 @@ const toastError = (title: string, desc: string) =>
     style: toastStyle("--lightred", "--red", "--darkred"),
   });
 
-export default function UserProfilePage({
-  monthlyPDFData,
-}: {
-  monthlyPDFData: RowData[];
-}) {
+export default function UserProfilePage() {
   const params = useParams();
   const empID = String(params.id);
 
@@ -167,9 +163,6 @@ export default function UserProfilePage({
     updateUser,
   } = useUserHooks(empID);
 
-  console.log(monthlyData);
-  console.log("User data: ", user);
-
   const [showExport, setShowExport] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isCheckedExport, setIsCheckedExport] = useState(false);
@@ -181,7 +174,6 @@ export default function UserProfilePage({
   const [editForm, setEditForm] = useState<EditForm | null>(null);
 
   const userName = `${user?.first_name ?? ""} ${user?.last_name ?? ""}`;
-  console.log("userName: ", userName);
   const userInfo = {
     name: userName,
     empID: user?.empID,
@@ -366,7 +358,6 @@ export default function UserProfilePage({
     fetchLocations();
   }, []);
 
-  console.log(loading);
   if (loading) return null;
 
   if (!user) {
@@ -417,7 +408,7 @@ export default function UserProfilePage({
 
       {/* Monthly tracker */}
       <div className="flex flex-col box-design w-full p-8 gap-5">
-        <div className="flex flex-row justify-between pb-3 border-b-1 border-gray-300">
+        <div className="flex flex-row justify-between pb-3 border-b border-gray-300">
           <div className="flex flex-row gap-3 text-3xl font-bold">
             <CalendarCheck size={32} />
             {t("monthlyInspectionTracker")}
@@ -474,7 +465,7 @@ export default function UserProfilePage({
 
       {/* Inspection records */}
       <div className="flex flex-col box-design w-full p-8 gap-5">
-        <div className="flex flex-row gap-3 text-3xl font-bold pb-3 border-b-1 border-gray-300">
+        <div className="flex flex-row gap-3 text-3xl font-bold pb-3 border-b border-gray-300">
           <ClipboardCheck size={32} />
           {t("inspectionRecords")}
         </div>
@@ -484,7 +475,7 @@ export default function UserProfilePage({
             <ButtonGroup className="w-full">
               <ButtonGroupText
                 asChild
-                className="h-9 w-[40px] border border-primary p-2"
+                className="h-9 w-10 border border-primary p-2"
               >
                 <SearchIcon
                   size={10}
@@ -503,7 +494,7 @@ export default function UserProfilePage({
             </ButtonGroup>
           </div>
 
-          <div className="flex flex-row justify-between gap-3 h-[30px]">
+          <div className="flex flex-row justify-between gap-3 h-7.5">
             {/* <Popover>
               <PopoverTrigger className="btn-css gradient-bg">
                 Filter by Type
@@ -575,7 +566,7 @@ export default function UserProfilePage({
               </PopoverTrigger>
               <PopoverContent
                 align="center"
-                className="popover-design w-[220px] text-black"
+                className="popover-design w-55 text-black"
               >
                 {loc.length === 0 ? (
                   <div className="p-3 text-sm text-gray-500">
@@ -610,7 +601,7 @@ export default function UserProfilePage({
                       </div>
 
                       {idx !== loc.length - 1 && (
-                        <Separator className="border-1 border-primary-300" />
+                        <Separator className="border border-primary-300" />
                       )}
                     </div>
                   ))
@@ -653,9 +644,9 @@ export default function UserProfilePage({
             <DialogTitle>{t("exportData")}</DialogTitle>
           </DialogHeader>
 
-          <div className="flex flex-row gap-5 justify-between max-h-[300px]">
+          <div className="flex flex-row gap-5 justify-between max-h-75">
             {/* Export ALL DATA */}
-            <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg">
+            <DialogHeader className="flex flex-col gap-5 border border-gray-500 w-87.5 p-6 rounded-lg">
               <DialogTitle className="font-bold text-black-text">
                 {t("exportAllData")}
               </DialogTitle>

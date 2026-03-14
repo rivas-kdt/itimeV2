@@ -74,14 +74,11 @@ export default function EditWorkOrdersPage() {
         return new Date(year, month - 1, day); // month is 0-indexed
     };
 
-    console.log("Records Info:", recordsInfo);
     // Extract work order from first record
     const workOrder = useMemo(() => {
         if (!recordsInfo || recordsInfo.length === 0) return null;
         return recordsInfo[0];
     }, [recordsInfo]);
-
-    console.log(workOrder)
     
     const inspectedDates = useMemo(() => {
         if (!recordsInfo || recordsInfo.length === 0) return [];

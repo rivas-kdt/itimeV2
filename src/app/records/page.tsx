@@ -20,6 +20,7 @@ import { ExportPreviewDialog } from "@/features/records/components/ExportPreview
 import { getLocation } from "@/features/records/services/records.service";
 import { exportToExcel } from "@/features/records/services/export.service";
 import { formatDateWithTimezone } from "@/lib/timezone";
+import { useAuth } from "@/features/auth/hooks/auth-context";
 
 export default function UserRecords() {
   return (
@@ -34,6 +35,7 @@ function UserRecordsContent() {
   const t = useTranslations("records");
   const tTables = useTranslations("tables");
   const { isMobile, isLoading } = useIsMobile();
+  const {session} = useAuth();
 
   const {
     records,

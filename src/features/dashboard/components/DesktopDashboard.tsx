@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/features/auth/hooks/auth-context";
 
 const inspectionConfig = {
   month_inspections: {
@@ -42,6 +43,7 @@ const workCodeConfig = {
 
 export default function DesktopDashboard() {
   const t = useTranslations("dashboard");
+  const { session } = useAuth();
   const {
     inspectionToday,
     inspectionThisWeek,
@@ -53,14 +55,15 @@ export default function DesktopDashboard() {
     recentInspections,
     loading,
     error,
-  } = useDesktopDashboardHooks();
+    selectedMonth,
+    setSelectedMonth,
+  } = useDesktopDashboardHooks(session?.user?.role === "Admin" ? false : true);
 
   const inspectionData = monthChart;
   const workCodeData = workCodeChart;
   const recentRows = recentInspections;
 
   const isMobile = useIsMobile();
-  console.log("isMobile: ", isMobile);
 
   return (
     <div className="flex flex-row gap-8 p-4">
@@ -146,11 +149,16 @@ export default function DesktopDashboard() {
 
         <div className="box-design w-full p-5">
           <div className="flex justify-end w-full mb-1">
-            <Select>
-              <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-2 py-3">
+            <Select
+              value={selectedMonth ? selectedMonth.toString() : ""}
+              onValueChange={(value) =>
+                setSelectedMonth(value ? parseInt(value) : undefined)
+              }
+            >
+              <SelectTrigger className="border border-gray-300 rounded-md text-black-text px-2 py-3">
                 <SelectValue placeholder="Select Month" />
               </SelectTrigger>
-              <SelectContent className="h-[200px] bg-white text-black border-gray-300">
+              <SelectContent className="h-50 bg-white text-black border-gray-300">
                 {[
                   "January",
                   "February",
@@ -164,8 +172,12 @@ export default function DesktopDashboard() {
                   "October",
                   "November",
                   "December",
-                ].map((m) => (
-                  <SelectItem key={m} value={m} className="selection-hover">
+                ].map((m, idx) => (
+                  <SelectItem
+                    key={m}
+                    value={(idx + 1).toString()}
+                    className="selection-hover"
+                  >
                     {m}
                   </SelectItem>
                 ))}
@@ -175,7 +187,7 @@ export default function DesktopDashboard() {
 
           <ChartContainer
             config={inspectionConfig}
-            className="h-[205px] 2xl:h-[270px] w-full ml-[-15]"
+            className="h-51.25 2xl:h-67.5 w-full ml-[-15]"
           >
             <LineChart accessibilityLayer data={inspectionData}>
               <CartesianGrid vertical={false} />
@@ -200,7 +212,7 @@ export default function DesktopDashboard() {
                       x={x + 45}
                       y={y + height + 55}
                       textAnchor="middle"
-                      className="text-black-text font-bold 2xl:text-lg transform -rotate-90 translate-x-[-190px] translate-y-[135px] 2xl:translate-x-[-260px] 2xl:translate-y-[185px]"
+                      className="text-black-text font-bold 2xl:text-lg transform -rotate-90 -translate-x-47.5 translate-y-33.75 2xl:-translate-x-65 2xl:translate-y-46.25"
                     >
                       {t("numberOfInspections")}
                     </text>
@@ -211,7 +223,7 @@ export default function DesktopDashboard() {
                 content={
                   <ChartTooltipContent
                     // hideLabel
-                    className="box-design w-[200px] text-sm text-black-text"
+                    className="box-design w-50 text-sm text-black-text"
                   />
                 }
               />
@@ -226,7 +238,7 @@ export default function DesktopDashboard() {
             </LineChart>
           </ChartContainer>
           <h3 className="w-full text-center text-black font-bold">
-            {t("inspectionsThisWeek")}
+            {t("inspectionsThisMonth")}
           </h3>
         </div>
 
@@ -234,7 +246,7 @@ export default function DesktopDashboard() {
         <div className="box-design w-full p-5">
           <ChartContainer
             config={workCodeConfig}
-            className="h-[205px] 2xl:h-[270px] w-full ml-[-15]"
+            className="h-51.25 2xl:h-67.5 w-full ml-[-15]"
           >
             <BarChart accessibilityLayer data={workCodeData}>
               <CartesianGrid vertical={false} />
@@ -258,7 +270,7 @@ export default function DesktopDashboard() {
                       x={x + 45}
                       y={y + height + 55}
                       textAnchor="middle"
-                      className="text-black-text font-bold 2xl:text-lg transform -rotate-90 translate-x-[-190px] translate-y-[135px] 2xl:translate-x-[-260px] 2xl:translate-y-[185px]"
+                      className="text-black-text font-bold 2xl:text-lg transform -rotate-90 -translate-x-47.5 translate-y-33.75 2xl:-translate-x-65 2xl:translate-y-46.25"
                     >
                       {t("numberOfInspections")}
                     </text>
@@ -269,7 +281,7 @@ export default function DesktopDashboard() {
                 content={
                   <ChartTooltipContent
                     // hideLabel
-                    className="box-design w-[200px] text-sm text-black-text"
+                    className="box-design w-50 text-sm text-black-text"
                   />
                 }
               />
