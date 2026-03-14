@@ -52,7 +52,7 @@ export async function GET(req: Request, ctx: any) {
 
   -- decimal hours rounded to nearest 0.25
 TO_CHAR(
-  ROUND((SUM(EXTRACT(EPOCH FROM (i.end_time - i.start_time))) / 3600.0) * 4) / 4,
+  CEILING((SUM(EXTRACT(EPOCH FROM (i.end_time - i.start_time))) / 3600.0) * 2) / 2,
   'FM999990.00'
 ) AS "duration"
 
@@ -116,7 +116,7 @@ ORDER BY
         ci.construction_item AS "construction",
         o.others AS "others",
       to_char(i.inspection_date, 'YYYY-MM-DD') AS date,
-      TO_CHAR((i.end_time - i.start_time),'HH24:MI') AS "duration",
+      TO_CHAR((i.end_time - i.start_time),'HH24:MI:SS') AS "duration",
       i."type"::text AS type,
       l.location AS location
     FROM inspection_v2 i

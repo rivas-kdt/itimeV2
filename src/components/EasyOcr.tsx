@@ -172,10 +172,7 @@ export default function HomeClient() {
       await applyZoom(1);
       setReady(true);
     } catch (e: any) {
-      setErr(
-        e?.message ||
-          t("cameraFailed"),
-      );
+      setErr(e?.message || t("cameraFailed"));
       stopCamera();
     } finally {
       startingRef.current = false;
@@ -332,7 +329,7 @@ export default function HomeClient() {
           (b) =>
             b ? resolve(b) : reject(new Error("Failed to create image blob.")),
           "image/jpeg",
-          0.92,
+          0.92
         );
       });
 
@@ -367,15 +364,15 @@ export default function HomeClient() {
       const ensureItemExists = async (
         value: string,
         list: string[],
-        endpoint: string,
+        endpoint: string
       ) => {
-        const fieldName = endpoint.split("/").pop(); // construction-item, work-code, or others
+        const fieldName: any = endpoint.split("/").pop(); // construction-item, work-code, or others
         const body = {
           [fieldName === "construction-item"
             ? "construction_item"
             : fieldName === "work-code"
-              ? "work_code"
-              : fieldName]: value,
+            ? "work_code"
+            : fieldName]: value,
         };
 
         const res = await fetch(`/api/v2${endpoint}`, {
@@ -397,7 +394,7 @@ export default function HomeClient() {
       };
 
       // Get or create IDs for construction_item, work_code, others
-      let constructionItemId, workCodeId, othersId;
+      // const constructionItemId, workCodeId, othersId;
 
       // Fetch existing IDs or create new ones
       const [itemsRes, codesRes, othersRes] = await Promise.all([
@@ -414,7 +411,7 @@ export default function HomeClient() {
       const findOrCreateId = async (
         value: string,
         list: any[],
-        endpoint: string,
+        endpoint: string
       ) => {
         const existing = list.find((item) => {
           if (!item) return false;
@@ -427,7 +424,7 @@ export default function HomeClient() {
         return ensureItemExists(value, [], endpoint);
       };
 
-      [constructionItemId, workCodeId, othersId] = await Promise.all([
+      const [constructionItemId, workCodeId, othersId] = await Promise.all([
         findOrCreateId(consItemVal, items, "/construction-item"),
         findOrCreateId(workCodeVal, codes, "/work-code"),
         findOrCreateId(othersVal, others, "/others"),
@@ -469,7 +466,7 @@ export default function HomeClient() {
           workCodeId,
           constructionItemId,
           othersId,
-          type: "inspection",
+          type: "Inspection",
           locationId: 1, // Default location, can be parameterized
           startTime: new Date().toISOString(),
           status: null,
@@ -487,7 +484,6 @@ export default function HomeClient() {
       window.location.href = `/timer/${inspectionId}`;
     } catch (error: any) {
       console.error("Error:", error);
-      alert("Error: " + (error?.message || t("failedToSaveWorkOrder")));
     } finally {
       setIsSubmitting(false);
     }

@@ -16,6 +16,8 @@ import Link from "next/link";
 import { use } from "react";
 import { useMobileDashboardHooks } from "../hooks/useMobileDashboardHooks";
 import { useTranslations } from "next-intl";
+import { useTimerHooks } from "../hooks/useTimerHooks";
+import { useElapsedTimer } from "../hooks/useElapsedTimer";
 
 export default function MobileDashboard() {
   const t = useTranslations("dashboard");
@@ -29,7 +31,14 @@ export default function MobileDashboard() {
   } = useMobileDashboardHooks();
   const { session } = useAuth();
 
-  const activeSession = true;
+  const { activeSession } = useTimerHooks();
+  const { hours, minutes, seconds } = useElapsedTimer(
+    activeSession?.start_time,
+    activeSession?.status === "active"
+  );
+  console.log(activeSession, hours);
+
+  // const activeSession = true;
   const userName = session?.user?.firstName || t("defaultInspectorName");
 
   // Get greeting based on time of day
@@ -60,11 +69,81 @@ export default function MobileDashboard() {
             {getGreeting()},{" "}
             <span className=" text-primary font-bold">{userName}!</span>
           </p>
-          <p className=" text-md text-black/75">
-            {t("progressToday")}
-          </p>
+          <p className=" text-md text-black/75">{t("progressToday")}</p>
         </div>
         <div className=" h-full p-4 overflow-y-auto translate-y-22 space-y-4 no-scrollbar">
+          {activeSession ? (
+            <div className=" p-4 rounded-md bg-white shadow-md">
+              <h3 className=" text-primary font-bold">Active Session</h3>
+
+              <div className=" flex flex-col mt-2">
+                <p className=" font-bold text-md">
+                  Work Order:{" "}
+                  <span className=" font-normal text-black">
+                    {activeSession?.workOrder}
+                  </span>
+                </p>
+                <Table className="mt-2 border-1">
+                  <TableHeader>
+                    <TableRow className="bg-pale-brown">
+                      <TableHead className=" font-bold text-sm">
+                        Construction Item
+                      </TableHead>
+                      <TableHead className=" font-bold text-sm">
+                        Work Code
+                      </TableHead>
+                      <TableHead className=" font-bold text-sm">
+                        Others
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className=" font-normal">
+                        {activeSession?.construction}
+                      </TableCell>
+                      <TableCell className=" font-normal">
+                        {activeSession?.workCode}
+                      </TableCell>
+                      <TableCell className=" font-normal">
+                        {activeSession?.others}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div className=" flex flex-col mt-5">
+                <div className="flex flex-row justify-between">
+                  <p className=" text-xl font-normal text-black">
+                    Elapsed Time:
+                  </p>
+                  <p className=" text-xl font-bold mb-2">{`${hours}:${minutes}:${seconds}`}</p>
+                </div>
+                <Link
+                  href={`/timer/${activeSession?.inspection_id}`}
+                  className="w-full"
+                >
+                  <Button className=" red-gradient active:bg-red-700 px-4 py-1 rounded-sm w-full text-white text-sm">
+                    Go to Inspection Tracker
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className=" p-4 rounded-md bg-white shadow-md">
+              <h3 className=" text-primary font-bold">Active Session</h3>
+              <div className=" flex flex-col justify-center items-center font-bold mt-2 py-8 px-3 gap-5">
+                No Active Session
+                <Link href="/scan-barcode" className="w-full">
+                  <Button className="w-full green-gradient">
+                    Start a Session
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* START SUMMARY CARD */}
           <div className=" p-4 rounded-md bg-white shadow-md">
             <h3 className=" font-bold text-primary">{t("todaysSummary")}</h3>
@@ -94,7 +173,9 @@ export default function MobileDashboard() {
 
           {/* START INSPECTION HISTORY CARD */}
           <div className=" p-4 rounded-md bg-white shadow-md">
-            <h3 className="text-primary font-bold">{t("recentInspectionRecords")}</h3>
+            <h3 className="text-primary font-bold">
+              {t("recentInspectionRecords")}
+            </h3>
             <p className="text-sm text-gray-500 mt-1">
               {t("recentInspectionHistory")}
             </p>
