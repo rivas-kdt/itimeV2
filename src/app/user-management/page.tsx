@@ -667,9 +667,9 @@ function UserManagementContent() {
             <AlertDialogDescription className="my-3">
               {t("deleteUserConfirmDesc")}
             </AlertDialogDescription>
-            <AlertDialogDescription className="text-xs text-gray-400">
+            {/* <AlertDialogDescription className="text-xs text-gray-400">
               {t("deleteUserNote")}
-            </AlertDialogDescription>
+            </AlertDialogDescription> */}
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>

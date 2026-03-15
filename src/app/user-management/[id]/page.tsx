@@ -198,30 +198,18 @@ export default function UserProfilePage({
 
   const handleToast = (status: boolean, action: string) => {
     if (status && action === "exportAll") {
-      return toastSuccess(
-        t("exportedFileSuccess"),
-        t("exportedAllDesc"),
-      );
+      return toastSuccess(t("exportedFileSuccess"), t("exportedAllDesc"));
     } else if (status && action === "exportMonth") {
-      return toastSuccess(
-        t("exportedFileSuccess"),
-        t("exportedMonthDesc"),
-      );
+      return toastSuccess(t("exportedFileSuccess"), t("exportedMonthDesc"));
     } else if (status && action === "exportSelect") {
-      return toastSuccess(
-        t("exportedFileSuccess"),
-        t("exportedSelectDesc"),
-      );
+      return toastSuccess(t("exportedFileSuccess"), t("exportedSelectDesc"));
     } else if (
       !status &&
       (action === "exportAll" ||
         action === "exportMonth" ||
         action === "exportSelect")
     ) {
-      return toastError(
-        t("failedToExport"),
-        t("processFailed"),
-      );
+      return toastError(t("failedToExport"), t("processFailed"));
     } else if (status && action === "exportTracker") {
       return toastSuccess(
         t("monthlyTrackerExportedSuccess"),
@@ -233,10 +221,7 @@ export default function UserProfilePage({
         t("informationUpdatedDesc"),
       );
     } else if (!status && action === "exportTracker") {
-      return toastError(
-        t("failedToExportTracker"),
-        t("processFailed"),
-      );
+      return toastError(t("failedToExportTracker"), t("processFailed"));
     } else if (!status && action === "updateDetails") {
       return toastError(
         t("failedToUpdateInformation"),
@@ -374,9 +359,7 @@ export default function UserProfilePage({
       <div className="bg-white flex flex-col justify-center items-center gap-5 h-full text-black-text ">
         <Frown size={150} />
         <div className="text-5xl font-bold">{t("userNotFound")}</div>
-        <span className="text-gray-300">
-          {t("userNotFoundDesc")}
-        </span>
+        <span className="text-gray-300">{t("userNotFoundDesc")}</span>
 
         <Link href={`/user-management`}>
           <Button className="gradient-bg">{t("goBack")}</Button>
@@ -424,10 +407,10 @@ export default function UserProfilePage({
           </div>
 
           <div className="flex flex-row gap-5">
-            <Button className="btn-css gradient-bg">
+            {/* <Button className="btn-css gradient-bg">
               {t("exportAsExcel")}
               <Sheet />
-            </Button>
+            </Button> */}
             {/* pdf renderer button */}
             <PDFDownloadLink
               document={
@@ -659,9 +642,7 @@ export default function UserProfilePage({
               <DialogTitle className="font-bold text-black-text">
                 {t("exportAllData")}
               </DialogTitle>
-              <div className="text-black-text">
-                {t("exportAllDataDesc")}
-              </div>
+              <div className="text-black-text">{t("exportAllDataDesc")}</div>
 
               <button
                 className="gradient-bg rounded-md text-white px-5 py-2 w-full text-nowrap mt-auto cursor-pointer"
@@ -687,9 +668,18 @@ export default function UserProfilePage({
                   </SelectTrigger>
                   <SelectContent className="h-[200px] bg-white text-black border-gray-300">
                     {[
-                      t("monthJanuary"), t("monthFebruary"), t("monthMarch"), t("monthApril"),
-                      t("monthMay"), t("monthJune"), t("monthJuly"), t("monthAugust"),
-                      t("monthSeptember"), t("monthOctober"), t("monthNovember"), t("monthDecember"),
+                      t("monthJanuary"),
+                      t("monthFebruary"),
+                      t("monthMarch"),
+                      t("monthApril"),
+                      t("monthMay"),
+                      t("monthJune"),
+                      t("monthJuly"),
+                      t("monthAugust"),
+                      t("monthSeptember"),
+                      t("monthOctober"),
+                      t("monthNovember"),
+                      t("monthDecember"),
                     ].map((m) => (
                       <SelectItem key={m} value={m} className="selection-hover">
                         {m}
@@ -959,7 +949,9 @@ export default function UserProfilePage({
           </div>
 
           <AlertDialogFooter>
-            <AlertDialogCancel className="cancel-btn">{t("cancel")}</AlertDialogCancel>
+            <AlertDialogCancel className="cancel-btn">
+              {t("cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               disabled={!hasRecords}
               className={`gradient-bg ${
