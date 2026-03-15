@@ -64,8 +64,6 @@ export async function POST(req: Request) {
   const access = String(body.access ?? "User").trim();
   const password = String(body.password ?? "").trim();
 
-  console.log({ emp_id, first_name, last_name, email, group_id, access, password });
-
     if (!emp_id || !first_name || !last_name || !email || !group_id || !password) {
         return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }

@@ -29,10 +29,6 @@ export default function InspectPage() {
   const location = searchParams.get("location") || "";
   const date = searchParams.get("date") || "";
 
-  console.log(
-    `/api/v2/inspections?wo=${workOrderId}&wc=${workCodeId}&ci=${constructionItemId}&o=${othersId}&own=true`,
-  );
-
   const [isInspectionStarted, setIsInspectionStarted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -43,12 +39,7 @@ export default function InspectPage() {
   const dateToday = new Date().toLocaleDateString();
   const recordedTime = { hours: 5, minutes: 45 };
 
-  const { recordsInfo } = useTimerHooks(
-    workOrderId,
-    workCodeId,
-    constructionItemId,
-    othersId,
-  );
+  const { recordsInfo } = useTimerHooks(workOrderId || "");
 
   const handleInspection = async () => {
     try {
@@ -112,8 +103,6 @@ export default function InspectPage() {
     hour: 10,
     minute: 0,
   });
-
-  console.log("recordsInfo", recordsInfo);
 
   return (
     <div className="bg-background h-full text-black flex flex-col">

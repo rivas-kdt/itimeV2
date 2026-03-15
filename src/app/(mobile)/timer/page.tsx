@@ -57,13 +57,6 @@ function TrackerContent() {
   const handleCreateRecord = async () => {
     const record = filterWorkOrders.find((item) => item.id === selectedRecord);
     if (!record) return;
-
-    console.log({
-      date,
-      type,
-      location,
-    });
-    // Create record with status: null
     try {
       const result = await createInspectionRecord({
         workOrderId: record.workOrderId,
@@ -90,7 +83,6 @@ function TrackerContent() {
 
   function handleTypeChange(value: string) {
     setType(value);
-    // console.log("type", type);
   }
   function handleLocChange(value: string) {
     setLocation(value);
@@ -122,7 +114,7 @@ function TrackerContent() {
             {filterWorkOrders.map((data) => (
               <div
                 key={data.id}
-                className="mb-2 border-gray-500 border-b-1 pb-2 font-bold"
+                className="mb-2 border-gray-500 border-b pb-2 font-bold"
               >
                 <Button
                   onClick={() => handleClickWorkOrder(data.id)}

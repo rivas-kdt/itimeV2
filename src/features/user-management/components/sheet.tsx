@@ -101,12 +101,9 @@ const SheetDaysLayout = ({
   const visibleRows = useMemo(() => {
     return rows.filter((row) => {
       const monthData = row.monthlyData?.[monthKey];
-      console.log("monthData", monthData, "monthKey", monthKey);
       return monthData && Object.keys(monthData).length > 0;
     });
   }, [rows, monthKey]);
-  console.log("initialRows: ", initialRows);
-  console.log("visibleRows", visibleRows);
 
   useEffect(() => {
     if (onSheetChange) {
@@ -145,12 +142,12 @@ const SheetDaysLayout = ({
     bp === "2xl"
       ? 116
       : bp === "xl"
-        ? 96
-        : bp === "lg"
-          ? 86
-          : bp === "md"
-            ? 66
-            : 96;
+      ? 96
+      : bp === "lg"
+      ? 86
+      : bp === "md"
+      ? 66
+      : 96;
 
   const dynamicAreaWidth = `calc(100vw - ${fixedColumns * fixedColumnWidth}px)`;
   const dateColumnWidth = `calc(${dynamicAreaWidth} / ${daysInMonth.length})`;

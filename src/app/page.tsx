@@ -46,7 +46,6 @@ export default function LandingPage() {
     }
   });
 
-  console.log("landing isMobile: ", isMobile, window.innerWidth);
   if (session.isLoading) {
     return (
       <div className=" h-screen w-screen flex items-center justify-center">

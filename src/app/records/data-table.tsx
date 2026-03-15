@@ -48,7 +48,6 @@ export function DataTable<TData, TValue>({
     pageSize: 6,
   });
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
-  console.log("ALL DATA: ", data);
 
   //small screens = less rows
   useEffect(() => {

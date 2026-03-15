@@ -170,7 +170,7 @@ export default function DigitalClient() {
         const others = await othersRes.json();
 
         // Extract values, ensuring we get strings only
-        const getValues = (data: any) => {
+        const getValues = (data: any): string[] => {
           if (!Array.isArray(data)) return [];
           return data
             .map((item: any) => {
@@ -179,7 +179,7 @@ export default function DigitalClient() {
                 return String(item.value);
               return null;
             })
-            .filter(Boolean);
+            .filter((item): item is string => item !== null);
         };
 
         setItemList(getValues(items));

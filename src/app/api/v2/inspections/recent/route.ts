@@ -9,9 +9,10 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const limit = Math.min(Number(searchParams.get("limit") ?? 15), 50);
     const self = searchParams.get("self") === "true";
+    const tz = 'Asia/Tokyo';
 
-    let whereClause = "";
-    let params: any[] = [];
+    let whereClause = "WHERE i.status = 'ended'";
+    let params: any[] = [tz];
 
     if (self) {
       const token = await readSession();
@@ -22,23 +23,23 @@ export async function GET(req: Request) {
       if (!decoded?.user?.empId) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
-      whereClause = `WHERE i.inspector_id = $1`;
-      params = [decoded.user.empId];
+      whereClause = `WHERE i.inspector_id = $2 AND i.status = 'ended'`;
+      params.push(decoded.user.empId);
     }
 
     const q = `
         SELECT
         i.inspection_id,
-        i.inspection_date,
+        to_char((i.inspection_date AT TIME ZONE $1)::date, 'YYYY-MM-DD') AS inspection_date,
         COALESCE(TO_CHAR((i.end_time - i.start_time),'HH24:MI:SS'), '00:00:00') AS duration,
         i.type,
         e.first_name,
         e.last_name
         FROM inspection_v2 i
         JOIN employee e ON e.emp_id = i.inspector_id
-        ${whereClause} AND i.status = 'ended'
+        ${whereClause}
         ORDER BY i.inspection_date DESC
-        LIMIT $${whereClause ? 2 : 1};`;
+        LIMIT $${self ? 3 : 2};`;
 
     const res = await client.query(q, [...params, limit]);
 
@@ -46,7 +47,7 @@ export async function GET(req: Request) {
       id: r.inspection_id,
       inspector: `${r.first_name} ${r.last_name}`.trim(),
       time: r.duration,
-      date: new Date(r.inspection_date).toISOString().slice(0, 10),
+      date: r.inspection_date,
       type: r.type,
     }));
 

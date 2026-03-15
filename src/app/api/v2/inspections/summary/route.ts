@@ -7,14 +7,15 @@ export async function GET(req: Request) {
   const client = await pool.connect();
   try {
     const { searchParams } = new URL(req.url);
-    const self = searchParams.get("self") === "true";
+    const self = searchParams.get("self");
 
     const tz = "Asia/Tokyo";
     
     let inspectorFilter = "";
     let params: any[] = [tz];
 
-    if (self) {
+    console.log("Received request for inspection summary with self =", self);
+    if (self === "true") {
       const token = await readSession();
       if (!token) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

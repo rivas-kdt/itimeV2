@@ -29,8 +29,6 @@ const toastStyle = (
   text: string,
 ) => {
   const width = isMobile ? "70%" : "100%";
-  console.log("isMobile: ", isMobile);
-  console.log("width: ", width);
 
   return {
     width,
@@ -67,7 +65,7 @@ const toastError = (
 
 export function SignUpForm({ onChangeView }: Props) {
   const t = useTranslations("auth");
-  const isMobile = useIsMobile();
+  const { isMobile } = useIsMobile();
   const { login, loginLoading } = useAuth();
 
   const [empID, setEmpID] = useState("");
@@ -91,7 +89,6 @@ export function SignUpForm({ onChangeView }: Props) {
     fetchGroups();
   }, []);
 
-  console.log("group id: ", group_id);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,15 +103,6 @@ export function SignUpForm({ onChangeView }: Props) {
       !confirmPassword ||
       !group_id
     ) {
-      console.log({
-        empID,
-        firstName,
-        lastName,
-        email,
-        password,
-        confirmPassword,
-        group_id,
-      });
       setFormError(`*${t("fillAllFields")}`);
       toastError(isMobile, t("validationError"), t("fillAllFields"));
       return;

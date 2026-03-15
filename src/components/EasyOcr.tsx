@@ -216,7 +216,7 @@ export default function HomeClient() {
         const others = await othersRes.json();
 
         // Extract values, ensuring we get strings only
-        const getValues = (data: any) => {
+        const getValues = (data: any): string[] => {
           if (!Array.isArray(data)) return [];
           return data
             .map((item: any) => {
@@ -225,7 +225,7 @@ export default function HomeClient() {
                 return String(item.value);
               return null;
             })
-            .filter(Boolean);
+            .filter((item): item is string => item !== null);
         };
 
         setItemList(getValues(items));
@@ -338,7 +338,7 @@ export default function HomeClient() {
           (b) =>
             b ? resolve(b) : reject(new Error("Failed to create image blob.")),
           "image/jpeg",
-          0.92,
+          0.92
         );
       });
 
@@ -373,15 +373,15 @@ export default function HomeClient() {
       const ensureItemExists = async (
         value: string,
         list: string[],
-        endpoint: string,
+        endpoint: string
       ) => {
         const fieldName: any = endpoint.split("/").pop(); // construction-item, work-code, or others
         const body = {
           [fieldName === "construction-item"
             ? "construction_item"
             : fieldName === "work-code"
-              ? "work_code"
-              : fieldName]: value,
+            ? "work_code"
+            : fieldName]: value,
         };
 
         const res = await fetch(`/api/v2${endpoint}`, {
@@ -404,6 +404,7 @@ export default function HomeClient() {
 
       // Get or create IDs for construction_item, work_code, others
       // let constructionItemId, workCodeId, othersId;
+      // const constructionItemId, workCodeId, othersId;
 
       // Fetch existing IDs or create new ones
       const [itemsRes, codesRes, othersRes] = await Promise.all([
@@ -420,7 +421,7 @@ export default function HomeClient() {
       const findOrCreateId = async (
         value: string,
         list: any[],
-        endpoint: string,
+        endpoint: string
       ) => {
         const existing = list.find((item) => {
           if (!item) return false;
@@ -493,7 +494,6 @@ export default function HomeClient() {
       window.location.href = `/timer/${inspectionId}`;
     } catch (error: any) {
       console.error("Error:", error);
-      alert("Error: " + (error?.message || t("failedToSaveWorkOrder")));
     } finally {
       setIsSubmitting(false);
     }

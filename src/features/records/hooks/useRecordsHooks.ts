@@ -3,6 +3,7 @@ import { InspectionsDTO, InspectionType, LocationName } from "../types";
 import { deleteInspection, getInspections, updateInspection } from "../services/records.service";
 import { addDays, format } from "date-fns";
 import { type DateRange } from "react-day-picker";
+import { formatDateWithTimezone } from "@/lib/timezone";
 
 export function useRecordsHooks() {
     const [records, setRecords] = useState<InspectionsDTO[]>([]);
@@ -22,13 +23,16 @@ export function useRecordsHooks() {
         setLoading(true);
         setError(null);
         try {
+            const dateFromString = date?.from ? formatDateWithTimezone(date.from) : undefined;
+            const dateToString = date?.to ? formatDateWithTimezone(date.to) : undefined;
+            
             const res = await getInspections({
                 q: searchRecord.trim() || undefined,
                 type: typeFilter.length ? typeFilter : undefined,
                 own: true,
                 location: locationFilter.length ? locationFilter : undefined,
-                dateFrom: date?.from ? format(date.from, 'yyyy-MM-dd') : undefined,
-                dateTo: date?.to ? format(date.to, 'yyyy-MM-dd') : undefined,
+                dateFrom: dateFromString,
+                dateTo: dateToString,
                 limit: 500,
                 offset: 0,
             });

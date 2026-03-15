@@ -6,8 +6,8 @@ import { useState, useEffect, useRef } from "react";
 export default function Stopwatch() {
   const [elapsed, setElapsed] = useState(0); // elapsed time in ms
   const [isRunning, setIsRunning] = useState(false);
-  const startTimeRef = useRef(null);
-  const rafRef = useRef(null);
+  const startTimeRef = useRef<number | null>(null);
+  const rafRef = useRef<number | null>(null);
 
   // Load saved state from localStorage on mount
   useEffect(() => {
@@ -49,12 +49,12 @@ export default function Stopwatch() {
 
   const pause = () => {
     setIsRunning(false);
-    cancelAnimationFrame(rafRef.current);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
   };
 
   const reset = () => {
     setIsRunning(false);
-    cancelAnimationFrame(rafRef.current);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
     setElapsed(0);
     startTimeRef.current = null;
     localStorage.removeItem("stopwatch_startTime");
@@ -63,15 +63,19 @@ export default function Stopwatch() {
   };
 
   const updateTime = () => {
-    setElapsed(Date.now() - startTimeRef.current);
-    rafRef.current = requestAnimationFrame(updateTime);
+    if (startTimeRef.current) {
+      setElapsed(Date.now() - startTimeRef.current);
+      rafRef.current = requestAnimationFrame(updateTime);
+    }
   };
 
   useEffect(() => {
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
-  const formatTime = (ms) => {
+  const formatTime = (ms: number) => {
     const minutes = String(Math.floor(ms / 60000)).padStart(2, "0");
     const seconds = String(Math.floor((ms % 60000) / 1000)).padStart(2, "0");
     const milliseconds = String(Math.floor((ms % 1000) / 10)).padStart(2, "0");

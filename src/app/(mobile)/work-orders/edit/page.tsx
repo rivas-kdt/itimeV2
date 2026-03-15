@@ -56,7 +56,7 @@ function ErrorAlert({
 }) {
   return (
     <div className="mx-8 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-      <AlertCircle className="text-red-600 flex-shrink-0" size={20} />
+      <AlertCircle className="text-red-600 shrink-0" size={20} />
       <div className="flex-1">
         <p className="text-red-800 font-semibold">Error Loading Work Order</p>
         <p className="text-red-700 text-sm mt-1">{message}</p>
@@ -80,8 +80,6 @@ export default function EditWorkOrdersPage() {
   const workCodeId = searchParams.get("workCodeId") || undefined;
   const constructionItemId = searchParams.get("constructionItemId") || undefined;
   const othersId = searchParams.get("othersId") || undefined;
-
-  console.log(workOrderId, workCodeId, constructionItemId, othersId);
 
   const { recordsInfo, recordsInfoLoading, recordsInfoError, refetch } = useWorkOrderHooks(workOrderId, workCodeId, constructionItemId, othersId)
   // Edit state management
@@ -168,8 +166,6 @@ export default function EditWorkOrdersPage() {
     }
   };
 
-  console.log(recordsInfo)
-
   return (
     <div className="bg-background h-full overflow-y-scroll text-black">
       {/* Header */}
@@ -251,7 +247,7 @@ export default function EditWorkOrdersPage() {
                     <Button
                       onClick={handleSaveEdit}
                       disabled={isSubmitting}
-                      className="flex-1 bg-gradient-to-r from-primary-300 to-primary text-white"
+                      className="flex-1 bg-linear-to-r from-primary-300 to-primary text-white"
                     >
                       {isSubmitting ? "Saving..." : "Save Changes"}
                     </Button>

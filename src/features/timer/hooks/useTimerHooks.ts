@@ -13,7 +13,6 @@ export function useTimerHooks(id: any) {
         setrecordsInfoError(null)
         try {
             const res = await getInspection(id)
-            console.log(res.data)
             setRecordsInfo(res.data)
         } catch (e: any) {
             console.error(e)

@@ -1,12 +1,22 @@
 // Timezone configuration
-// Default to GMT+8 (Manila/Philippines), can be overridden with NEXT_PUBLIC_TIMEZONE_OFFSET env var
-const TIMEZONE_OFFSET = 
-  process.env.NEXT_PUBLIC_TIMEZONE_OFFSET !== undefined 
-    ? parseInt(process.env.NEXT_PUBLIC_TIMEZONE_OFFSET) 
-    : 8; // GMT+8
-
+// Default to Asia/Tokyo (GMT+9), can be overridden with NEXT_PUBLIC_TIMEZONE env var
 const TIMEZONE_NAME = 
-  process.env.NEXT_PUBLIC_TIMEZONE_NAME || 'Asia/Manila';
+  process.env.NEXT_PUBLIC_TIMEZONE || 'Asia/Tokyo';
+
+// Get timezone offset from timezone name
+const TIMEZONE_OFFSET = getTimezoneOffsetFromName(TIMEZONE_NAME);
+
+function getTimezoneOffsetFromName(tzName: string): number {
+  const offsetMap: Record<string, number> = {
+    'Asia/Tokyo': 9,
+    'Asia/Manila': 8,
+    'Asia/Shanghai': 8,
+    'Asia/Hong_Kong': 8,
+    'Asia/Singapore': 8,
+    'UTC': 0,
+  };
+  return offsetMap[tzName] ?? 9; // Default to Tokyo (GMT+9)
+}
 
 /**
  * Format a date using the configured timezone (GMT+8 by default or configurable via env)

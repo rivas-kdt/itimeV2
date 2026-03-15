@@ -69,7 +69,6 @@ export default function ChangePasswordPage() {
         newPassword: formData.newPassword,
         confirmPassword: formData.confirmPassword,
       });
-      console.log("Password changed successfully");
       toastSuccess(t("passwordChangedSuccess"));
       setFormData({
         currentPassword: "",
@@ -78,8 +77,6 @@ export default function ChangePasswordPage() {
       });
       router.push("/profile");
     } catch (err) {
-      console.log("Error changing password:", err);
-
       toastError(
         err instanceof Error ? err.message : t("failedToChangePassword"),
       );

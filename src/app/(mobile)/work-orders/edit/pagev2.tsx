@@ -79,7 +79,7 @@ export default function EditWorkOrdersPage() {
         if (!recordsInfo || recordsInfo.length === 0) return null;
         return recordsInfo[0];
     }, [recordsInfo]);
-
+    
     const inspectedDates = useMemo(() => {
         if (!recordsInfo || recordsInfo.length === 0) return [];
         return recordsInfo

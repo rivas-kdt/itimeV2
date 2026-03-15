@@ -21,10 +21,12 @@ export type RecentRow = {
 };
 
 export async function fetchInspectionSummary(
-  self: boolean = false
+  self: boolean | undefined
 ): Promise<Summary> {
+  console.log("Fetching inspection summary with self =", self);
   const params = new URLSearchParams();
-  if (self) params.append("self", "true");
+  if(self !== undefined) params.append("self", self.toString()); 
+  console.log("/api/v2/inspections/summary?" + params.toString());
   const res = await fetch(`/api/v2/inspections/summary?${params.toString()}`);
   const data = await res.json();
   if (!res.ok)
@@ -36,7 +38,7 @@ export async function fetchWeekChart(
   self: boolean = false
 ): Promise<WeekChartRow[]> {
   const params = new URLSearchParams();
-  if (self) params.append("self", "true");
+  params.append("self", self.toString());
   const res = await fetch(`/api/v2/inspections/week?${params.toString()}`);
   const data = await res.json();
   if (!res.ok)
@@ -45,10 +47,12 @@ export async function fetchWeekChart(
 }
 
 export async function fetchMonthChart(
-  self: boolean = false
+  self: boolean = false,
+  month?: number
 ): Promise<WeekChartRow[]> {
   const params = new URLSearchParams();
-  if (self) params.append("self", "true");
+  params.append("self", self.toString());
+  if (month) params.append("month", month.toString());
   const res = await fetch(`/api/v2/inspections/month?${params.toString()}`);
   const data = await res.json();
   if (!res.ok)
@@ -62,7 +66,7 @@ export async function fetchWorkCodeChart(
 ): Promise<WorkCodeRow[]> {
   const params = new URLSearchParams();
   params.append("range", range);
-  if (self) params.append("self", "true");
+  params.append("self", self.toString());
   const res = await fetch(`/api/v2/inspections/workCode?${params.toString()}`);
   const data = await res.json();
   if (!res.ok)
@@ -76,7 +80,7 @@ export async function fetchRecentInspections(
 ): Promise<RecentRow[]> {
   const params = new URLSearchParams();
   params.append("limit", limit.toString());
-  if (self) params.append("self", "true");
+  params.append("self", self.toString());
   const res = await fetch(`/api/v2/inspections/recent?${params.toString()}`);
   const data = await res.json();
   if (!res.ok)

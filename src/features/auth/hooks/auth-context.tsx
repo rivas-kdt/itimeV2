@@ -63,7 +63,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const result = await loginService(email, password);
         await createSession(result.token);
-        console.log("Login successful, session created.");
         setSession({
           user: result.user,
           isAuthenticated: true,

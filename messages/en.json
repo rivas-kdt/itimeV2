@@ -77,7 +77,7 @@
     "dashboard": "Dashboard",
     "myRecords": "My Records",
     "management": "Management",
-    "hello": "Hello,"
+    "hello": "Welcome,"
   },
   "navbar": {
     "home": "Home",
@@ -169,7 +169,7 @@
     "inspectionsCount": "{count} Inspections",
     "totalInspectionsThisYear": "Total Inspections this Year",
     "numberOfInspections": "Number of Inspections",
-    "inspectionsThisWeek": "INSPECTIONS THIS WEEK",
+    "inspectionsThisMonth": "INSPECTIONS THIS MONTH",
     "inspectionsPerWorkCode": "INSPECTIONS PER WORK CODE",
     "goodMorning": "Good Morning",
     "goodAfternoon": "Good Afternoon",

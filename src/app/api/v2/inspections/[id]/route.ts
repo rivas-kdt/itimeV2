@@ -37,7 +37,7 @@ export async function GET(req: NextRequest, ctx: any) {
         i.start_time,
         i.end_time,
         i.created_at,
-        i.inspection_date,
+        to_char((i.inspection_date AT TIME ZONE 'Asia/Tokyo')::date, 'YYYY-MM-DD') AS inspection_date,
         i.status
       FROM inspection_v2 i
       JOIN work_order_v2 wo ON wo.id = i.work_order_id
@@ -87,8 +87,6 @@ export async function PATCH(req: Request, ctx: any) {
     const fields: string[] = [];
     const values: any[] = [];
 
-    console.log("Received update for inspection ID:", id, "with data:", body);
-
     if (date) {
       values.push(date);
       fields.push(`inspection_date = $${values.length}`);
@@ -134,7 +132,7 @@ export async function PATCH(req: Request, ctx: any) {
     const outQuery = `SELECT
     i.inspection_id::text AS id,
     wo.work_order AS "WorkOrder",
-    to_char(i.inspection_date::date, 'YYYY-MM-DD') AS date,
+    to_char((i.inspection_date AT TIME ZONE 'Asia/Tokyo')::date, 'YYYY-MM-DD') AS date,
     TO_CHAR((i.end_time - i.start_time),'HH24:MI') AS "duration",
     i.start_time::text AS start_time,
     i.end_time::text AS end_time,
@@ -156,7 +154,6 @@ export async function PATCH(req: Request, ctx: any) {
     if (updatedRes.rows.length === 0) {
       return NextResponse.json({ error: "Inspection not found" }, { status: 404 });
     }
-    console.log("Updated inspection:", updatedRes.rows[0]);
     return NextResponse.json(updatedRes.rows[0]);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);

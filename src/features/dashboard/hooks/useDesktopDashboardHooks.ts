@@ -12,7 +12,7 @@ import {
   type WorkCodeRow,
 } from "../services/inspectionDashboard.service";
 
-export function useDesktopDashboardHooks() {
+export function useDesktopDashboardHooks(self?: boolean) {
   const [inspection, setInspection] = useState({ total: 0 });
   const [inspectionToday, setInspectionToday] = useState({ total: 0 });
   const [inspectionThisWeek, setInspectionThisWeek] = useState({ total: 0 });
@@ -24,6 +24,7 @@ export function useDesktopDashboardHooks() {
   const [recentInspections, setRecentInspections] = useState<RecentRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,12 +32,13 @@ export function useDesktopDashboardHooks() {
       setLoading(true);
       setError(null);
       try {
+        console.log("Fetching dashboard data with self =", self, "month=", selectedMonth);
         const [summary, week, month, workcode, recent] = await Promise.all([
-          fetchInspectionSummary(false),
-          fetchWeekChart(false),
-          fetchMonthChart(false),
-          fetchWorkCodeChart("year", false),
-          fetchRecentInspections(false),
+          fetchInspectionSummary(self),
+          fetchWeekChart(self),
+          fetchMonthChart(self, selectedMonth),
+          fetchWorkCodeChart("year", self),
+          fetchRecentInspections(self),
         ]);
         if (cancelled) return;
         setInspection(summary.inspection);
@@ -59,7 +61,7 @@ export function useDesktopDashboardHooks() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [self, selectedMonth]);
 
   return useMemo(
     () => ({
@@ -74,6 +76,8 @@ export function useDesktopDashboardHooks() {
       recentInspections,
       loading,
       error,
+      selectedMonth,
+      setSelectedMonth,
     }),
     [
       inspection,
@@ -87,6 +91,7 @@ export function useDesktopDashboardHooks() {
       recentInspections,
       loading,
       error,
+      selectedMonth,
     ]
   );
 }

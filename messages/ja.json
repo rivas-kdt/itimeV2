@@ -77,7 +77,7 @@
     "dashboard": "ダッシュボード",
     "myRecords": "記録",
     "management": "管理",
-    "hello": "こんにちは、"
+    "hello": "ようこそ,"
   },
   "navbar": {
     "home": "ホーム",
@@ -169,7 +169,7 @@
     "inspectionsCount": "{count} 件の点検",
     "totalInspectionsThisYear": "今年の点検合計",
     "numberOfInspections": "点検件数",
-    "inspectionsThisWeek": "今週の点検",
+    "inspectionsThisMonth": "今月の点検",
     "inspectionsPerWorkCode": "作業コード別点検数",
     "goodMorning": "おはようございます",
     "goodAfternoon": "こんにちは",
@@ -368,10 +368,10 @@
     "clear": "クリア",
     "noMatchingUsers": "一致するユーザーがありません",
     "retry": "再試行",
-    "addNewUser": "新規ユーザーを追加",
+    "addNewUser": "新規ユーザー",
     "deleteUser": "ユーザーを削除",
     "totalInspections": "点検合計",
-    "viewProfile": "プロフィールを表示",
+    "viewProfile": "プロフィール",
     "addNewUserTitle": "新規ユーザーを追加",
     "requiredFieldsMarked": "必須項目には",
     "employeeId": "社員ID",

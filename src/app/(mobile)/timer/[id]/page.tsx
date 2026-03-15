@@ -20,12 +20,12 @@ import { ChevronLeft, SquarePen, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-// import { useRouter } from "next/router"
 import { useEffect, useState } from "react";
 import { useRecordTrackerHooks } from "@/features/timer/hooks/useRecordTracker";
 import { updateInspection } from "@/features/timer/services/timer.service";
 import { useTimerHooks } from "@/features/timer/hooks/useTimerHooks";
 import { useElapsedTimer } from "@/features/timer/hooks/useElapsedTimer";
+import { useTimeEditor } from "@/features/timer/hooks/useTimeEditor";
 import { formatDateWithTimezone } from "@/lib/timezone";
 import { useTranslations } from "next-intl";
 
@@ -46,7 +46,6 @@ const TIMER_MONTH_KEYS = [
 
 export default function TimerPage() {
   const t = useTranslations("timer");
-  // const { workOrderID } = useRouter().query;
   const [startInspection, setStartInspection] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -64,12 +63,26 @@ export default function TimerPage() {
   const dateToday = `${month} ${day}, ${year}`;
 
   const { recordsInfo, recordsInfoLoading } = useTimerHooks(id);
+  
+  // Use time editor hook
+  const {
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
+    openStartTime,
+    setOpenStartTime,
+    openEndTime,
+    setOpenEndTime,
+    parseTimeFromISO,
+    calculateRecordedTime,
+    getDuration,
+    loadTimesFromInspection,
+  } = useTimeEditor();
 
   useEffect(() => {
     if (isMobile === undefined) return;
-    console.log("isMobile: ", isMobile);
     if (!isMobile) router.replace("/dashboard");
-    console.log("isMobile routing: ", isMobile);
   }, [isMobile, router]);
 
   useEffect(() => {
@@ -81,12 +94,9 @@ export default function TimerPage() {
   // Update start and end time from recordsInfo when it loads
   useEffect(() => {
     if (recordsInfo?.start_time && recordsInfo?.end_time) {
-      const startTimeValue = parseTimeFromISO(recordsInfo.start_time);
-      const endTimeValue = parseTimeFromISO(recordsInfo.end_time);
-      setStartTime(startTimeValue);
-      setEndTime(endTimeValue);
+      loadTimesFromInspection(recordsInfo.start_time, recordsInfo.end_time);
     }
-  }, [recordsInfo?.start_time, recordsInfo?.end_time]);
+  }, [recordsInfo?.start_time, recordsInfo?.end_time, loadTimesFromInspection]);
 
   const timer = useElapsedTimer(
     recordsInfo?.start_time,
@@ -181,73 +191,16 @@ export default function TimerPage() {
     setIsEditTime(false);
   };
 
-  // Helper function to parse ISO string to TimeValue
-  const parseTimeFromISO = (isoString: string): TimeValue => {
-    const date = new Date(isoString);
-    return {
-      hour: date.getHours(),
-      minute: date.getMinutes(),
-    };
-  };
-
-  const [openStartTime, setOpenStartTime] = useState(false);
-  const [openEndTime, setOpenEndTime] = useState(false);
-
-  // State for start/end time
-  const [startTime, setStartTime] = useState<TimeValue>({
-    hour: 8,
-    minute: 30,
-  });
-  const [endTime, setEndTime] = useState<TimeValue>({
-    hour: 10,
-    minute: 0,
-  });
-
-  // Function to calculate recorded time in hours and minutes
-  const calculateRecordedTime = (start: TimeValue, end: TimeValue) => {
-    const startMinutes = start.hour * 60 + start.minute;
-    const endMinutes = end.hour * 60 + end.minute;
-
-    let diff = endMinutes - startMinutes;
-    if (diff < 0) diff += 24 * 60;
-
-    const hours = Math.floor(diff / 60);
-    const minutes = diff % 60;
-
-    return { hours, minutes };
-  };
-
   const formattedDate = (date: any) => {
     return formatDateWithTimezone(date);
   };
 
   const recordedTime = calculateRecordedTime(startTime, endTime);
 
-  const getDuration = (start?: string, end?: string) => {
-    if (!start || !end) return { hours: "00", minutes: "00", seconds: "00" };
-
-    const startDate = new Date(start).getTime();
-    const endDate = new Date(end).getTime();
-
-    const diff = endDate - startDate;
-
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    return {
-      hours: String(hours).padStart(2, "0"),
-      minutes: String(minutes).padStart(2, "0"),
-      seconds: String(seconds).padStart(2, "0"),
-    };
-  };
-
   const finishedDuration = getDuration(
     recordsInfo?.start_time,
     recordsInfo?.end_time,
   );
-
-  console.log("recordsInfo: ", recordsInfo);
 
   return (
     <div className="bg-background h-full text-black flex flex-col">
