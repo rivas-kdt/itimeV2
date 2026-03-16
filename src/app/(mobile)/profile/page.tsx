@@ -27,12 +27,20 @@ import { useUserProfile } from "@/features/profile/hooks/useUserProfileHooks";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
+async function setLocale(locale: "en" | "ja") {
+  await fetch("/api/locale", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ locale }),
+  });
+}
+
 export default function ProfilePage() {
   const t = useTranslations("profile");
   const { profile, loading } = useUserProfile();
   const { logout } = useAuth();
   const [isSwitchLang, setIsSwitchLang] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   const toastStyle = (bg: string, border: string, text: string) => ({
     width: "50%",
@@ -55,7 +63,7 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     try {
       await logout();
-      router.push('/')
+      router.push("/");
       toastSuccess(t("loggedOutSuccess"));
     } catch (error) {
       toastError(t("logoutFailed"));
@@ -66,10 +74,13 @@ export default function ProfilePage() {
 
   const handleSwitchLang = (checked: boolean) => {
     setIsSwitchLang(checked);
-    if (checked) {
-      // trigger your i18n change here
-    } else {
-    }
+
+    // If checked, set Japanese, else English
+    const newLocale = checked ? "ja" : "en";
+
+    setLocale(newLocale).then(() => {
+      router.refresh(); // refresh the page to apply the new locale
+    });
   };
 
   return (
@@ -155,9 +166,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex flex-col justify-center items-center">
               <h5 className="w-full font-thin">{t("logout")}</h5>
-              <p className="w-full text-xs text-gray-500">
-                {t("signOut")}
-              </p>
+              <p className="w-full text-xs text-gray-500">{t("signOut")}</p>
             </div>
           </div>
           <div className="flex justify-center items-center">
@@ -203,12 +212,10 @@ export default function ProfilePage() {
                   className="text-primary"
                 />
               </div>
-            <div className="flex flex-col justify-center items-center">
-              <h5 className="w-full font-thin">{t("helpSupport")}</h5>
-              <p className="w-full text-xs text-gray-500">
-                {t("faq")}
-              </p>
-            </div>
+              <div className="flex flex-col justify-center items-center">
+                <h5 className="w-full font-thin">{t("helpSupport")}</h5>
+                <p className="w-full text-xs text-gray-500">{t("faq")}</p>
+              </div>
             </div>
             <div className="flex justify-center items-center">
               <ChevronRight size={32} />
@@ -220,12 +227,12 @@ export default function ProfilePage() {
               <div className="flex justify-center items-center bg-primary-op-2 p-2 rounded-full">
                 <Info size={32} strokeWidth={1} className="text-primary" />
               </div>
-            <div className="flex flex-col justify-center items-center">
-              <h5 className="w-full font-thin">{t("aboutApp")}</h5>
-              <p className="w-full text-xs text-gray-500">
-                {t("aboutAppDesc")}
-              </p>
-            </div>
+              <div className="flex flex-col justify-center items-center">
+                <h5 className="w-full font-thin">{t("aboutApp")}</h5>
+                <p className="w-full text-xs text-gray-500">
+                  {t("aboutAppDesc")}
+                </p>
+              </div>
             </div>
             <div className="flex justify-center items-center">
               <ChevronRight size={32} />
