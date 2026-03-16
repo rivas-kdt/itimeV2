@@ -297,7 +297,10 @@
     "others": "その他",
     "date": "日付",
     "saving": "保存中...",
-    "noInspectionsOnDate": "この日付の点検はありません"
+    "noInspectionsOnDate": "この日付の点検はありません",
+    "selectConstructionItem": "工事項目を選択",
+    "selectWorkCode": "作業コードを選択",
+    "selectOthers": "その他を選択"
   },
   "profile": {
     "accountInformation": "アカウント情報",

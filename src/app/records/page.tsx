@@ -35,7 +35,6 @@ function UserRecordsContent() {
   const t = useTranslations("records");
   const tTables = useTranslations("tables");
   const { isMobile, isLoading } = useIsMobile();
-  const {session} = useAuth();
 
   const {
     records,
@@ -44,8 +43,6 @@ function UserRecordsContent() {
 
     searchRecord,
     setSearchRecord,
-    // typeFilter,
-    // setTypeFilter,
     locationFilter,
     setLocationFilter,
     date,

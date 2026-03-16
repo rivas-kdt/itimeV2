@@ -297,7 +297,10 @@
     "others": "Others",
     "date": "Date",
     "saving": "Saving...",
-    "noInspectionsOnDate": "No inspections on this date"
+    "noInspectionsOnDate": "No inspections on this date",
+    "selectConstructionItem": "Select Construction Item",
+    "selectWorkCode": "Select Work Code",
+    "selectOthers": "Select Others"
   },
   "profile": {
     "accountInformation": "Account Information",
