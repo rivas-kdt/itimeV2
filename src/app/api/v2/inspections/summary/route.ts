@@ -14,7 +14,6 @@ export async function GET(req: Request) {
     let inspectorFilter = "";
     let params: any[] = [tz];
 
-    console.log("Received request for inspection summary with self =", self);
     if (self === "true") {
       const token = await readSession();
       if (!token) {

@@ -38,6 +38,7 @@ export async function updateWorkOrder(
   payload: any
 ): Promise<RecordsDTO> {
   const params = new URLSearchParams();
+  if (payload.inspectionId) params.append('id', String(payload.inspectionId));
   if (payload.workOrderId) params.append('wo', String(payload.workOrderId));
   if (payload.constructionId) params.append('ci', String(payload.constructionId));
   if (payload.workCodeId) params.append('wc', String(payload.workCodeId));
@@ -46,6 +47,7 @@ export async function updateWorkOrder(
   const res = await fetch(`/api/v2/inspections?${params.toString()}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({}),
   });
 
   const data = await res.json().catch(() => ({}));

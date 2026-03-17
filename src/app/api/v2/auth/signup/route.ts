@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { empID, email, password, first_name, last_name, group_id } = body;
-    console.log("Signup request body:", body);
     // Validation
     if (!email || !password || !first_name || !last_name || !group_id) {
       return jsonError("All fields are required (backend)", 400);

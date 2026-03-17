@@ -237,11 +237,15 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json();
+    
+    // Get work order details from query parameters
+    const workOrderId = searchParams.get("wo");
+    const constructionItemId = searchParams.get("ci");
+    const workCodeId = searchParams.get("wc");
+    const othersId = searchParams.get("o");
+    
+    // Get other fields from body
     const {
-      workOrderId,
-      constructionItemId,
-      workCodeId,
-      othersId,
       startTime,
       endTime,
       status,
@@ -250,22 +254,22 @@ export async function PATCH(req: NextRequest) {
     const fields: string[] = [];
     const values: any[] = [];
 
-    if (workOrderId !== undefined) {
+    if (workOrderId) {
       values.push(workOrderId);
       fields.push(`work_order_id = $${values.length}`);
     }
 
-    if (constructionItemId !== undefined) {
+    if (constructionItemId) {
       values.push(constructionItemId);
       fields.push(`construction_item_id = $${values.length}`);
     }
 
-    if (workCodeId !== undefined) {
+    if (workCodeId) {
       values.push(workCodeId);
       fields.push(`work_code_id = $${values.length}`);
     }
 
-    if (othersId !== undefined) {
+    if (othersId) {
       values.push(othersId);
       fields.push(`others_id = $${values.length}`);
     }

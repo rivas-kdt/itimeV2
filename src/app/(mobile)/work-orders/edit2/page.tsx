@@ -1,8 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CustomComboBox } from "@/components/customComboBox";
 import { useWorkOrderEdit } from "@/features/workorders/hooks/useWorkOrderEdit";
 import { useWorkOrderHooks } from "@/features/workorders/hooks/useWorkOrderHooks";
+import { useWorkOrderLists } from "@/features/workorders/hooks/useWorkOrderLists";
 import {
   ChevronLeft,
   Pencil,
@@ -70,11 +72,15 @@ export default function EditWorkOrdersPage() {
     isEditing,
     formData,
     startEdit,
-    updateField,
+    updateConstructionItem,
+    updateWorkCode,
+    updateOthers,
     cancelEdit,
     submitEdit,
     isSubmitting,
   } = useWorkOrderEdit();
+
+  const { itemList, workCodeList, othersList } = useWorkOrderLists();
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -97,7 +103,17 @@ export default function EditWorkOrdersPage() {
   // Extract work order from first record
   const workOrder = useMemo(() => {
     if (!recordsInfo || recordsInfo.length === 0) return null;
-    return recordsInfo[0];
+    const data = {
+      workOrderId: workOrderId,
+      workOrder: recordsInfo[0].workOrder,
+      constructionItemId: constructionItemId,
+      construction: recordsInfo[0].construction,
+      workCodeId: workCodeId,
+      workCode: recordsInfo[0].workCode,
+      othersId: othersId,
+      others: recordsInfo[0].others,
+    };
+    return data;
   }, [recordsInfo]);
 
   console.log(recordsInfo);
@@ -145,6 +161,49 @@ export default function EditWorkOrdersPage() {
     year: "numeric",
   });
 
+  // Extract string values for CustomComboBox display
+  const itemListValues = useMemo(
+    () => itemList.map((item) => item.value),
+    [itemList],
+  );
+  const workCodeListValues = useMemo(
+    () => workCodeList.map((item) => item.value),
+    [workCodeList],
+  );
+  const othersListValues = useMemo(
+    () => othersList.map((item) => item.value),
+    [othersList],
+  );
+
+  // Mapping functions to find ID from value
+  const getItemId = (value: string) => {
+    const item = itemList.find((i) => i.value === value);
+    return item?.id?.toString();
+  };
+
+  const getWorkCodeId = (value: string) => {
+    const item = workCodeList.find((i) => i.value === value);
+    return item?.id?.toString();
+  };
+
+  const getOthersId = (value: string) => {
+    const item = othersList.find((i) => i.value === value);
+    return item?.id?.toString();
+  };
+
+  // Wrapper functions to pass both value and ID
+  const handleConstructionItemChange = (value: string) => {
+    updateConstructionItem(value, getItemId(value));
+  };
+
+  const handleWorkCodeChange = (value: string) => {
+    updateWorkCode(value, getWorkCodeId(value));
+  };
+
+  const handleOthersChange = (value: string) => {
+    updateOthers(value, getOthersId(value));
+  };
+
   const handleSelectDate = (selectedDate: Date | undefined) => {
     if (!selectedDate) return;
     setSelectedDate(selectedDate);
@@ -152,9 +211,21 @@ export default function EditWorkOrdersPage() {
   };
 
   const handleSaveEdit = async () => {
-    const success = await submitEdit();
-    if (success) {
-      refetch();
+    // Extract inspection IDs from recordsInfo
+    const inspectionIds =
+      recordsInfo
+        ?.map((record) => record.id || record.inspection_id)
+        .filter(Boolean) || [];
+    const result = await submitEdit(inspectionIds);
+    if (result) {
+      // Redirect to edit page with updated query parameters
+      const params = new URLSearchParams({
+        workOrderId: result.workOrderId || "",
+        workCodeId: result.workCodeId || "",
+        constructionItemId: result.constructionItemId || "",
+        othersId: result.othersId || "",
+      });
+      router.push(`/work-orders/edit2?${params.toString()}`);
     }
   };
 
@@ -280,41 +351,30 @@ export default function EditWorkOrdersPage() {
                   </div>
                   <div className="grid grid-cols-4 gap-2">
                     <div className="col-span-2">
-                      <label className="text-sm font-medium">
-                        {t("constructionItem")}
-                      </label>
-                      <Input
+                      <CustomComboBox
+                        label={t("constructionItem")}
                         value={formData.constructionItem || ""}
-                        onChange={(e) =>
-                          updateField("constructionItem", e.target.value)
-                        }
-                        className="border-primary"
+                        setValue={handleConstructionItemChange}
+                        items={itemListValues}
+                        placeholder={t("selectConstructionItem")}
                       />
                     </div>
                     <div className="col-span-1">
-                      <label className="text-sm font-medium">
-                        {t("workCode")}
-                      </label>
-                      <Input
-                        type="number"
-                        value={formData.workCode || ""}
-                        onChange={(e) =>
-                          updateField("workCode", e.target.value)
-                        }
-                        className="border-primary"
+                      <CustomComboBox
+                        label={t("workCode")}
+                        value={formData.workCode?.toString() || ""}
+                        setValue={handleWorkCodeChange}
+                        items={workCodeListValues}
+                        placeholder={t("selectWorkCode")}
                       />
                     </div>
                     <div className="col-span-1">
-                      <label className="text-sm font-medium">
-                        {t("others")}
-                      </label>
-                      <Input
-                        type="number"
-                        value={formData.others || ""}
-                        onChange={(e) =>
-                          updateField("others", parseInt(e.target.value) || 0)
-                        }
-                        className="border-primary"
+                      <CustomComboBox
+                        label={t("others")}
+                        value={formData.others?.toString() || ""}
+                        setValue={handleOthersChange}
+                        items={othersListValues}
+                        placeholder={t("selectOthers")}
                       />
                     </div>
                   </div>
@@ -322,7 +382,7 @@ export default function EditWorkOrdersPage() {
                     <Button
                       onClick={handleSaveEdit}
                       disabled={isSubmitting}
-                      className="flex-1 bg-gradient-to-r from-primary-300 to-primary text-white"
+                      className="flex-1 bg-linear-to-r from-primary-300 to-primary text-white"
                     >
                       {isSubmitting ? t("saving") : t("saveChanges")}
                     </Button>
