@@ -80,7 +80,6 @@ export const useRecordTrackerHooks = (id: any) => {
       const data = await res.json();
       const inspectionId = data?.data;
       router.push(`/timer/${inspectionId}`);
-      console.log("Record created successfully: ", data);
     } catch (error) {
       console.error("Failed to create record: ", error);
     }
@@ -90,10 +89,6 @@ export const useRecordTrackerHooks = (id: any) => {
     try {
       const data = await recordsService.getActiveInspection();
       if (data.data && data.data.inspection_id) {
-        console.log(
-          "Active inspection found, redirecting to:",
-          data.data.inspection_id
-        );
         router.push(`/timer/${data.data.inspection_id}`);
       }
     } catch (error) {
