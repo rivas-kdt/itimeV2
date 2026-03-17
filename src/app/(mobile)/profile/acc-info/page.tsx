@@ -118,9 +118,7 @@ export default function AccountInfoPage() {
       toastSuccess(t("profileUpdatedSuccess"));
       setIsOpen(false);
     } catch (err) {
-      toastError(
-        err instanceof Error ? err.message : t("profileUpdateFailed"),
-      );
+      toastError(err instanceof Error ? err.message : t("profileUpdateFailed"));
     } finally {
       setIsUpdating(false);
     }
@@ -155,7 +153,9 @@ export default function AccountInfoPage() {
   if (error) {
     return (
       <div className="bg-white-gray h-full text-black px-5 flex flex-col gap-2 justify-center items-center">
-        <p className="text-red-500">{t("errorLabel")}: {error}</p>
+        <p className="text-red-500">
+          {t("errorLabel")}: {error}
+        </p>
       </div>
     );
   }
@@ -252,15 +252,18 @@ export default function AccountInfoPage() {
               value={formData.group_id}
               onValueChange={(e) => handleInputChange("group_id", e)}
             >
-              <SelectTrigger className="border border-gray-500 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                <SelectValue placeholder={tAuth("selectGroup")} />
+              <SelectTrigger className="border border-gray-500 rounded-md text-black-text px-3 py-5 w-full max-w-87.5 min-w-0 flex items-center overflow-hidden data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
+                <SelectValue
+                  placeholder={tAuth("selectGroup")}
+                  className="truncate"
+                />
               </SelectTrigger>
-              <SelectContent className="bg-white text-black-text border-gray-300">
+              <SelectContent className="bg-white text-black-text border-gray-300 w-(--radix-select-trigger-width)">
                 {group.map((g) => (
                   <SelectItem
                     key={g.group_id}
                     value={g.group_id}
-                    className="selection-hover"
+                    className="selection-hover whitespace-normal wrap-break-word leading-snug"
                   >
                     {g.group_name}
                   </SelectItem>

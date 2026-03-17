@@ -18,14 +18,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Toggle } from "@/components/ui/toggle";
 import { Switch } from "@/components/ui/switch";
 import { useUserProfile } from "@/features/profile/hooks/useUserProfileHooks";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 async function setLocale(locale: "en" | "ja") {
   await fetch("/api/locale", {
@@ -39,8 +39,9 @@ export default function ProfilePage() {
   const t = useTranslations("profile");
   const { profile, loading } = useUserProfile();
   const { logout } = useAuth();
-  const [isSwitchLang, setIsSwitchLang] = useState(false);
   const router = useRouter();
+  const locale = useLocale();
+  const [isSwitchLang, setIsSwitchLang] = useState(locale === "en");
 
   const toastStyle = (bg: string, border: string, text: string) => ({
     width: "50%",
@@ -71,6 +72,10 @@ export default function ProfilePage() {
       console.error("Logout error:", error);
     }
   };
+
+  useEffect(() => {
+    setIsSwitchLang(locale === "ja");
+  }, [locale]);
 
   const handleSwitchLang = (checked: boolean) => {
     setIsSwitchLang(checked);

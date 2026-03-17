@@ -807,8 +807,11 @@ export default function UserProfilePage() {
                     );
                   }}
                 >
-                  <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
-                    <SelectValue placeholder={t("selectGroup")} />
+                  <SelectTrigger className="border-1 border-gray-300 rounded-md text-black-text px-3 py-5 w-full max-w-100 min-w-0 flex items-center overflow-hidden data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:border-transparent">
+                    <SelectValue
+                      placeholder={t("selectGroup")}
+                      className="truncate"
+                    />
                   </SelectTrigger>
                   <SelectContent className="bg-white text-black-text border-gray-300">
                     {groupOptions.map((g) => (
