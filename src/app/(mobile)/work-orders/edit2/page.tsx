@@ -353,6 +353,7 @@ export default function EditWorkOrdersPage() {
                     <div className="col-span-2">
                       <CustomComboBox
                         label={t("constructionItem")}
+                        labelClassName="text-black-text text-sm"
                         value={formData.constructionItem || ""}
                         setValue={handleConstructionItemChange}
                         items={itemListValues}
@@ -362,6 +363,7 @@ export default function EditWorkOrdersPage() {
                     <div className="col-span-1">
                       <CustomComboBox
                         label={t("workCode")}
+                        labelClassName="text-black-text text-sm"
                         value={formData.workCode?.toString() || ""}
                         setValue={handleWorkCodeChange}
                         items={workCodeListValues}
@@ -371,6 +373,7 @@ export default function EditWorkOrdersPage() {
                     <div className="col-span-1">
                       <CustomComboBox
                         label={t("others")}
+                        labelClassName="text-black-text text-sm"
                         value={formData.others?.toString() || ""}
                         setValue={handleOthersChange}
                         items={othersListValues}
@@ -484,7 +487,7 @@ export default function EditWorkOrdersPage() {
                         <span className="text-sm">{t("inspectedDate")}</span>
                       </div>
                       <div className="flex flex-row gap-2 items-center">
-                        <div className="bg-primary-op-1 w-5 h-5 rounded-full"></div>
+                        <div className="border border-primary-300 w-5 h-5 rounded-full"></div>
                         <span className="text-sm">{t("todaysDate")}</span>
                       </div>
                       <div className="flex flex-row gap-2 items-center">
@@ -501,7 +504,7 @@ export default function EditWorkOrdersPage() {
                 defaultMonth={selectedDate}
                 selected={selectedDate}
                 onSelect={handleSelectDate}
-                className="rounded-lg w-full bg-primary-white border-2 border-primary-op-2"
+                className="rounded-lg w-full border border-gray-300"
                 modifiers={{
                   inspected: inspectedDates,
                 }}
@@ -572,16 +575,16 @@ export default function EditWorkOrdersPage() {
               </div>
 
               {recordedTime.hours === 0 && recordedTime.minutes === 0 ? (
-                <div className="flex items-center justify-center px-3 py-2 bg-primary-op-2 rounded-md">
+                <div className="flex items-center justify-center px-3 py-2">
                   <Button
                     onClick={startInspection}
-                    className="bg-primary text-white hover:bg-primary-400"
+                    className="bg-primary text-white hover:bg-primary-400 w-full"
                   >
                     {t("startInspection")}
                   </Button>
                 </div>
               ) : (
-                <div className="flex items-center justify-between px-3 py-2 bg-primary-op-2 rounded-md">
+                <div className="flex items-center justify-between px-3 py-2 bg-primary-white border border-black rounded-md">
                   <span className="font-bold">{t("recordedTime")}:</span>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">

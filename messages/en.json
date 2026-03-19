@@ -253,7 +253,9 @@
     "cameraFailed": "Camera failed to start. Make sure you are on HTTPS (or localhost) and allowed camera permission.",
     "failedToCapture": "Failed to capture.",
     "failedToSaveWorkOrder": "Failed to save work order",
-    "failedToCreateWorkOrder": "Failed to create work order"
+    "failedToCreateWorkOrder": "Failed to create work order",
+    "warehouseA": "Warehouse A",
+    "warehouseB": "Warehouse B"
   },
   "workOrders": {
     "title": "Work Order Records",
@@ -477,5 +479,41 @@
     "monthOctober": "October",
     "monthNovember": "November",
     "monthDecember": "December"
+  },
+  "sheet": {
+    "workOrder": "Work Order",
+    "constructionItem": "Construction Item",
+    "workCode": "Work Code",
+    "others": "Others",
+    "total": "Total",
+    "noRecords": "No records for this month.",
+    "fetchingData": "Fetching Data...",
+    "actualManHours": "Actual Man-Hour",
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+  "scan-wo": {
+    "changeImage": "Change Image",
+    "scan": "Scan",
+    "scanning": "Scanning...",
+    "scanningResults": "Scanning Results",
+    "startInspection": "Start Inspection",
+    "cancel": "Cancel",
+    "workOrder": "Work Order",
+    "constructionItem": "Construction Item",
+    "workCode": "Work Code",
+    "others": "Others",
+    "warehouseA": "Warehouse A",
+    "warehouseB": "Warehouse B"
+  },
+  "comboBox": {
+    "searchOrInputValue": "Search or Input Value",
+    "searchOrTypeNewItem": "Search or type new item...",
+    "add": "Add"
   }
 }

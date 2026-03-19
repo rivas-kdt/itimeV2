@@ -338,7 +338,7 @@ export default function HomeClient() {
           (b) =>
             b ? resolve(b) : reject(new Error("Failed to create image blob.")),
           "image/jpeg",
-          0.92
+          0.92,
         );
       });
 
@@ -373,15 +373,15 @@ export default function HomeClient() {
       const ensureItemExists = async (
         value: string,
         list: string[],
-        endpoint: string
+        endpoint: string,
       ) => {
         const fieldName: any = endpoint.split("/").pop(); // construction-item, work-code, or others
         const body = {
           [fieldName === "construction-item"
             ? "construction_item"
             : fieldName === "work-code"
-            ? "work_code"
-            : fieldName]: value,
+              ? "work_code"
+              : fieldName]: value,
         };
 
         const res = await fetch(`/api/v2${endpoint}`, {
@@ -421,7 +421,7 @@ export default function HomeClient() {
       const findOrCreateId = async (
         value: string,
         list: any[],
-        endpoint: string
+        endpoint: string,
       ) => {
         const existing = list.find((item) => {
           if (!item) return false;
@@ -581,6 +581,7 @@ export default function HomeClient() {
             {/* <label className="font-bold">Construction Item</label> */}
             <CustomComboBox
               label={tTimer("constructionItemLabel")}
+              labelClassName="font-bold"
               value={consItemVal}
               setValue={setConsItemVal}
               items={itemList}
@@ -591,6 +592,7 @@ export default function HomeClient() {
             {/* <label className="font-bold">Work Code</label> */}
             <CustomComboBox
               label={tTimer("workCodeLabel")}
+              labelClassName="font-bold"
               value={workCodeVal}
               setValue={setWorkCodeVal}
               items={workCodeList}
@@ -601,6 +603,7 @@ export default function HomeClient() {
             {/* <label className="font-bold">Others</label> */}
             <CustomComboBox
               label={tTimer("othersLabel")}
+              labelClassName="font-bold"
               value={othersVal}
               setValue={setOthersVal}
               items={othersList}
@@ -616,11 +619,11 @@ export default function HomeClient() {
 
               <SelectContent className="bg-white text-black-text border-gray-300">
                 <SelectItem value="1" className="selection-hover">
-                  {/* {t("locationWarehouseA")} */}Warehouse A
+                  {t("warehouseA")}
                 </SelectItem>
 
                 <SelectItem value="2" className="selection-hover">
-                  {/* {t("locationWarehouseB")} */}Warehouse B
+                  {t("warehouseB")}
                 </SelectItem>
               </SelectContent>
             </Select>

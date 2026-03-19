@@ -201,7 +201,7 @@
     "saveInspection": "点検を保存",
     "cancel": "キャンセル",
     "edit": "編集",
-    "startInspection": "点検を開始",
+    "startInspection": "検査を開始",
     "inspectionDuration": "点検所要時間",
     "workOrderNumber": "作業指示番号",
     "dateRecorded": "記録日時",
@@ -253,7 +253,9 @@
     "cameraFailed": "カメラを起動できませんでした。HTTPS（またはlocalhost）で、カメラの許可を確認してください。",
     "failedToCapture": "撮影に失敗しました。",
     "failedToSaveWorkOrder": "作業指示の保存に失敗しました",
-    "failedToCreateWorkOrder": "作業指示の作成に失敗しました"
+    "failedToCreateWorkOrder": "作業指示の作成に失敗しました",
+    "warehouseA": "倉庫A",
+    "warehouseB": "倉庫B"
   },
   "workOrders": {
     "title": "作業指示一覧",
@@ -477,5 +479,41 @@
     "monthOctober": "10月",
     "monthNovember": "11月",
     "monthDecember": "12月"
+  },
+  "sheet": {
+    "workOrder": "作業指示",
+    "constructionItem": "工事項目",
+    "workCode": "作業コード",
+    "others": "その他",
+    "total": "合計",
+    "noRecords": "今月の記録はありません",
+    "fetchingData": "データを取得中...",
+    "actualManHours": "実績工数",
+    "sun": "日",
+    "mon": "月",
+    "tue": "火",
+    "wed": "水",
+    "thu": "木",
+    "fri": "金",
+    "sat": "土"
+  },
+  "scan-wo": {
+    "changeImage": "画像を変更",
+    "scan": "スキャン",
+    "scanning": "スキャン中...",
+    "scanningResults": "スキャン結果",
+    "startInspection": "検査を開始",
+    "cancel": "キャンセル",
+    "workOrder": "作業指示",
+    "constructionItem": "工事項目",
+    "workCode": "作業コード",
+    "others": "その他",
+    "warehouseA": "倉庫A",
+    "warehouseB": "倉庫B"
+  },
+  "comboBox": {
+    "searchOrInputValue": "検索または値を入力",
+    "searchOrTypeNewItem": "検索または新しい項目を入力",
+    "add": "追加"
   }
 }

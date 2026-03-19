@@ -91,7 +91,7 @@ export default function DigitalClient() {
   const router = useRouter();
   const params = useSearchParams();
   const tModals = useTranslations("modals");
-  const t = useTranslations("scanner");
+  const t = useTranslations("scan-wo");
 
   const CameraCaptureAny = CameraCapture as unknown as React.ComponentType<any>;
 
@@ -798,7 +798,7 @@ export default function DigitalClient() {
                 onClick={onReplaceImage}
                 className="bg-gray-300 text-white text-lg py-6"
               >
-                Change Image
+                {t("changeImage")}
               </Button>
 
               <Button
@@ -807,7 +807,7 @@ export default function DigitalClient() {
                 disabled={busy}
                 className="gradient-bg text-white text-lg py-6"
               >
-                {busy ? "Scanning..." : "Scan"}
+                {busy ? t("scanning") : t("scan")}
               </Button>
             </div>
           </div>
@@ -825,12 +825,12 @@ export default function DigitalClient() {
                 height={35}
                 alt="icon"
               />
-              Scanning Results
+              {t("scanningResults")}
             </DialogTitle>
           </DialogHeader>
 
           <div className="flex flex-col w-full gap-1">
-            <label className="font-bold">Work Order</label>
+            <label className="font-bold">{t("workOrder")}</label>
             <div className="flex items-center m-0 p-0">
               <Input
                 disabled={!isEditing}
@@ -850,7 +850,8 @@ export default function DigitalClient() {
           <div className="flex flex-col w-full gap-1">
             {/* <label className="font-bold">Construction Item</label> */}
             <CustomComboBox
-              label="Construction Item"
+              label={t("constructionItem")}
+              labelClassName="font-bold"
               value={consItemVal}
               setValue={setConsItemVal}
               items={itemList}
@@ -861,7 +862,8 @@ export default function DigitalClient() {
           <div className="flex flex-col w-full gap-1">
             {/* <label className="font-bold">Work Code</label> */}
             <CustomComboBox
-              label="Work Code"
+              label={t("workCode")}
+              labelClassName="font-bold"
               value={workCodeVal}
               setValue={setWorkCodeVal}
               items={workCodeList}
@@ -872,7 +874,8 @@ export default function DigitalClient() {
           <div className="flex flex-col w-full gap-1">
             {/* <label className="font-bold">Others</label> */}
             <CustomComboBox
-              label="Others"
+              label={t("others")}
+              labelClassName="font-bold"
               value={othersVal}
               setValue={setOthersVal}
               items={othersList}
@@ -889,11 +892,11 @@ export default function DigitalClient() {
 
               <SelectContent className="bg-white text-black-text border-gray-300">
                 <SelectItem value="1" className="selection-hover">
-                  {/* {t("locationWarehouseA")} */}Warehouse A
+                  {t("warehouseA")}
                 </SelectItem>
 
                 <SelectItem value="2" className="selection-hover">
-                  {/* {t("locationWarehouseB")} */}Warehouse B
+                  {t("warehouseB")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -905,13 +908,13 @@ export default function DigitalClient() {
               className="cancel-btn text-lg"
               onClick={handleCancel}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               className="gradient-bg text-lg py-5"
               onClick={handleStartInspection}
             >
-              Start Inspection
+              {t("startInspection")}
             </Button>
           </DialogFooter>
         </DialogContent>

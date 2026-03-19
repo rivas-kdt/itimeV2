@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useBreakpoint } from "@/hooks/screenBreakpoints";
+import { useTranslations } from "next-intl";
 
 export type MonthKey = `${number}-${string}`;
 
@@ -53,6 +54,7 @@ const SheetDaysLayout = ({
   // const dataLoaded = initialRows.length > 0;
   const dataLoaded = rows;
   console.log("rows: ", rows);
+  const t = useTranslations("sheet");
 
   // useEffect(() => {
   //   if (initialRows && initialRows.length > 0) {
@@ -142,17 +144,18 @@ const SheetDaysLayout = ({
     bp === "2xl"
       ? 116
       : bp === "xl"
-      ? 96
-      : bp === "lg"
-      ? 86
-      : bp === "md"
-      ? 66
-      : 96;
+        ? 96
+        : bp === "lg"
+          ? 86
+          : bp === "md"
+            ? 66
+            : 96;
 
   const dynamicAreaWidth = `calc(100vw - ${fixedColumns * fixedColumnWidth}px)`;
   const dateColumnWidth = `calc(${dynamicAreaWidth} / ${daysInMonth.length})`;
 
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  // const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayNames = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
   /* ---------- Render ---------- */
 
@@ -168,25 +171,25 @@ const SheetDaysLayout = ({
         />
       </div>
 
-      {/* Empty State */}
+      {/* Empty State - Fetching & No Data */}
       {isLoading ? (
         <div className="w-full border border-gray-300 rounded text-sm">
           {/* Header */}
           <div className="flex border-b border-gray-300 bg-primary-op-2 font-bold text-black-text text-center">
             <div className="flex items-center justify-center w-[80px] 2xl:w-[100px] p-2 border-r">
-              Work Order
+              {t("workOrder")}
             </div>
             <div className="flex items-center justify-center w-[100px] 2xl:w-[120px] p-2 border-r">
-              Construction Item
+              {t("constructionItem")}
             </div>
             <div className="flex items-center justify-center w-[60px] 2xl:w-[80px] p-2 border-r">
-              Work Code
+              {t("workCode")}
             </div>
             <div className="flex items-center justify-center w-[60px] 2xl:w-[80px] p-2 border-r">
-              Others
+              {t("others")}
             </div>
             <div className="flex items-center justify-center w-[40px] 2xl:w-[60px] p-2 border-r">
-              Total
+              {t("total")}
             </div>
 
             {daysInMonth.map((date, idx) => (
@@ -197,7 +200,7 @@ const SheetDaysLayout = ({
               >
                 <div>{String(date.getDate()).padStart(2, "0")}</div>
                 <div className="text-[10px] 2xl:text-xs text-gray-600">
-                  {dayNames[date.getDay()]}
+                  {t(dayNames[date.getDay()])}
                 </div>
               </div>
             ))}
@@ -205,13 +208,13 @@ const SheetDaysLayout = ({
 
           {/* Body */}
           <div className="flex py-8 text-xl text-black-text text-center font-bold justify-center">
-            Fetching Data...
+            {t("fetchingData")}
           </div>
 
           {/* Footer */}
           <div className="flex font-semibold bg-gray-100/50 border-t border-gray-300 text-black-text text-center">
             <div className="w-[300px] 2xl:w-[380px] p-2 border-r text-left">
-              Actual Man-Hour
+              {t("actualManHours")}
             </div>
             <div className="w-[40px] 2xl:w-[60px] p-2 border-r">
               {grandTotalHours}
@@ -235,19 +238,19 @@ const SheetDaysLayout = ({
             {/* Header */}
             <div className="flex border-b border-gray-300 bg-primary-op-2 font-bold text-black-text text-center">
               <div className="flex items-center justify-center w-[80px] 2xl:w-[100px] p-2 border-r">
-                Work Order
+                {t("workOrder")}
               </div>
               <div className="flex items-center justify-center w-[100px] 2xl:w-[120px] p-2 border-r">
-                Construction Item
+                {t("constructionItem")}
               </div>
               <div className="flex items-center justify-center w-[60px] 2xl:w-[80px] p-2 border-r">
-                Work Code
+                {t("workCode")}
               </div>
               <div className="flex items-center justify-center w-[60px] 2xl:w-[80px] p-2 border-r">
-                Others
+                {t("others")}
               </div>
               <div className="flex items-center justify-center w-[40px] 2xl:w-[60px] p-2 border-r">
-                Total
+                {t("total")}
               </div>
 
               {daysInMonth.map((date, idx) => (
@@ -258,7 +261,7 @@ const SheetDaysLayout = ({
                 >
                   <div>{String(date.getDate()).padStart(2, "0")}</div>
                   <div className="text-[10px] 2xl:text-xs text-gray-600">
-                    {dayNames[date.getDay()]}
+                    {t(dayNames[date.getDay()])}
                   </div>
                 </div>
               ))}
@@ -266,13 +269,13 @@ const SheetDaysLayout = ({
 
             {/* Body */}
             <div className="flex py-8 text-xl text-black-text text-center font-bold justify-center">
-              No records for this month.
+              {t("noRecords")}
             </div>
 
             {/* Footer */}
             <div className="flex font-semibold bg-gray-100/50 border-t border-gray-300 text-black-text text-center">
               <div className="w-[300px] 2xl:w-[380px] p-2 border-r text-left">
-                Actual Man-Hour
+                {t("actualManHours")}
               </div>
               <div className="w-[40px] 2xl:w-[60px] p-2 border-r">
                 {grandTotalHours}
@@ -298,19 +301,19 @@ const SheetDaysLayout = ({
           {/* Header */}
           <div className="flex border-b border-gray-300 bg-primary-op-2 font-bold text-black-text text-center">
             <div className="flex items-center justify-center w-[80px] 2xl:w-[100px] p-2 border-r">
-              Work Order
+              {t("workOrder")}
             </div>
             <div className="flex items-center justify-center w-[100px] 2xl:w-[120px] p-2 border-r">
-              Construction Item
+              {t("constructionItem")}
             </div>
             <div className="flex items-center justify-center w-[60px] 2xl:w-[80px] p-2 border-r">
-              Work Code
+              {t("workCode")}
             </div>
             <div className="flex items-center justify-center w-[60px] 2xl:w-[80px] p-2 border-r">
-              Others
+              {t("others")}
             </div>
             <div className="flex items-center justify-center w-[40px] 2xl:w-[60px] p-2 border-r">
-              Total
+              {t("total")}
             </div>
 
             {daysInMonth.map((date, idx) => (
@@ -321,7 +324,7 @@ const SheetDaysLayout = ({
               >
                 <div>{String(date.getDate()).padStart(2, "0")}</div>
                 <div className="text-[10px] 2xl:text-xs text-gray-600">
-                  {dayNames[date.getDay()]}
+                  {t(dayNames[date.getDay()])}
                 </div>
               </div>
             ))}
@@ -379,7 +382,7 @@ const SheetDaysLayout = ({
           {/* Footer */}
           <div className="flex font-semibold bg-gray-100/50 border-t border-gray-300 text-black-text text-center">
             <div className="w-[300px] 2xl:w-[380px] p-2 border-r text-left">
-              Actual Man-Hour
+              {t("actualManHours")}
             </div>
             <div className="w-[40px] 2xl:w-[60px] p-2 border-r">
               {grandTotalHours}

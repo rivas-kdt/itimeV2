@@ -95,14 +95,14 @@ export function DataTable<TData, TValue>({
                       key={header.id}
                       className={cn(
                         "bg-primary-white text-xl text-primary-dark font-bold h-10",
-                        header.column.columnDef.meta?.className
+                        header.column.columnDef.meta?.className,
                       )}
                     >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -125,7 +125,7 @@ export function DataTable<TData, TValue>({
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

@@ -50,7 +50,7 @@ export function DeleteDialog({
                 [t("others"), selectedUser?.others],
                 [t("date"), selectedUser?.date],
                 [t("duration"), selectedUser?.duration],
-                [t("type"), selectedUser?.type],
+                // [t("type"), selectedUser?.type],
                 [t("location"), selectedUser?.location],
               ].map(([label, value]) => (
                 <TableRow key={String(label)}>

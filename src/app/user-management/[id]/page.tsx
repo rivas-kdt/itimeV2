@@ -231,15 +231,6 @@ export default function UserProfilePage() {
   };
 
   const handleDelExpEntry = (id: string) => {
-    // const updated = checkedRecords.filter((r) => r.id !== id);
-    // setCheckedRecords(updated);
-
-    // const updatedSelected = selectedIds.filter((x) => x !== id);
-    // setSelectedIds(updatedSelected);
-
-    // const newTotalPages = Math.ceil(updated.length / rowsPerPage);
-    // if (currentPage > newTotalPages && newTotalPages > 0)
-    //   setCurrentPage(newTotalPages);
     const updated = checkedRecords.filter((r) => r.id !== id);
     setCheckedRecords(updated);
 
@@ -398,10 +389,6 @@ export default function UserProfilePage() {
           </div>
 
           <div className="flex flex-row gap-5">
-            {/* <Button className="btn-css gradient-bg">
-              {t("exportAsExcel")}
-              <Sheet />
-            </Button> */}
             {/* pdf renderer button */}
             <PDFDownloadLink
               document={

@@ -8,6 +8,7 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Command, CommandGroup, CommandInput, CommandItem } from "./ui/command";
+import { useTranslations } from "next-intl";
 
 type CustomComboBoxProps = {
   label: string;
@@ -15,6 +16,7 @@ type CustomComboBoxProps = {
   setValue: (val: string) => void;
   items: readonly string[];
   placeholder: string;
+  labelClassName?: string;
 };
 
 export function CustomComboBox({
@@ -23,9 +25,11 @@ export function CustomComboBox({
   setValue,
   items,
   placeholder,
+  labelClassName,
 }: CustomComboBoxProps) {
   const [open, setOpen] = useState(false);
   const [dialogInputValue, setDialogInputValue] = useState("");
+  const t = useTranslations("comboBox");
 
   const filteredItems = useMemo(() => {
     return items.filter((item) =>
@@ -47,7 +51,7 @@ export function CustomComboBox({
 
   return (
     <div className="flex flex-col w-full gap-1">
-      <label className="font-bold">{label}</label>
+      <label className={labelClassName}>{label}</label>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
@@ -59,20 +63,22 @@ export function CustomComboBox({
           />
         </DialogTrigger>
 
-        <DialogContent className="box-design text-black-text h-2/4">
+        <DialogContent className="box-design text-black-text max-h-[500px]">
           <DialogHeader className="border-b-1 border-gray-300 pb-2">
-            <DialogTitle className="flex">Search or Input Value</DialogTitle>
+            <DialogTitle className="flex">
+              {t("searchOrInputValue")}
+            </DialogTitle>
           </DialogHeader>
-          <Command shouldFilter={false} className="text-black-text">
+          <Command shouldFilter={false} className="h-full text-black-text">
             <CommandInput
-              placeholder="Search or type new item..."
+              placeholder={t("searchOrTypeNewItem")}
               value={dialogInputValue}
               onValueChange={setDialogInputValue}
               autoFocus
               className="text-black-text"
             />
 
-            <CommandGroup className="text-black-text flex flex-col w-full overflow-y-auto">
+            <CommandGroup className="text-black-text flex flex-col w-full overflow-y-auto max-h-[300px] mt-2">
               {filteredItems.map((item) => (
                 <CommandItem
                   key={item}
@@ -93,7 +99,7 @@ export function CustomComboBox({
                   className="w-full py-2 !text-white gradient-bg "
                 >
                   <span className="absolute inset-0 flex items-center justify-center">
-                    Add &quot;{dialogInputValue}&quot;
+                    {t("add")} &quot;{dialogInputValue}&quot;
                   </span>
                 </CommandItem>
               )}
