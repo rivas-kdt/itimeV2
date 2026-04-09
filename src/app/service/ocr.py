@@ -10,7 +10,7 @@ from PIL import Image, ImageOps
 import pytesseract
 import easyocr
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Users\rivas-kdt\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 # NUM_RE = re.compile(r"-?\d+(?:\.\d+)?")
 
 

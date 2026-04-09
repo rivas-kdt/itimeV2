@@ -87,6 +87,7 @@ export function useWorkOrderHooks(
       searchWorkOrder,
       setSearchWorkOrder,
       refetch: fetchRecords,
+      refetchRecordInfo: fetchRecordInfo,
     }),
     [
       filteredRecords,
@@ -99,6 +100,7 @@ export function useWorkOrderHooks(
       searchWorkOrder,
       setSearchWorkOrder,
       fetchRecords,
+      fetchRecordInfo,
     ]
   );
 }

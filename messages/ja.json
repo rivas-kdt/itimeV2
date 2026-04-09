@@ -300,7 +300,8 @@
     "noInspectionsOnDate": "この日付の点検はありません",
     "selectConstructionItem": "工事項目を選択",
     "selectWorkCode": "作業コードを選択",
-    "selectOthers": "その他を選択"
+    "selectOthers": "その他を選択",
+    "inspection": "点検"
   },
   "profile": {
     "accountInformation": "アカウント情報",
