@@ -70,7 +70,6 @@ export function RecordsToolbar({
   const t = useTranslations("filters");
   // const loc = ["Warehouse A", "Site B", "Warehouse C"];
   const [loc, setLoc] = useState<Location[]>([]);
-  console.log(loc);
 
   useEffect(() => {
     const fetchLocations = async () => {

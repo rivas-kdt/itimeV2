@@ -32,7 +32,6 @@ export function useDesktopDashboardHooks(self?: boolean) {
       setLoading(true);
       setError(null);
       try {
-        console.log("Fetching dashboard data with self =", self, "month=", selectedMonth);
         const [summary, week, month, workcode, recent] = await Promise.all([
           fetchInspectionSummary(self),
           fetchWeekChart(self),

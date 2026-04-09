@@ -23,10 +23,8 @@ export type RecentRow = {
 export async function fetchInspectionSummary(
   self: boolean | undefined
 ): Promise<Summary> {
-  console.log("Fetching inspection summary with self =", self);
   const params = new URLSearchParams();
-  if(self !== undefined) params.append("self", self.toString()); 
-  console.log("/api/v2/inspections/summary?" + params.toString());
+  if(self !== undefined) params.append("self", self.toString());
   const res = await fetch(`/api/v2/inspections/summary?${params.toString()}`);
   const data = await res.json();
   if (!res.ok)

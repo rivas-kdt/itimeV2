@@ -32,7 +32,6 @@ function useResponsiveScanBox() {
   useEffect(() => {
     const updateBox = () => {
       const height = window.innerHeight;
-      console.log("innerwidth: ", height);
       if (height < 750)
         setScanBox(SCAN_BOX_SIZES.sm); // Tailwind 'sm'
       else if (height < 1024)
@@ -191,7 +190,6 @@ export default function CameraOcr() {
   };
   const handleScanResults = () => {
     setOpenModal(true);
-    console.log("text: ", text);
   };
   const handleManualInput = () => {
     setOpenManualModal(true);

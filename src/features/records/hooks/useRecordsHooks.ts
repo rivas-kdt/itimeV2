@@ -36,7 +36,6 @@ export function useRecordsHooks() {
                 limit: 500,
                 offset: 0,
             });
-            console.log("Fetched inspections:", res);
             setRecords(res.rows);
         } catch (e: any) {
             setError(e?.message || "Failed to load inspections");
@@ -61,7 +60,6 @@ export function useRecordsHooks() {
     }
 
     const onUpdate = async (id: string, patch: any) => {
-        console.log("Updating inspection with id:", id, "and patch:", patch);
         const updated = await updateInspection(id, patch);
         fetchInspections();
         return updated;

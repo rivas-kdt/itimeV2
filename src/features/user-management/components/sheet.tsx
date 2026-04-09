@@ -52,7 +52,6 @@ const SheetDaysLayout = ({
   // const [dataLoaded, setDataLoaded] = useState(false);
   // const dataLoaded = initialRows.length > 0;
   const dataLoaded = rows;
-  console.log("rows: ", rows);
 
   // useEffect(() => {
   //   if (initialRows && initialRows.length > 0) {
