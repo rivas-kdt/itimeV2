@@ -260,7 +260,7 @@ export default function EditWorkOrdersPage() {
     try {
       const updatesToApply = Object.entries(editedInspections);
       for (const [inspectionId, updates] of updatesToApply) {
-        const res = await fetch(`/api/v2/inspections/${inspectionId}`, {
+        const res = await fetch(`/api/v2/inspections/${inspectionId}/time`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updates),
@@ -268,7 +268,10 @@ export default function EditWorkOrdersPage() {
 
         if (!res.ok) {
           const errorData = await res.json().catch(() => ({}));
-          console.error(`Failed to update inspection ${inspectionId}:`, errorData);
+          console.error(
+            `Failed to update inspection ${inspectionId}:`,
+            errorData
+          );
         }
       }
       setEditedInspections({});
@@ -663,103 +666,118 @@ export default function EditWorkOrdersPage() {
                       <div className="space-y-4 max-h-96 overflow-y-auto">
                         {inspectionsOnDate
                           .sort((a, b) => {
-                            const timeA = (a.start_time || a.startTime || "00:00").toString();
-                            const timeB = (b.start_time || b.startTime || "00:00").toString();
+                            const timeA = (
+                              a.start_time ||
+                              a.startTime ||
+                              "00:00"
+                            ).toString();
+                            const timeB = (
+                              b.start_time ||
+                              b.startTime ||
+                              "00:00"
+                            ).toString();
                             // Parse HH:MM format as minutes for correct comparison
                             const parseTime = (timeStr: string) => {
                               const match = timeStr.match(/(\d{2}):?(\d{2})/);
                               if (match) {
-                                return parseInt(match[1]) * 60 + parseInt(match[2]);
+                                return (
+                                  parseInt(match[1]) * 60 + parseInt(match[2])
+                                );
                               }
                               return 0;
                             };
                             return parseTime(timeA) - parseTime(timeB);
                           })
                           .map((inspection, index) => {
-                          const inspectionId = inspection.id || inspection.inspection_id;
-                          const editedData = editedInspections[inspectionId];
-                          const displayStartTime =
-                            editedData?.startTime || inspection.startTime || "";
-                          const displayEndTime =
-                            editedData?.endTime || inspection.endTime || "";
+                            const inspectionId =
+                              inspection.id || inspection.inspection_id;
+                            const editedData = editedInspections[inspectionId];
+                            const displayStartTime =
+                              editedData?.startTime ||
+                              inspection.startTime ||
+                              "";
+                            const displayEndTime =
+                              editedData?.endTime || inspection.endTime || "";
 
-                          return (
-                            <div
-                              key={inspectionId || index}
-                              className="border rounded-lg p-3 bg-gray-50"
-                            >
-                              <div className="font-semibold text-sm mb-3 pb-2 border-b">
-                                {t("inspection")} #{index + 1}
-                              </div>
-                              <div className="flex gap-3">
-                                <div className="flex-1">
-                                  <label className="text-sm font-medium">
-                                    {t("startTime")}
-                                  </label>
-                                  <Input
-                                    value={displayStartTime}
-                                    onClick={() =>
-                                      setOpenStartTime(inspectionId)
-                                    }
-                                    readOnly
-                                    className="cursor-pointer"
-                                  />
-                                  {openStartTime === inspectionId && (
-                                    <TimeStepper
-                                      value={formatTime(
-                                        displayStartTime || "00:00"
-                                      )}
-                                      open={true}
-                                      onOpenChange={(open) =>
-                                        setOpenStartTime(
-                                          open ? inspectionId : false
-                                        )
-                                      }
-                                      onChange={(time) =>
-                                        setInspectionTime(
-                                          inspectionId,
-                                          "startTime",
-                                          time
-                                        )
-                                      }
-                                    />
-                                  )}
+                            return (
+                              <div
+                                key={inspectionId || index}
+                                className="border rounded-lg p-3 bg-gray-50"
+                              >
+                                <div className="font-semibold text-sm mb-3 pb-2 border-b">
+                                  {t("inspection")} #{index + 1}
                                 </div>
-                                <div className="flex-1">
-                                  <label className="text-sm font-medium">
-                                    {t("endTime")}
-                                  </label>
-                                  <Input
-                                    value={displayEndTime}
-                                    onClick={() => setOpenEndTime(inspectionId)}
-                                    readOnly
-                                    className="cursor-pointer"
-                                  />
-                                  {openEndTime === inspectionId && (
-                                    <TimeStepper
-                                      value={formatTime(
-                                        displayEndTime || "00:00"
-                                      )}
-                                      open={true}
-                                      onOpenChange={(open) =>
-                                        setOpenEndTime(
-                                          open ? inspectionId : false
-                                        )
+                                <div className="flex gap-3">
+                                  <div className="flex-1">
+                                    <label className="text-sm font-medium">
+                                      {t("startTime")}
+                                    </label>
+                                    <Input
+                                      value={displayStartTime}
+                                      onClick={() =>
+                                        setOpenStartTime(inspectionId)
                                       }
-                                      onChange={(time) =>
-                                        setInspectionTime(
-                                          inspectionId,
-                                          "endTime",
-                                          time
-                                        )
-                                      }
+                                      readOnly
+                                      className="cursor-pointer"
                                     />
-                                  )}
+                                    {openStartTime === inspectionId && (
+                                      <TimeStepper
+                                        value={formatTime(
+                                          displayStartTime || "00:00"
+                                        )}
+                                        open={true}
+                                        onOpenChange={(open) =>
+                                          setOpenStartTime(
+                                            open ? inspectionId : false
+                                          )
+                                        }
+                                        onChange={(time) =>
+                                          setInspectionTime(
+                                            inspectionId,
+                                            "startTime",
+                                            time
+                                          )
+                                        }
+                                      />
+                                    )}
+                                  </div>
+                                  <div className="flex-1">
+                                    <label className="text-sm font-medium">
+                                      {t("endTime")}
+                                    </label>
+                                    <Input
+                                      value={displayEndTime}
+                                      onClick={() =>
+                                        setOpenEndTime(inspectionId)
+                                      }
+                                      readOnly
+                                      className="cursor-pointer"
+                                    />
+                                    {openEndTime === inspectionId && (
+                                      <TimeStepper
+                                        value={formatTime(
+                                          displayEndTime || "00:00"
+                                        )}
+                                        open={true}
+                                        onOpenChange={(open) =>
+                                          setOpenEndTime(
+                                            open ? inspectionId : false
+                                          )
+                                        }
+                                        onChange={(time) =>
+                                          setInspectionTime(
+                                            inspectionId,
+                                            "endTime",
+                                            time
+                                          )
+                                        }
+                                      />
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
                       </div>
                     );
                   })()}

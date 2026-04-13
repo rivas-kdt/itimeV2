@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, ctx: any) {
   }
 
   const { id: inspectionId } = await ctx.params;
-  const client = await pool.connect()
+  const client = await pool.connect();
   try {
     const result = await client.query(
       `
@@ -72,10 +72,9 @@ export async function GET(req: NextRequest, ctx: any) {
       { status: 500 }
     );
   } finally {
-    client.release()
+    client.release();
   }
 }
-
 
 export async function PATCH(req: Request, ctx: any) {
   const client = await pool.connect();
@@ -87,36 +86,17 @@ export async function PATCH(req: Request, ctx: any) {
     const fields: string[] = [];
     const values: any[] = [];
 
-    // Get current inspection record to retrieve inspection_date if needed for time updates
-    let inspectionDate = date;
-    if ((startTime || endTime) && !date) {
-      const getDateQuery = 'SELECT inspection_date FROM inspection_v2 WHERE inspection_id = $1';
-      const getDateRes = await client.query(getDateQuery, [id]);
-      if (getDateRes.rows.length > 0) {
-        inspectionDate = getDateRes.rows[0].inspection_date;
-      }
-    }
-
     if (date) {
       values.push(date);
       fields.push(`inspection_date = $${values.length}`);
     }
-    
     if (startTime !== undefined) {
-      // Convert "HH:MM" format to full timestamp by combining with inspection date
-      const timestamp = new Date(inspectionDate);
-      const [hours, minutes] = startTime.split(':').map(Number);
-      timestamp.setHours(hours, minutes, 0, 0);
-      values.push(timestamp.toISOString());
+      values.push(startTime);
       fields.push(`start_time = $${values.length}`);
     }
 
     if (endTime !== undefined) {
-      // Convert "HH:MM" format to full timestamp by combining with inspection date
-      const timestamp = new Date(inspectionDate);
-      const [hours, minutes] = endTime.split(':').map(Number);
-      timestamp.setHours(hours, minutes, 0, 0);
-      values.push(timestamp.toISOString());
+      values.push(endTime);
       fields.push(`end_time = $${values.length}`);
     }
 
@@ -131,17 +111,23 @@ export async function PATCH(req: Request, ctx: any) {
 
     let locationId;
     if (location) {
-      const locQuery = 'SELECT id FROM location_v2 WHERE location = $1';
+      const locQuery = "SELECT id FROM location_v2 WHERE location = $1";
       const locRes = await client.query(locQuery, [location]);
       if (locRes.rows.length === 0) {
-        return NextResponse.json({ error: "Invalid location" }, { status: 400 });
+        return NextResponse.json(
+          { error: "Invalid location" },
+          { status: 400 }
+        );
       }
       locationId = locRes.rows[0].id;
       values.push(locationId);
       fields.push(`location_id = $${values.length}`);
     }
     if (!fields.length) {
-      return NextResponse.json({ error: "No fields to update" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No fields to update" },
+        { status: 400 }
+      );
     }
     values.push(id);
     const query = `UPDATE inspection_v2 
@@ -168,21 +154,26 @@ export async function PATCH(req: Request, ctx: any) {
     JOIN construction_item ci ON ci.id = i.construction_item_id
     JOIN others o ON o.id = i.others_id
     WHERE i.inspection_id::text = $1
-    LIMIT 1;`
+    LIMIT 1;`;
     const updatedRes = await client.query(outQuery, [id]);
     if (updatedRes.rows.length === 0) {
-      return NextResponse.json({ error: "Inspection not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Inspection not found" },
+        { status: 404 }
+      );
     }
     return NextResponse.json(updatedRes.rows[0]);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("Error updating inspection:", error);
-    return NextResponse.json({ error: errorMessage || "Failed to update inspection" }, { status: 500 });
+    return NextResponse.json(
+      { error: errorMessage || "Failed to update inspection" },
+      { status: 500 }
+    );
   } finally {
     client.release();
   }
 }
-
 
 export async function DELETE(req: NextRequest, ctx: any) {
   const token = await readSession();
