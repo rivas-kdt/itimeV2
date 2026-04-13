@@ -77,7 +77,7 @@ function WorkOrdersContent() {
                       >
                         {/* <Link href={`/work-orders/${orders.work_id}`}> */}
                         <Link
-                          href={`/work-orders/edit2?workOrderId=${orders.workOrderId}&workCodeId=${orders.workCodeId}&constructionItemId=${orders.constructionItemId}&othersId=${orders.othersId}`}
+                          href={`/work-orders/edit?workOrderId=${orders.workOrderId}&workCodeId=${orders.workCodeId}&constructionItemId=${orders.constructionItemId}&othersId=${orders.othersId}`}
                         >
                           {/* <div className="active:bg-primary-op-2 active:text-primary px-2 py-1 rounded-md"> */}
                           <div className="active:bg-primary-op-2 active:text-primary px-5 rounded-md">
