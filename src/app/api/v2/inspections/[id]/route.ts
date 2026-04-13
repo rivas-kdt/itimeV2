@@ -87,17 +87,36 @@ export async function PATCH(req: Request, ctx: any) {
     const fields: string[] = [];
     const values: any[] = [];
 
+    // Get current inspection record to retrieve inspection_date if needed for time updates
+    let inspectionDate = date;
+    if ((startTime || endTime) && !date) {
+      const getDateQuery = 'SELECT inspection_date FROM inspection_v2 WHERE inspection_id = $1';
+      const getDateRes = await client.query(getDateQuery, [id]);
+      if (getDateRes.rows.length > 0) {
+        inspectionDate = getDateRes.rows[0].inspection_date;
+      }
+    }
+
     if (date) {
       values.push(date);
       fields.push(`inspection_date = $${values.length}`);
     }
+    
     if (startTime !== undefined) {
-      values.push(startTime);
+      // Convert "HH:MM" format to full timestamp by combining with inspection date
+      const timestamp = new Date(inspectionDate);
+      const [hours, minutes] = startTime.split(':').map(Number);
+      timestamp.setHours(hours, minutes, 0, 0);
+      values.push(timestamp.toISOString());
       fields.push(`start_time = $${values.length}`);
     }
 
     if (endTime !== undefined) {
-      values.push(endTime);
+      // Convert "HH:MM" format to full timestamp by combining with inspection date
+      const timestamp = new Date(inspectionDate);
+      const [hours, minutes] = endTime.split(':').map(Number);
+      timestamp.setHours(hours, minutes, 0, 0);
+      values.push(timestamp.toISOString());
       fields.push(`end_time = $${values.length}`);
     }
 

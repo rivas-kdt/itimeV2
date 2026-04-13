@@ -117,7 +117,7 @@ export async function GET(req: Request) {
         JOIN construction_item ci ON ci.id = i.construction_item_id
         JOIN others o ON o.id = i.others_id
         JOIN location_v2 l ON l.id = i.location_id
-        ${whereSQL}
+        ${whereSQL} AND i.status='ended'
         ORDER BY i.inspection_date DESC
         LIMIT $${values.length - 1} OFFSET $${values.length};`;
 
@@ -175,9 +175,16 @@ export async function POST(req: NextRequest) {
   const endTime = body?.endTime;
   const status = body?.status;
 
-
   try {
-    const currentDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
+    // const currentDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
+
+    const now = new Date();
+    const currentDate =
+      now.getFullYear() +
+      "-" +
+      String(now.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(now.getDate()).padStart(2, "0");
 
     const id = await client.query(
       `
@@ -237,19 +244,15 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json();
-    
+
     // Get work order details from query parameters
     const workOrderId = searchParams.get("wo");
     const constructionItemId = searchParams.get("ci");
     const workCodeId = searchParams.get("wc");
     const othersId = searchParams.get("o");
-    
+
     // Get other fields from body
-    const {
-      startTime,
-      endTime,
-      status,
-    } = body;
+    const { startTime, endTime, status } = body;
 
     const fields: string[] = [];
     const values: any[] = [];

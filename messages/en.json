@@ -302,7 +302,8 @@
     "noInspectionsOnDate": "No inspections on this date",
     "selectConstructionItem": "Select Construction Item",
     "selectWorkCode": "Select Work Code",
-    "selectOthers": "Select Others"
+    "selectOthers": "Select Others",
+    "inspection": "Inspection"
   },
   "profile": {
     "accountInformation": "Account Information",

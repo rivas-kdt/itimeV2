@@ -415,7 +415,6 @@ export default function DigitalClient() {
 
       const res = await fetch(API_URL, { method: "POST", body: form });
       const data: Result = await res.json();
-      console.log("OCR response:", data);
       setResult(data);
 
       if (data?.error) {
@@ -448,7 +447,6 @@ export default function DigitalClient() {
 
   const handleScanResults = () => {
     setOpenModal(true);
-    console.log("text: ", text);
   };
 
   const handleCancel = () => {
@@ -462,12 +460,10 @@ export default function DigitalClient() {
   const handleStartInspection = async () => {
     try {
       if (!newWorkCode.trim()) {
-        console.log("Work Order is required");
         return;
       }
 
       if (!consItemVal.trim() || !workCodeVal.trim() || !othersVal.trim()) {
-        console.log("Please select Construction Item, Work Code, and Others");
         return;
       }
 
@@ -598,7 +594,6 @@ export default function DigitalClient() {
       window.location.href = `/timer/${inspectionId}`;
     } catch (error: any) {
       console.error("Error:", error);
-      console.log("Error: " + (error?.message || "Failed to start inspection"));
     }
   };
 

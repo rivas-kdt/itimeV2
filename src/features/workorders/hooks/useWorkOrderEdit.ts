@@ -32,7 +32,6 @@ export function useWorkOrderEdit() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const startEdit = useCallback((workOrder: WorkOrder) => {
-    console.log("Starting edit for work order:", workOrder);
     setFormData({
       id: workOrder.workOrderId,
       work_order: workOrder.workOrder,
@@ -79,39 +78,42 @@ export function useWorkOrderEdit() {
     setFormData(null);
   }, []);
 
-  const submitEdit = useCallback(async (inspectionIds?: (string | number)[]) => {
-    if (!formData || !formData.id) return null;
-    setIsSubmitting(true);
-    try {
-      const ids = inspectionIds || formData.inspectionIds || [];
-      
-      // Loop through each inspection ID and update
-      for (const inspectionId of ids) {
-        await updateWorkOrder({
-          inspectionId,
+  const submitEdit = useCallback(
+    async (inspectionIds?: (string | number)[]) => {
+      if (!formData || !formData.id) return null;
+      setIsSubmitting(true);
+      try {
+        const ids = inspectionIds || formData.inspectionIds || [];
+
+        // Loop through each inspection ID and update
+        for (const inspectionId of ids) {
+          await updateWorkOrder({
+            inspectionId,
+            workOrderId: formData.id,
+            constructionId: formData.constructionItemId,
+            workCodeId: formData.workCodeId,
+            othersId: formData.othersId,
+          });
+        }
+
+        setIsEditing(false);
+        setFormData(null);
+        // Return the updated form data for redirect
+        return {
           workOrderId: formData.id,
-          constructionId: formData.constructionItemId,
           workCodeId: formData.workCodeId,
+          constructionItemId: formData.constructionItemId,
           othersId: formData.othersId,
-        });
+        };
+      } catch (error) {
+        console.error("Failed to update work order:", error);
+        return null;
+      } finally {
+        setIsSubmitting(false);
       }
-      
-      setIsEditing(false);
-      setFormData(null);
-      // Return the updated form data for redirect
-      return {
-        workOrderId: formData.id,
-        workCodeId: formData.workCodeId,
-        constructionItemId: formData.constructionItemId,
-        othersId: formData.othersId,
-      };
-    } catch (error) {
-      console.error("Failed to update work order:", error);
-      return null;
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [formData]);
+    },
+    [formData]
+  );
 
   return {
     isEditing,

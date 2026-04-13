@@ -75,11 +75,10 @@ export default function DesktopDashboard() {
           </h2>
         </div>
         <div className="h-full">
-          <div className="grid grid-cols-10 bg-primary-white h-12 text-primary-dark text-lg items-center font-bold">
+          <div className="grid grid-cols-7 bg-primary-white h-12 text-primary-dark text-lg items-center font-bold">
             <p className="col-span-3 pl-3">{t("inspectorName")}</p>
             <p className="col-span-2">{t("date")}</p>
             <p className="col-span-2">{t("duration")}</p>
-            <p className="col-span-1">{t("type")}</p>
           </div>
           <div className="overflow-scroll h-[calc(100vh-300px)]">
             {loading ? (
@@ -93,11 +92,10 @@ export default function DesktopDashboard() {
             ) : recentRows && recentRows.length > 0 ? (
               recentRows.map((inspections) => (
                 <div key={inspections.id}>
-                  <div className="grid grid-cols-10 px-3 gap-2 text-sm text-black-text border-b border-gray-100 py-5">
+                  <div className="grid grid-cols-7 px-3 gap-2 text-sm text-black-text border-b border-gray-100 py-5">
                     <p className="col-span-3">{inspections.inspector}</p>
                     <p className="col-span-2">{inspections.date}</p>
                     <p className="col-span-2">{inspections.time}</p>
-                    <p className="col-span-1">{inspections.type}</p>
                   </div>
                 </div>
               ))

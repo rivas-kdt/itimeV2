@@ -15,22 +15,22 @@ import {
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { TimeStepper } from "@/features/workorders/components/timeSelector";
+import { Calendar } from "@/components/ui/calendar";
+import Image from "next/image";
+import { useSearchParams, useRouter } from "next/navigation";
+import { toTimezoneISOString } from "@/lib/timezone";
+import { useTranslations } from "next-intl";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import Image from "next/image";
-import { useSearchParams, useRouter } from "next/navigation";
-import { toTimezoneISOString } from "@/lib/timezone";
-import { useTranslations } from "next-intl";
 
 function Skeleton() {
   return (
@@ -46,6 +46,19 @@ function Skeleton() {
       </div>
     </div>
   );
+  // return (
+  //   <div className="flex flex-col bg-white gap-5 rounded-lg mx-8 p-4 shadow-lg animate-pulse">
+  //     <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+  //     <div className="space-y-3">
+  //       <div className="h-10 bg-gray-200 rounded"></div>
+  //       <div className="grid grid-cols-4 gap-2">
+  //         <div className="col-span-2 h-10 bg-gray-200 rounded"></div>
+  //         <div className="col-span-1 h-10 bg-gray-200 rounded"></div>
+  //         <div className="col-span-1 h-10 bg-gray-200 rounded"></div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 }
 
 export default function EditWorkOrdersPage() {
@@ -66,6 +79,7 @@ export default function EditWorkOrdersPage() {
     recordsInfoLoading,
     recordsInfoError,
     refetch,
+    refetchRecordInfo,
   } = useWorkOrderHooks(workOrderId, workCodeId, constructionItemId, othersId);
 
   const {
@@ -85,10 +99,13 @@ export default function EditWorkOrdersPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isEditingTime, setIsEditingTime] = useState<boolean>(false);
-  const [openStartTime, setOpenStartTime] = useState<boolean>(false);
-  const [openEndTime, setOpenEndTime] = useState<boolean>(false);
+  const [openStartTime, setOpenStartTime] = useState<string | boolean>(false);
+  const [openEndTime, setOpenEndTime] = useState<string | boolean>(false);
   const [startTime, setStartTime] = useState({ hour: 8, minute: 30 });
   const [endTime, setEndTime] = useState({ hour: 10, minute: 0 });
+  const [editedInspections, setEditedInspections] = useState<
+    Record<string, { startTime?: string; endTime?: string }>
+  >({});
 
   // Use the recordsInfo data
   const loading = recordsInfoLoading;
@@ -126,11 +143,10 @@ export default function EditWorkOrdersPage() {
 
   const getInspectionsForDate = (date?: Date) => {
     if (!recordsInfo || recordsInfo.length === 0) return [];
-
     if (date && recordsInfo.some((r) => r.date !== null)) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
+      const day = String(date.getDate()).padStart(1, "0");
       const dateStr = `${year}-${month}-${day}`;
       return recordsInfo.filter((record) => record.date === dateStr);
     }
@@ -232,14 +248,63 @@ export default function EditWorkOrdersPage() {
   const handleEditTime = () => {
     setIsEditingTime(true);
   };
+  const handleDialogClose = () => {
+    setIsEditingTime(false);
+    setIsDialogOpen(false);
+  };
 
   const handleUpdateTime = () => {
     setIsEditingTime(false);
   };
 
+  const setInspectionTime = (
+    inspectionId: string | number,
+    timeField: "startTime" | "endTime",
+    time: { hour: number; minute: number },
+  ) => {
+    const timeString = `${String(time.hour).padStart(2, "0")}:${String(
+      time.minute,
+    ).padStart(2, "0")}`;
+    setEditedInspections((prev) => ({
+      ...prev,
+      [inspectionId]: {
+        ...prev[inspectionId],
+        [timeField]: timeString,
+      },
+    }));
+  };
+
+  const handleSaveInspectionTimes = async () => {
+    try {
+      const updatesToApply = Object.entries(editedInspections);
+      for (const [inspectionId, updates] of updatesToApply) {
+        const res = await fetch(`/api/v2/inspections/${inspectionId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updates),
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          console.error(
+            `Failed to update inspection ${inspectionId}:`,
+            errorData,
+          );
+        }
+      }
+      setEditedInspections({});
+      setIsEditingTime(false);
+      setIsDialogOpen(false);
+
+      // Refetch recordsInfo data to update frontend in real-time
+      refetchRecordInfo?.();
+    } catch (error) {
+      console.error("Failed to save inspection times:", error);
+    }
+  };
+
   const formatTime = (time: any) => {
     const [hour, minute] = time.split(":").map(Number);
-
     const result = {
       hour,
       minute,
@@ -314,7 +379,7 @@ export default function EditWorkOrdersPage() {
 
         {error && !loading && (
           <div className="mx-8 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-            <AlertCircle className="text-red-600 flex-shrink-0" size={20} />
+            <AlertCircle className="text-red-600 shrink-0" size={20} />
             <div className="flex-1">
               <p className="text-red-800 font-semibold">
                 {t("errorLoadingWorkOrder")}
@@ -524,8 +589,8 @@ export default function EditWorkOrdersPage() {
       </div>
 
       {/* Dialog for Inspection Details */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="box-design text-black max-w-md">
+      <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
+        <DialogContent className="box-design text-black max-w-sm">
           <DialogHeader className="border-b pb-2">
             <DialogTitle className="flex items-center gap-3 font-semibold">
               <Image src="/clock_icon.png" width={35} height={35} alt="Clock" />
@@ -575,17 +640,25 @@ export default function EditWorkOrdersPage() {
               </div>
 
               {recordedTime.hours === 0 && recordedTime.minutes === 0 ? (
-                <div className="flex items-center justify-center px-3 py-2">
+                <div className="flex items-center justify-center px-3 py-2 bg-primary-op-2 rounded-md">
                   <Button
                     onClick={startInspection}
-                    className="bg-primary text-white hover:bg-primary-400 w-full"
+                    className="bg-primary text-white hover:bg-primary-400"
                   >
                     {t("startInspection")}
                   </Button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between px-3 py-2 bg-primary-white border border-black rounded-md">
-                  <span className="font-bold">{t("recordedTime")}:</span>
+                  <div className="flex flex-col">
+                    <span className="font-bold">{t("recordedTime")}:</span>
+                    <span className="text-xs text-gray-600">
+                      {getInspectionsForDate(selectedDate).length}{" "}
+                      {getInspectionsForDate(selectedDate).length === 1
+                        ? t("inspection")
+                        : "inspections"}
+                    </span>
+                  </div>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">
                       {recordedTime.hours}h {recordedTime.minutes}m
@@ -612,49 +685,128 @@ export default function EditWorkOrdersPage() {
                         </div>
                       );
                     }
-                    const firstInspection = inspectionsOnDate[0];
                     return (
-                      <div className="flex gap-3">
-                        <div className="flex-1">
-                          <label className="text-sm font-medium">
-                            {t("startTime")}
-                          </label>
-                          <Input
-                            value={firstInspection.startTime}
-                            onClick={() => setOpenStartTime(true)}
-                            readOnly
-                            className="cursor-pointer"
-                          />
-                          <TimeStepper
-                            value={formatTime(firstInspection.startTime)}
-                            open={openStartTime}
-                            onOpenChange={setOpenStartTime}
-                            onChange={setStartTime}
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <label className="text-sm font-medium">
-                            {t("endTime")}
-                          </label>
-                          <Input
-                            value={firstInspection.endTime}
-                            onClick={() => setOpenEndTime(true)}
-                            readOnly
-                            className="cursor-pointer"
-                          />
-                          <TimeStepper
-                            value={formatTime(firstInspection.endTime)}
-                            open={openEndTime}
-                            onOpenChange={setOpenEndTime}
-                            onChange={setEndTime}
-                          />
-                        </div>
+                      <div className="space-y-4 max-h-96 overflow-y-auto">
+                        {inspectionsOnDate
+                          .sort((a, b) => {
+                            const timeA = (
+                              a.start_time ||
+                              a.startTime ||
+                              "00:00"
+                            ).toString();
+                            const timeB = (
+                              b.start_time ||
+                              b.startTime ||
+                              "00:00"
+                            ).toString();
+                            // Parse HH:MM format as minutes for correct comparison
+                            const parseTime = (timeStr: string) => {
+                              const match = timeStr.match(/(\d{2}):?(\d{2})/);
+                              if (match) {
+                                return (
+                                  parseInt(match[1]) * 60 + parseInt(match[2])
+                                );
+                              }
+                              return 0;
+                            };
+                            return parseTime(timeA) - parseTime(timeB);
+                          })
+                          .map((inspection, index) => {
+                            const inspectionId =
+                              inspection.id || inspection.inspection_id;
+                            const editedData = editedInspections[inspectionId];
+                            const displayStartTime =
+                              editedData?.startTime ||
+                              inspection.startTime ||
+                              "";
+                            const displayEndTime =
+                              editedData?.endTime || inspection.endTime || "";
+
+                            return (
+                              <div
+                                key={inspectionId || index}
+                                className="border rounded-lg p-3 bg-gray-50"
+                              >
+                                <div className="font-semibold text-sm mb-3 pb-2 border-b">
+                                  {t("inspection")} #{index + 1}
+                                </div>
+                                <div className="flex gap-3">
+                                  <div className="flex-1">
+                                    <label className="text-sm font-medium">
+                                      {t("startTime")}
+                                    </label>
+                                    <Input
+                                      value={displayStartTime}
+                                      onClick={() =>
+                                        setOpenStartTime(inspectionId)
+                                      }
+                                      readOnly
+                                      className="cursor-pointer"
+                                    />
+                                    {openStartTime === inspectionId && (
+                                      <TimeStepper
+                                        value={formatTime(
+                                          displayStartTime || "00:00",
+                                        )}
+                                        open={true}
+                                        onOpenChange={(open) =>
+                                          setOpenStartTime(
+                                            open ? inspectionId : false,
+                                          )
+                                        }
+                                        onChange={(time) =>
+                                          setInspectionTime(
+                                            inspectionId,
+                                            "startTime",
+                                            time,
+                                          )
+                                        }
+                                      />
+                                    )}
+                                  </div>
+                                  <div className="flex-1">
+                                    <label className="text-sm font-medium">
+                                      {t("endTime")}
+                                    </label>
+                                    <Input
+                                      value={displayEndTime}
+                                      onClick={() =>
+                                        setOpenEndTime(inspectionId)
+                                      }
+                                      readOnly
+                                      className="cursor-pointer"
+                                    />
+                                    {openEndTime === inspectionId && (
+                                      <TimeStepper
+                                        value={formatTime(
+                                          displayEndTime || "00:00",
+                                        )}
+                                        open={true}
+                                        onOpenChange={(open) =>
+                                          setOpenEndTime(
+                                            open ? inspectionId : false,
+                                          )
+                                        }
+                                        onChange={(time) =>
+                                          setInspectionTime(
+                                            inspectionId,
+                                            "endTime",
+                                            time,
+                                          )
+                                        }
+                                      />
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
                       </div>
                     );
                   })()}
                   <Button
-                    onClick={handleUpdateTime}
-                    className="w-full bg-gradient-to-r from-primary-300 to-primary text-white"
+                    onClick={handleSaveInspectionTimes}
+                    className="w-full bg-linear-to-r from-primary-300 to-primary text-white"
                   >
                     {t("updateTime")}
                   </Button>

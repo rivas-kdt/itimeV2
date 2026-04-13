@@ -46,7 +46,7 @@ function TrackerContent() {
   const router = useRouter();
 
   const filterWorkOrders = records.filter((data) =>
-    data.workOrder.toLowerCase().includes(searchWorkOrder.toLowerCase()),
+    data.workOrder.toLowerCase().includes(searchWorkOrder.toLowerCase())
   );
 
   const handleClickWorkOrder = (id: string) => {
@@ -77,8 +77,14 @@ function TrackerContent() {
   };
 
   const getDate = () => {
-    const setTodayDate = new Date().toISOString().split("T")[0];
-    setDate(setTodayDate);
+    const now = new Date();
+    const currentDate =
+      now.getFullYear() +
+      "-" +
+      String(now.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(now.getDate()).padStart(2, "0");
+    setDate(currentDate);
   };
 
   function handleTypeChange(value: string) {
