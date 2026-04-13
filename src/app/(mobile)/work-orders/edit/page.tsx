@@ -227,7 +227,7 @@ export default function EditWorkOrdersPage() {
         constructionItemId: result.constructionItemId || "",
         othersId: result.othersId || "",
       });
-      router.push(`/work-orders/edit2?${params.toString()}`);
+      router.push(`/work-orders/edit?${params.toString()}`);
     }
   };
 
