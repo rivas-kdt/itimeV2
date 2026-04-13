@@ -29,9 +29,7 @@ function WorkOrdersContent() {
   return (
     <div className=" bg-white-gray h-full text-black flex flex-col">
       <div className=" pt-5 pb-4 px-8 space-y-2 w-full shadow-lg bg-white">
-        <p className=" text-2xl font-bold text-black my-2">
-          {t("title")}
-        </p>
+        <p className=" text-2xl font-bold text-black my-2">{t("title")}</p>
         <div className="flex gap-2">
           <div className="flex flex-row bg-white rounded-md px-2 py-1 w-full items-center border-2 border-gray-300">
             <Search className="mr-2 text-gray-500" />
@@ -77,7 +75,7 @@ function WorkOrdersContent() {
                       >
                         {/* <Link href={`/work-orders/${orders.work_id}`}> */}
                         <Link
-                          href={`/work-orders/edit2?workOrderId=${orders.workOrderId}&workCodeId=${orders.workCodeId}&constructionItemId=${orders.constructionItemId}&othersId=${orders.othersId}`}
+                          href={`/work-orders/edit?workOrderId=${orders.workOrderId}&workCodeId=${orders.workCodeId}&constructionItemId=${orders.constructionItemId}&othersId=${orders.othersId}`}
                         >
                           {/* <div className="active:bg-primary-op-2 active:text-primary px-2 py-1 rounded-md"> */}
                           <div className="active:bg-primary-op-2 active:text-primary px-5 rounded-md">

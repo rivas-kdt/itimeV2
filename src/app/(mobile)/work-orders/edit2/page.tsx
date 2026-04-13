@@ -640,15 +640,15 @@ export default function EditWorkOrdersPage() {
               </div>
 
               {recordedTime.hours === 0 && recordedTime.minutes === 0 ? (
-                <div className="flex items-center justify-center px-3 py-2 bg-primary-op-2 rounded-md">
-                  <Button
-                    onClick={startInspection}
-                    className="bg-primary text-white hover:bg-primary-400"
-                  >
-                    {t("startInspection")}
-                  </Button>
-                </div>
+                // <div className="flex items-center justify-center px-3 py-2 bg-primary-white rounded-md">
+                <Button
+                  onClick={startInspection}
+                  className="w-full bg-primary text-white hover:bg-primary-400"
+                >
+                  {t("startInspection")}
+                </Button>
               ) : (
+                // </div>
                 <div className="flex items-center justify-between px-3 py-2 bg-primary-white border border-black rounded-md">
                   <div className="flex flex-col">
                     <span className="font-bold">{t("recordedTime")}:</span>
