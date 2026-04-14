@@ -9,7 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useTranslations } from "next-intl";
 
 import { DataTable } from "./data-table";
-import { getColumns, Inspections } from "./columns";
+import { getColumns } from "./columns";
 
 import { useRecordsHooks } from "@/features/records/hooks/useRecordsHooks";
 import { RecordsToolbar } from "@/features/records/components/RecordsToolbar";
@@ -17,10 +17,8 @@ import { ExportDialog } from "@/features/records/components/ExportDialog";
 import { DeleteDialog } from "@/features/records/components/DeleteDialog";
 import { EditDialog } from "@/features/records/components/EditDialog";
 import { ExportPreviewDialog } from "@/features/records/components/ExportPreviewDialog";
-import { getLocation } from "@/features/records/services/records.service";
 import { exportToExcel } from "@/features/records/services/export.service";
 import { formatDateWithTimezone } from "@/lib/timezone";
-import { useAuth } from "@/features/auth/hooks/auth-context";
 
 export default function UserRecords() {
   return (
@@ -291,7 +289,7 @@ function UserRecordsContent() {
         onOpenChange={setShowExport}
         onExportAll={() => {
           handleExportAll();
-          toastSuccess(t("exportedSuccessfully"), t("exportedAllDesc"));
+          // toastSuccess(t("exportedSuccessfully"), t("exportedAllDesc"));
         }}
         // onExportMonth={() => {
         //   handleExportMonth();
@@ -299,7 +297,7 @@ function UserRecordsContent() {
         // }}
         onExportMonth={(month) => {
           handleExportMonth(month);
-          toastSuccess(t("exportedSuccessfully"), t("exportedMonthDesc"));
+          // toastSuccess(t("exportedSuccessfully"), t("exportedMonthDesc"));
         }}
         onExportSelected={handleCheckedExport}
       />
