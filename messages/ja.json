@@ -364,9 +364,9 @@
     "clearedFilters": "フィルターをクリアしました",
     "clearedFiltersDesc": "すべてのフィルターがクリアされました。",
     "exportedSuccessfully": "ファイルをエクスポートしました",
-    "exportedAllDesc": "すべてのデータをエクスポートしました。（Excelエクスポートは後で接続）",
-    "exportedMonthDesc": "選択した月のデータをエクスポートしました。（後で接続）",
-    "exportedSelectedDesc": "選択したデータをエクスポートしました。（後で接続）",
+    "exportedAllDesc": "すべてのデータをエクスポートしました",
+    "exportedMonthDesc": "選択した月のデータをエクスポートしました。",
+    "exportedSelectedDesc": "選択したデータをエクスポートしました。",
     "pleaseTryAgain": "もう一度お試しください。"
   },
   "common": {

@@ -185,14 +185,10 @@ export default function Header() {
                 English
               </div>
               <Separator className="border border-primary-300" />
-              <Button
-                onClick={logout}
-                variant={"ghost"}
-                className="popover-content transition-all"
-              >
+              <div onClick={logout} className="popover-content transition-all">
                 <LogOut className="text-primary" size={18} />
                 {tAuth("logout")}
-              </Button>
+              </div>
             </PopoverContent>
           </Popover>
         </div>

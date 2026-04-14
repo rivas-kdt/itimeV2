@@ -18,7 +18,7 @@ export async function exportToExcel(
       "Start Time": record.startTime,
       "End Time": record.endTime,
       Duration: record.duration,
-      Type: record.type,
+      // Type: record.type,
       Location: record.location,
     }));
 
@@ -55,7 +55,7 @@ export function exportToCSV(
     "Start Time",
     "End Time",
     "Duration",
-    "Type",
+    // "Type",
     "Location",
   ];
 
@@ -68,7 +68,7 @@ export function exportToCSV(
     record.startTime,
     record.endTime,
     record.duration,
-    record.type,
+    // record.type,
     record.location,
   ]);
 

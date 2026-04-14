@@ -265,7 +265,7 @@ export default function EditWorkOrdersPage() {
     try {
       const updatesToApply = Object.entries(editedInspections);
       for (const [inspectionId, updates] of updatesToApply) {
-        const res = await fetch(`/api/v2/inspections/${inspectionId}`, {
+        const res = await fetch(`/api/v2/inspections/${inspectionId}/time`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updates),

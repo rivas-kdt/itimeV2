@@ -158,7 +158,7 @@ function UserRecordsContent() {
       await exportToExcel(checkedRecords, "inspection-records");
       toastSuccess(
         "Exported Successfully",
-        `${checkedRecords.length} record(s) exported to file.`,
+        `${checkedRecords.length} record(s) exported to file.`
       );
       setIsCheckedExport(false);
     } catch (e: any) {
@@ -171,7 +171,7 @@ function UserRecordsContent() {
       await exportToExcel(records, "all-inspection-records");
       toastSuccess(
         "Exported Successfully",
-        `All ${records.length} record(s) exported to file.`,
+        `All ${records.length} record(s) exported to file.`
       );
       setShowExport(false);
     } catch (e: any) {
@@ -179,21 +179,53 @@ function UserRecordsContent() {
     }
   };
 
-  const handleExportMonth = async () => {
+  // const handleExportMonth = async () => {
+  //   console.log("Exporting month:", date);
+  //   try {
+  //     if (!date?.from || !date?.to) {
+  //       toastError("Invalid Date Range", "Please select a date range first.");
+  //       return;
+  //     }
+  //     const monthYear = new Date(date.from).toLocaleString("default", {
+  //       month: "long",
+  //       year: "numeric",
+  //     });
+  //     await exportToExcel(records, `inspection-records-${monthYear}`);
+  //     toastSuccess(
+  //       "Exported Successfully",
+  //       `${records.length} record(s) from selected date range exported.`
+  //     );
+  //     setShowExport(false);
+  //   } catch (e: any) {
+  //     toastError("Export Failed", e?.message || "Please try again.");
+  //   }
+  // };
+
+  const handleExportMonth = async (month: number) => {
+    console.log("Exporting month:", month);
+
     try {
-      if (!date?.from || !date?.to) {
-        toastError("Invalid Date Range", "Please select a date range first.");
+      const filtered = records.filter((r) => {
+        const recordDate = new Date(r.date);
+        return recordDate.getMonth() === month;
+      });
+
+      if (filtered.length === 0) {
+        toastError("No Data", "No records found for this month.");
         return;
       }
-      const monthYear = new Date(date.from).toLocaleString("default", {
+
+      const monthName = new Date(0, month).toLocaleString("default", {
         month: "long",
-        year: "numeric",
       });
-      await exportToExcel(records, `inspection-records-${monthYear}`);
+
+      await exportToExcel(filtered, `inspection-records-${monthName}`);
+
       toastSuccess(
         "Exported Successfully",
-        `${records.length} record(s) from selected date range exported.`,
+        `${filtered.length} record(s) from ${monthName} exported.`
       );
+
       setShowExport(false);
     } catch (e: any) {
       toastError("Export Failed", e?.message || "Please try again.");
@@ -202,7 +234,7 @@ function UserRecordsContent() {
 
   const totalPages = Math.max(
     1,
-    Math.ceil(checkedRecords.length / rowsPerPage),
+    Math.ceil(checkedRecords.length / rowsPerPage)
   );
   const currentRows = useMemo(() => {
     const start = (currentPage - 1) * rowsPerPage;
@@ -222,7 +254,7 @@ function UserRecordsContent() {
       onEdit: handleEdit,
       onDelete: handleDelete,
     },
-    tTables,
+    tTables
   );
   // TODO
   return (
@@ -261,8 +293,12 @@ function UserRecordsContent() {
           handleExportAll();
           toastSuccess(t("exportedSuccessfully"), t("exportedAllDesc"));
         }}
-        onExportMonth={() => {
-          handleExportMonth();
+        // onExportMonth={() => {
+        //   handleExportMonth();
+        //   toastSuccess(t("exportedSuccessfully"), t("exportedMonthDesc"));
+        // }}
+        onExportMonth={(month) => {
+          handleExportMonth(month);
           toastSuccess(t("exportedSuccessfully"), t("exportedMonthDesc"));
         }}
         onExportSelected={handleCheckedExport}

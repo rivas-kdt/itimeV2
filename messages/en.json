@@ -364,9 +364,9 @@
     "clearedFilters": "Cleared Filters",
     "clearedFiltersDesc": "All filters were cleared.",
     "exportedSuccessfully": "Exported the File Successfully",
-    "exportedAllDesc": "All data was exported. (Wire excel export later)",
-    "exportedMonthDesc": "Selected month data exported. (Wire later)",
-    "exportedSelectedDesc": "Selected data exported. (Wire excel export later)",
+    "exportedAllDesc": "All data was exported.",
+    "exportedMonthDesc": "Selected month data exported.",
+    "exportedSelectedDesc": "Selected data exported.",
     "pleaseTryAgain": "Please try again."
   },
   "common": {
