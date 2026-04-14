@@ -208,7 +208,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="flex justify-between px-1 py-3">
+          {/* <div className="flex justify-between px-1 py-3">
             <div className="flex gap-5">
               <div className="flex justify-center items-center bg-primary-op-2 p-2 rounded-full">
                 <MessageCircleQuestionMark
@@ -242,7 +242,7 @@ export default function ProfilePage() {
             <div className="flex justify-center items-center">
               <ChevronRight size={32} />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

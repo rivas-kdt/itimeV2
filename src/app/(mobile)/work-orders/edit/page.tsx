@@ -345,9 +345,12 @@ export default function EditWorkOrdersPage() {
       {/* Header */}
       <div className="grid grid-cols-6 gap-2 pt-4 pb-4 px-2 space-y-2 w-full shadow-md bg-white mb-5">
         <div className="flex justify-center items-center col-span-1 pl-3">
-          <Link href="/work-orders" className="flex flex-row mt-2">
-            <ChevronLeft className="text-primary" />
-            <span className="text-primary">{t("back")}</span>
+          <Link
+            href="/work-orders"
+            className="flex flex-row mt-2 text-black-text"
+          >
+            <ChevronLeft />
+            <span className=" w-full">{t("back")}</span>
           </Link>
         </div>
         <h3 className="col-span-4 flex justify-center items-center font-semibold">

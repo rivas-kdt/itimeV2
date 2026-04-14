@@ -236,7 +236,7 @@ export default function DesktopDashboard() {
             </LineChart>
           </ChartContainer>
           <h3 className="w-full text-center text-black font-bold">
-            {t("inspectionsThisMonth")}
+            {t("inspectionsPerDay")}
           </h3>
         </div>
 

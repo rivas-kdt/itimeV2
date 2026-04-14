@@ -12,6 +12,7 @@ import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import clsx from "clsx";
 import { useIsMobile } from "@/hooks/useMobile";
+import { useTranslations } from "next-intl";
 
 export type TimeValue = {
   hour: number;
@@ -28,6 +29,7 @@ type Props = {
 export function TimeStepper({ value, open, onOpenChange, onChange }: Props) {
   const isMobile = useIsMobile();
   const [time, setTime] = useState<TimeValue>(value);
+  const t = useTranslations("updateTime");
 
   const addHours = (delta: number) => {
     let newHour = (time.hour + delta) % 24;
@@ -53,18 +55,18 @@ export function TimeStepper({ value, open, onOpenChange, onChange }: Props) {
         <DialogContent className="box-design">
           <DialogHeader className="border-b border-gray-300 pb-2">
             <DialogTitle className="flex text-black-text font-bold">
-              Set New Time
+              {t("setNewTime")}
             </DialogTitle>
           </DialogHeader>
           <div className="flex items-center justify-center gap-3 py-1 text-black-text rounded-md border border-primary">
-            New Time :{" "}
+            {t("newTimeLabel")} :{" "}
             <span>
               {String(time.hour).padStart(2, "0")} :{" "}
               {String(time.minute).padStart(2, "0")}
             </span>
           </div>
           <div className="flex items-center justify-between gap-3 text-black-text">
-            <div className="flex justify-center text-md">Set Hours</div>
+            <div className="flex justify-center text-md">{t("setHours")}</div>
             <div className="flex items-center">
               <button className="number-btns" onClick={() => addHours(-5)}>
                 -5
@@ -85,7 +87,7 @@ export function TimeStepper({ value, open, onOpenChange, onChange }: Props) {
             </div>
           </div>
           <div className="flex items-center justify-between gap-3 text-black-text">
-            <div className="flex justify-center text-md">Set Minutes</div>
+            <div className="flex justify-center text-md">{t("setMinutes")}</div>
             <div className="flex items-center">
               <button className="number-btns" onClick={() => addMinutes(-5)}>
                 -5
@@ -129,7 +131,7 @@ export function TimeStepper({ value, open, onOpenChange, onChange }: Props) {
           </div> */}
           <DialogFooter>
             <Button className="gradient-bg" onClick={handleUpdate}>
-              Save Time
+              {t("saveTime")}
             </Button>
           </DialogFooter>
         </DialogContent>

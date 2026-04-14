@@ -169,7 +169,7 @@
     "inspectionsCount": "{count} Inspections",
     "totalInspectionsThisYear": "Total Inspections this Year",
     "numberOfInspections": "Number of Inspections",
-    "inspectionsThisMonth": "INSPECTIONS THIS MONTH",
+    "inspectionsPerDay": "DAILY INSPECTION COUNT",
     "inspectionsPerWorkCode": "INSPECTIONS PER WORK CODE",
     "goodMorning": "Good Morning",
     "goodAfternoon": "Good Afternoon",
@@ -270,7 +270,7 @@
     "othersLabel": "Others"
   },
   "editWorkOrder": {
-    "title": "Edit Work Order Details",
+    "title": "Edit Work Order",
     "back": "Back",
     "errorLoadingWorkOrder": "Error Loading Work Order",
     "tryAgain": "Try Again",
@@ -304,6 +304,18 @@
     "selectWorkCode": "Select Work Code",
     "selectOthers": "Select Others",
     "inspection": "Inspection"
+  },
+  "updateTime": {
+    "setHours": "Set Hours",
+    "setMinutes": "Set Minutes",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "update": "Update",
+    "setNewTime": "Set New Time",
+    "newTimeLabel": "New Time",
+    "saveTime": "Save Time",
+    "updateTheTime": "Update the Time",
+    "clickToChangeTime": "Click on the buttons to change the time."
   },
   "profile": {
     "accountInformation": "Account Information",

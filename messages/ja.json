@@ -169,7 +169,7 @@
     "inspectionsCount": "{count} 件の点検",
     "totalInspectionsThisYear": "今年の点検合計",
     "numberOfInspections": "点検件数",
-    "inspectionsThisMonth": "今月の点検",
+    "inspectionsPerDay": "日別点検数",
     "inspectionsPerWorkCode": "作業コード別点検数",
     "goodMorning": "おはようございます",
     "goodAfternoon": "こんにちは",
@@ -270,7 +270,7 @@
     "othersLabel": "その他"
   },
   "editWorkOrder": {
-    "title": "作業指示詳細を編集",
+    "title": "作業指示を編集",
     "back": "戻る",
     "errorLoadingWorkOrder": "作業指示の読み込みに失敗しました",
     "tryAgain": "再試行",
@@ -304,6 +304,18 @@
     "selectWorkCode": "作業コードを選択",
     "selectOthers": "その他を選択",
     "inspection": "点検"
+  },
+  "updateTime": {
+    "setHours": "時間を設定",
+    "setMinutes": "分を設定",
+    "hours": "時間",
+    "minutes": "分",
+    "update": "更新",
+    "setNewTime": "新しい時間を設定",
+    "newTimeLabel": "新しい時間",
+    "saveTime": "時間を保存",
+    "updateTheTime": "時間を更新",
+    "clickToChangeTime": "ボタンをクリックして時間を変更してください。"
   },
   "profile": {
     "accountInformation": "アカウント情報",

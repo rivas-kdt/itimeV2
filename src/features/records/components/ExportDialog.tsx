@@ -52,8 +52,11 @@ export function ExportDialog({
         /> */}
 
         <div className="flex flex-row gap-5 justify-between max-h-[300px]">
-          <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg">
-            <DialogTitle className="font-bold">{t("exportAllData")}</DialogTitle>
+          {/* <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg"> with export month */}
+          <DialogHeader className="flex flex-col gap-5 border border-gray-500 w-full p-6 rounded-lg">
+            <DialogTitle className="font-bold">
+              {t("exportAllData")}
+            </DialogTitle>
             <DialogDescription className="text-black-text">
               {t("exportAllDataDesc")}
             </DialogDescription>
@@ -66,7 +69,7 @@ export function ExportDialog({
             </button>
           </DialogHeader>
 
-          <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg">
+          {/* <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg">
             <DialogTitle className="font-bold">
               {t("exportMonth")}
             </DialogTitle>
@@ -108,10 +111,13 @@ export function ExportDialog({
                 {t("exportThisMonth")}
               </button>
             </div>
-          </DialogHeader>
+          </DialogHeader> */}
 
-          <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg">
-            <DialogTitle className="font-bold">{t("exportCheckedData")}</DialogTitle>
+          {/* <DialogHeader className="flex flex-col gap-5 border-1 border-gray-500 w-[350px] p-6 rounded-lg"> with export month */}
+          <DialogHeader className="flex flex-col gap-5 border border-gray-500 w-full p-6 rounded-lg">
+            <DialogTitle className="font-bold">
+              {t("exportCheckedData")}
+            </DialogTitle>
             <DialogDescription className="text-black-text">
               {t("exportCheckedDataDesc")}
             </DialogDescription>
