@@ -332,7 +332,7 @@ function UserRecordsContent() {
         onRemove={handleDelExpEntry}
         onExport={() => {
           handleExport();
-          toastSuccess(t("exportedSuccessfully"), t("exportedSelectedDesc"));
+          // toastSuccess(t("exportedSuccessfully"), t("exportedSelectedDesc"));
         }}
       />
     </div>
